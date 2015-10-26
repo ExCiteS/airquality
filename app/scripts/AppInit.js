@@ -70,6 +70,7 @@ CMAQ.run(function ($window, $rootScope, appConfig, viewport, state, oauth) {
   }
 
   oauth.authorize();
+  viewport.ready = true;
 
   $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
     state.saveHistory(toState.name, toParams, fromState.name, fromParams);

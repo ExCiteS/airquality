@@ -20,6 +20,14 @@ module.exports = function (grunt) {
         dest: 'build'
       },
 
+      css: {
+        expand: true,
+        dot: true,
+        cwd: 'temp/css',
+        src: '{,*/}*.css',
+        dest: 'build/stylesheets'
+      },
+
       js: {
         expand: true,
         dot: true,
@@ -73,6 +81,35 @@ module.exports = function (grunt) {
         collapseWhitespace: true,
         removeComments: true,
         removeOptionalTags: true
+      }
+    },
+
+    less: {
+      app: {
+        files: {
+          'temp/css/app.css': ['app/stylesheets/app.less']
+        }
+      }
+    },
+
+    cssmin: {
+      vendor: {
+        files: {
+          'temp/css/vendor.css': [
+            'bower_components/leaflet/dist/leaflet.css',
+            'bower_components/bootstrap/dist/css/bootstrap.css'
+          ]
+        }
+      },
+
+      app: {
+        files: {
+          'temp/css/app.css': ['temp/css/app.css']
+        }
+      },
+
+      options: {
+        keepSpecialComments: 0
       }
     },
 
@@ -182,11 +219,11 @@ module.exports = function (grunt) {
         ]
       },
 
-      images: {
-        files: ['app/images/{,*/}*.{png,jpg,jpeg,gif}'],
+      stylesheets: {
+        files: ['app/stylesheets/{,*/}*.less'],
         tasks: [
-          'imagemin',
-          'copy:images'
+          'less',
+          'copy:css'
         ]
       },
 
@@ -195,6 +232,14 @@ module.exports = function (grunt) {
         tasks: [
           'concat:app',
           'copy:js'
+        ]
+      },
+
+      images: {
+        files: ['app/images/{,*/}*.{png,jpg,jpeg,gif}'],
+        tasks: [
+          'imagemin',
+          'copy:images'
         ]
       },
 
@@ -207,12 +252,15 @@ module.exports = function (grunt) {
   grunt.registerTask('dev', [
     'jshint',
     'clean:temp',
+    'less',
     'html2js',
+    'cssmin:vendor',
     'imagemin',
     'concat',
     'replace',
     'clean:build',
     'copy:html',
+    'copy:css',
     'copy:js',
     'copy:images',
     'clean:temp',
@@ -222,7 +270,9 @@ module.exports = function (grunt) {
   grunt.registerTask('build', [
     'jshint',
     'clean:temp',
+    'less',
     'html2js',
+    'cssmin',
     'imagemin',
     'concat',
     'replace',
@@ -231,6 +281,7 @@ module.exports = function (grunt) {
     'uglify',
     'clean:build',
     'copy:html',
+    'copy:css',
     'copy:js',
     'copy:images',
     'clean:temp'
