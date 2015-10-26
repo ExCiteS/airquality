@@ -65,7 +65,7 @@ CMAQ.config(function ($httpProvider, $urlRouterProvider, $stateProvider, appConf
 CMAQ.run(function ($window, $rootScope, appConfig, viewport, state, oauth) {
   viewport.version = appConfig.version;
 
-  if (appConfig.ga && _.isFunction($window.ga)) {
+  if (!_.isEmpty(appConfig.ga) && _.isFunction($window.ga)) {
     $window.ga('create', appConfig.ga, 'auto');
   }
 
