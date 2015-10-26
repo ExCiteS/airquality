@@ -1,0 +1,14 @@
+{
+  "indent": 2,
+  "browser": true,
+  "globalstrict": true,
+  "predef": [
+    "CMAQ"
+  ],
+  "globals": {
+    "console": false,
+    "angular": false,
+    "_": false,
+    "L": false
+  }
+}

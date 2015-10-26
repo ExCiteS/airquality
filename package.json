@@ -1,0 +1,23 @@
+{
+  "name": "communitymaps-airquality",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "devDependencies": {
+    "grunt": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-contrib-clean": "*",
+    "grunt-contrib-copy": "*",
+    "grunt-contrib-htmlmin": "*",
+    "grunt-contrib-imagemin": "*",
+    "grunt-contrib-concat": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-jshint": "*",
+    "grunt-ng-annotate": "*",
+    "grunt-html2js": "*",
+    "grunt-replace": "*",
+    "load-grunt-tasks": "*"
+  }
+}
