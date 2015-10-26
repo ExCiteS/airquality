@@ -1,6 +1,8 @@
+/*jshint -W079 */
+
 'use strict';
 
-var CM = angular.module('CMAQ', [
+var CMAQ = angular.module('CMAQ', [
   'templates',
   'ui.router'
 ]);
