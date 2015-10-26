@@ -29,10 +29,9 @@ CMAQ.factory('oauth', function ($q, $http, platformConfig, data, storage, state,
         info = info.data;
 
         info.expires_at = Math.floor(Date.now() / 1000) + info.expires_in;
-        storage.put('OAUTH_KEY', JSON.stringify(info));
+        storage.put('AUTHENTICATION', JSON.stringify(info));
 
         oauth.authorize().finally(function () {
-          state.redirect('redirect');
           deferred.resolve(info);
         });
       },
@@ -53,7 +52,7 @@ CMAQ.factory('oauth', function ($q, $http, platformConfig, data, storage, state,
         token: data.authentication.access_token
       };
 
-      storage.remove('OAUTH_KEY');
+      storage.remove('AUTHENTICATION');
 
       $http.post(url + 'revoke_token/', helpers.serialize(customData)).finally(function () {
         oauth.authorize().finally(function () {
@@ -82,7 +81,7 @@ CMAQ.factory('oauth', function ($q, $http, platformConfig, data, storage, state,
           info = info.data;
 
           info.expires_at = Math.floor(Date.now() / 1000) + info.expires_in;
-          storage.put('OAUTH_KEY', JSON.stringify(info));
+          storage.put('AUTHENTICATION', JSON.stringify(info));
 
           oauth.authorize().finally(function () {
             deferred.resolve(info);
@@ -103,7 +102,7 @@ CMAQ.factory('oauth', function ($q, $http, platformConfig, data, storage, state,
 
   oauth.authorize = function () {
     var deferred = $q.defer();
-    var key = storage.get('OAUTH_KEY');
+    var key = storage.get('AUTHENTICATION');
 
     if (!_.isEmpty(key)) {
       data.authentication = JSON.parse(key);
