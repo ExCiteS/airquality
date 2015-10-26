@@ -73,6 +73,16 @@ CMAQ.config(function ($httpProvider, $urlRouterProvider, $stateProvider, appConf
           templateUrl: 'partials/login.html'
         }
       }
+    })
+    .state('logout', {
+      url: '/logout',
+      views: {
+        content: {
+          controller: 'LogoutController',
+          templateUrl: 'partials/logout.html'
+        }
+      }
+    })
     });
 });
 
