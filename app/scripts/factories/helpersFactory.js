@@ -18,4 +18,6 @@ CMAQ.factory('helpers', function () {
 
     return params.join('&');
   };
+
+  return helpers;
 });
