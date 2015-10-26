@@ -76,7 +76,7 @@ CMAQ.config(function ($httpProvider, $urlRouterProvider, $stateProvider, appConf
     });
 });
 
-CMAQ.run(function ($window, $rootScope, appConfig, viewport, state, oauth) {
+CMAQ.run(function ($window, $rootScope, appConfig, viewport, data, state, oauth) {
   viewport.version = appConfig.version;
 
   if (!_.isEmpty(appConfig.ga) && _.isFunction($window.ga)) {
@@ -85,6 +85,13 @@ CMAQ.run(function ($window, $rootScope, appConfig, viewport, state, oauth) {
 
   oauth.authorize();
   viewport.ready = true;
+
+  $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
+    if (_.isEmpty(data.authentication) && toState.name !== 'login') {
+      event.preventDefault();
+      state.redirect('login');
+    }
+  });
 
   $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
     state.saveHistory(toState.name, toParams, fromState.name, fromParams);
