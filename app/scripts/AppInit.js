@@ -4,7 +4,9 @@
 
 var CMAQ = angular.module('CMAQ', [
   'templates',
-  'ui.router'
+  'ngSanitize',
+  'ui.router',
+  'angularMoment',
 ]);
 
 CMAQ.config(function ($httpProvider, $urlRouterProvider, $stateProvider, appConfig, platformConfig) {
