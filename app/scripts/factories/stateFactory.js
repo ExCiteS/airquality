@@ -1,6 +1,6 @@
 'use strict';
 
-CMAQ.factory('state', function ($state, appConfig, viewport) {
+CMAQ.factory('state', function ($window, $state, appConfig, viewport) {
   var state = {};
 
   state.redirect = function (state, params) {
@@ -11,6 +11,16 @@ CMAQ.factory('state', function ($state, appConfig, viewport) {
     } else {
       $state.transitionTo('index');
     }
+  };
+
+  state.goToExternalPage = function (url) {
+    if (_.isUndefined(url)) {
+      throw new Error('URL not specified');
+    } else if (!_.isString(url)) {
+      throw new Error('URL must be a string');
+    }
+
+    $window.open(url);
   };
 
   state.saveHistory = function (currentState, currentParams) {
