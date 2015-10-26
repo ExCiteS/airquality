@@ -20,7 +20,8 @@
       </div>
     </div>
 
-    <div ng-show="viewport.ready">
+    <div class="container" ng-show="viewport.ready">
+      <div role="alert" class="alert alert-warning" ng-show="viewport.offline">It seems like you're offline. Don't worry, you can still use cashed data to add points and measurements.</div>
       <div ui-view="content"></div>
     </div>
 
