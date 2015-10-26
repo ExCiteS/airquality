@@ -43,15 +43,27 @@ CMAQ.config(function ($httpProvider, $urlRouterProvider, $stateProvider, appConf
   $stateProvider
     .state('index', {
       url: '/',
-      controller: 'IndexController'
+      views: {
+        content: {
+          controller: 'IndexController'
+        }
+      }
     })
     .state('404', {
       url: '/404',
-      controller: '404Controller'
+      views: {
+        content: {
+          controller: '404Controller'
+        }
+      }
     })
     .state('redirect', {
       url: '/redirect',
-      controller: 'RedirectController'
+      views: {
+        content: {
+          controller: 'RedirectController'
+        }
+      }
     })
     .state('login', {
       url: '/login',
