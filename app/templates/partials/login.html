@@ -15,12 +15,8 @@
     <input type="password" id="form-authentication-password" class="form-control" ng-model="authentication.password" ng-disabled="authentication.calling" />
   </div>
 
-  <div class="form-group text-center">
+  <p class="text-right">
+    <button type="button" class="btn btn-link" ng-click="state.goToExternalPage(viewport.platform + '/admin/account/password/reset')">Reset password</button>
     <button type="submit" class="btn btn-primary" ng-disabled="authentication.calling">Log me in</button>
-  </div>
+  </p>
 </form>
-
-<p class="text-center">
-  <span>Can't log in?</span>
-  <button type="button" class="btn btn-link" ng-click="state.goToExternalPage(viewport.platform + '/admin/account/password/reset')">Reset your password</button>
-</p>
