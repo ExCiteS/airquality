@@ -1,0 +1,14 @@
+<div ng-show="data.points">
+  <h3>Data points <button type="button" class="btn btn-sm btn-success pull-right" ng-click="state.redirect('points.add')" ng-hide="viewport.history.currentState == 'points.add'">Add new</button></h3>
+
+  <div ui-view="subcontent"></div>
+
+  <div class="list-group">
+    <a href="#" class="list-group-item" ng-click="state.redirectToPoint(point.id)" ng-repeat="point in data.points">
+      <span class="badge">{{ point.measurements.length }}</span>
+      <h4 class="list-group-item-heading">{{ point.barcode }}</h4>
+      <span class="text-warning" ng-show="point.unsynced">Point has not been synced yet</span>
+      <span class="list-group-item-text help-block">Added <time datetime="{{ point.created }}" am-time-ago="point.created"></time></span>
+    </a>
+  </div>
+</div>

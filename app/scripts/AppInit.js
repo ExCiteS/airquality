@@ -92,6 +92,24 @@ CMAQ.config(function ($httpProvider, $urlRouterProvider, $stateProvider, appConf
         }
       }
     })
+    .state('points', {
+      url: '/points',
+      views: {
+        content: {
+          controller: 'PointsController',
+          templateUrl: 'partials/points.html'
+        }
+      }
+    })
+    .state('points.add', {
+      url: '/add',
+      views: {
+        subcontent: {
+          controller: 'PointsAddController',
+          templateUrl: 'partials/points-add.html'
+        }
+      }
+    })
     });
 });
 
