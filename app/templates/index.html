@@ -43,7 +43,7 @@
           <div class="row">
             <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
               <div class="navbar-header">
-                <a class="navbar-brand" href="#" ng-click="$event.preventDefault(); state.redirect('index')">Air Quality</a>
+                <a class="navbar-brand" href="#" ng-click="$event.preventDefault(); state.redirect('index')">{{ viewport.appTitle }}</a>
               </div>
 
               <button type="button" class="btn btn-default navbar-btn navbar-right" ng-show="data.authentication" ng-click="state.redirect('logout')">Log out</button>
