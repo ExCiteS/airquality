@@ -12,7 +12,7 @@
   </head>
 
   <body>
-    <div class="full-screen cloak" ng-hide="viewport.ready">
+    <div class="full-screen cloak" ng-show="!viewport.ready || viewport.calling">
       <div class="full-screen-container">
         <div class="full-screen-content">
           <img src="images/loader.gif" />
