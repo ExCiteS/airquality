@@ -23,7 +23,7 @@ CMAQ.config(function ($httpProvider, $urlRouterProvider, $stateProvider, appConf
   appConfig.version = '@@version';
   platformConfig.url = platformConfig.url.replace(/\/$/, '');
 
-  $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+  $httpProvider.defaults.headers.post['Content-Type'] = 'application/json';
   $urlRouterProvider.when('', '/').otherwise('/404');
 
   $urlRouterProvider.rule(function ($injector, $location) {

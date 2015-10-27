@@ -24,7 +24,14 @@ CMAQ.factory('oauth', function ($q, $http, platformConfig, data, storage, state,
       password: password
     };
 
-    $http.post(url + 'token/', helpers.serialize(customData)).then(
+    $http({
+      url: url + 'token/',
+      method: 'POST',
+      data: helpers.serialize(customData),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }).then(
       function (info) {
         info = info.data;
 
@@ -54,7 +61,14 @@ CMAQ.factory('oauth', function ($q, $http, platformConfig, data, storage, state,
 
       storage.remove('AUTHENTICATION');
 
-      $http.post(url + 'revoke_token/', helpers.serialize(customData)).finally(function () {
+      $http({
+        url: url + 'revoke_token/',
+        method: 'POST',
+        data: helpers.serialize(customData),
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }).finally(function () {
         oauth.authorize().finally(function () {
           deferred.resolve();
         });
@@ -76,7 +90,14 @@ CMAQ.factory('oauth', function ($q, $http, platformConfig, data, storage, state,
         refresh_token: data.authentication.refresh_token
       };
 
-      $http.post(url + 'token/', helpers.serialize(customData)).then(
+      $http({
+        url: url + 'token/',
+        method: 'POST',
+        data: helpers.serialize(customData),
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }).then(
         function (info) {
           info = info.data;
 
