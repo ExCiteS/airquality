@@ -9,6 +9,15 @@
   .square(100%);
   background-color: @full-screen-bg;
 
+  &.message {
+    z-index: @zindex-message;
+    background-color: fadeout(@full-screen-bg, 15%);
+  }
+
+  &.cloak {
+    z-index: @zindex-cloak;
+  }
+
   & .full-screen-container {
     overflow-y: auto;
     .square(100%);

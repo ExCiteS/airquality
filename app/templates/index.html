@@ -20,6 +20,17 @@
       </div>
     </div>
 
+    <div class="full-screen message" ng-show="viewport.ready && viewport.message">
+      <div class="full-screen-container">
+        <div class="full-screen-content">
+          <div class="well">
+            <p class="lead text-center">{{ viewport.message }}</p>
+            <p class="text-center"><button type="button" class="btn btn-default" ng-click="viewport.message = null">Close</button></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div ng-show="viewport.ready">
       <nav class="navbar navbar-default">
         <div class="container">

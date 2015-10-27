@@ -27,6 +27,7 @@ CMAQ.controller('LoginController', function ($scope, viewport, state, oauth, sto
           state.redirect();
         },
         function () {
+          viewport.message = 'There was a problem logging you in, maybe your email or password is incorrect?';
           $scope.authentication.error.api = true;
         }
       ).finally(function () {
