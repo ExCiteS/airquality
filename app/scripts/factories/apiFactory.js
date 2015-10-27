@@ -144,7 +144,7 @@ CMAQ.factory('api', function ($window, $q, $http, platformConfig, data, viewport
           var id = 'x';
 
           if (!_.isEmpty(data.unsynced.points)) {
-            id += parseInt(data.unsynced.points[data.unsynced.points.length - 1].id.replace('x', ''), 10) + 1;
+            id += parseInt(data.unsynced.points[data.unsynced.points.length - 1].id, 10) + 1;
           } else {
             id += 1;
           }
