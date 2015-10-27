@@ -65,6 +65,15 @@ CMAQ.config(function ($httpProvider, $urlRouterProvider, $stateProvider, appConf
         }
       }
     })
+    .state('register', {
+      url: '/register',
+      views: {
+        content: {
+          controller: 'RegisterController',
+          templateUrl: 'partials/register.html'
+        }
+      }
+    })
     .state('login', {
       url: '/login',
       views: {
@@ -97,7 +106,7 @@ CMAQ.run(function ($window, $rootScope, appConfig, viewport, data, state, oauth)
   viewport.ready = true;
 
   $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
-    if (_.isEmpty(data.authentication) && toState.name !== 'login') {
+    if (_.isEmpty(data.authentication) && ['register', 'login'].indexOf(toState.name) === -1) {
       event.preventDefault();
       state.redirect('login');
     }

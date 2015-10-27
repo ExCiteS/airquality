@@ -4,6 +4,49 @@ CMAQ.factory('oauth', function ($q, $http, platformConfig, data, storage, state,
   var oauth = {};
   var url = platformConfig.url + '/oauth2/';
 
+  oauth.register = function (email, displayName, password1, password2) {
+    var deferred = $q.defer();
+
+    if (_.isUndefined(email)) {
+      throw new Error('Email not specified');
+    } else if (!_.isString(email)) {
+      throw new Error('Email must be a string');
+    } else if (_.isUndefined(displayName)) {
+      throw new Error('Display name not specified');
+    } else if (!_.isString(displayName)) {
+      throw new Error('Display name must be a string');
+    } else if (_.isUndefined(password1)) {
+      throw new Error('Password 1 not specified');
+    } else if (!_.isString(password1)) {
+      throw new Error('Password 1 must be a string');
+    } else if (_.isUndefined(password2)) {
+      throw new Error('Password 2 not specified');
+    } else if (!_.isString(password2)) {
+      throw new Error('Password 2 must be a string');
+    } else if (password1 !== password2) {
+      throw new Error('Passwords do not match');
+    }
+
+    var customData = {
+      client_id: platformConfig.client,
+      email: email,
+      display_name: displayName,
+      password1: password1,
+      password2: password2
+    };
+
+    $http.post(platformConfig.url + '/api/user/', customData).then(
+      function () {
+        deferred.resolve();
+      },
+      function (error) {
+        deferred.reject(error);
+      }
+    );
+
+    return deferred.promise;
+  };
+
   oauth.authenticate = function (email, password) {
     var deferred = $q.defer();
 
