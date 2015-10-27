@@ -1,6 +1,6 @@
 'use strict';
 
-CMAQ.factory('oauth', function ($q, $http, platformConfig, data, storage, state, helpers) {
+CMAQ.factory('oauth', function ($q, $http, platformConfig, data, viewport, state, storage, helpers) {
   var oauth = {};
   var url = platformConfig.url + '/oauth2/';
 
@@ -35,6 +35,8 @@ CMAQ.factory('oauth', function ($q, $http, platformConfig, data, storage, state,
       password2: password2
     };
 
+    viewport.calling = true;
+
     $http.post(platformConfig.url + '/api/user/', customData).then(
       function () {
         deferred.resolve();
@@ -42,7 +44,9 @@ CMAQ.factory('oauth', function ($q, $http, platformConfig, data, storage, state,
       function (error) {
         deferred.reject(error);
       }
-    );
+    ).finally(function () {
+      viewport.calling = false;
+    });
 
     return deferred.promise;
   };
@@ -67,6 +71,8 @@ CMAQ.factory('oauth', function ($q, $http, platformConfig, data, storage, state,
       password: password
     };
 
+    viewport.calling = true;
+
     $http({
       url: url + 'token/',
       method: 'POST',
@@ -88,7 +94,9 @@ CMAQ.factory('oauth', function ($q, $http, platformConfig, data, storage, state,
       function (error) {
         deferred.reject(error);
       }
-    );
+    ).finally(function () {
+      viewport.calling = false;
+    });
 
     return deferred.promise;
   };
@@ -104,6 +112,8 @@ CMAQ.factory('oauth', function ($q, $http, platformConfig, data, storage, state,
 
       storage.remove('AUTHENTICATION');
 
+      viewport.calling = true;
+
       $http({
         url: url + 'revoke_token/',
         method: 'POST',
@@ -112,6 +122,8 @@ CMAQ.factory('oauth', function ($q, $http, platformConfig, data, storage, state,
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       }).finally(function () {
+        viewport.calling = false;
+
         oauth.authorize().finally(function () {
           deferred.resolve();
         });
@@ -132,6 +144,8 @@ CMAQ.factory('oauth', function ($q, $http, platformConfig, data, storage, state,
         client_id: platformConfig.client,
         refresh_token: data.authentication.refresh_token
       };
+
+      viewport.calling = true;
 
       $http({
         url: url + 'token/',
@@ -156,7 +170,9 @@ CMAQ.factory('oauth', function ($q, $http, platformConfig, data, storage, state,
             state.redirect('redirect');
           });
         }
-      );
+      ).finally(function () {
+        viewport.calling = false;
+      });
     } else {
       deferred.reject();
     }
@@ -174,7 +190,11 @@ CMAQ.factory('oauth', function ($q, $http, platformConfig, data, storage, state,
 
       deferred.resolve();
     } else {
+      storage.remove('POINTS');
+
       delete data.authentication;
+      delete data.points;
+
       delete $http.defaults.headers.common.Authorization;
 
       deferred.reject();

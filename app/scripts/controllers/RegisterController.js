@@ -1,8 +1,12 @@
 'use strict';
 
-CMAQ.controller('RegisterController', function ($scope, viewport, state, oauth, helpers) {
+CMAQ.controller('RegisterController', function ($scope, data, viewport, state, oauth, helpers) {
   state.setTitle('Register');
   $scope.registration = {};
+
+  if (!_.isEmpty(data.authentication)) {
+    state.redirect('index');
+  }
 
   $scope.register = function () {
     var email = $scope.registration.email;
@@ -37,8 +41,6 @@ CMAQ.controller('RegisterController', function ($scope, viewport, state, oauth, 
     }
 
     if (_.isEmpty($scope.registration.error)) {
-      viewport.calling = true;
-
       oauth.register(email, displayName, password1, password2).then(
         function () {
           viewport.message = 'You have been registered. Please confirm your email address using the link in the email sent to your mailbox.';
@@ -48,9 +50,7 @@ CMAQ.controller('RegisterController', function ($scope, viewport, state, oauth, 
           viewport.message = 'There was a problem registering you, probably this email address or display name is already in use.';
           $scope.registration.error.api = true;
         }
-      ).finally(function () {
-        viewport.calling = false;
-      });
+      );
     }
   };
 });

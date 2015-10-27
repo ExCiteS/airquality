@@ -19,20 +19,15 @@ CMAQ.controller('LoginController', function ($scope, viewport, state, oauth, sto
     }
 
     if (_.isEmpty($scope.authentication.error)) {
-      viewport.calling = true;
-
       oauth.authenticate(email, password).then(
         function () {
-          storage.remove('POINTS');
           state.redirect();
         },
         function () {
           viewport.message = 'There was a problem logging you in, maybe your email or password is incorrect?';
           $scope.authentication.error.api = true;
         }
-      ).finally(function () {
-        viewport.calling = false;
-      });
+      );
     }
   };
 });

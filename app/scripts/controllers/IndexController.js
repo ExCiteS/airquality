@@ -1,5 +1,5 @@
 'use strict';
 
 CMAQ.controller('IndexController', function (state) {
-  state.redirect('login');
+  state.redirect('points');
 });

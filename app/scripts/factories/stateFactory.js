@@ -1,6 +1,6 @@
 'use strict';
 
-CMAQ.factory('state', function ($window, $state, appConfig, viewport) {
+CMAQ.factory('state', function ($window, $state, appConfig, data, viewport) {
   var state = {};
 
   state.redirect = function (state, params) {
@@ -11,6 +11,16 @@ CMAQ.factory('state', function ($window, $state, appConfig, viewport) {
     } else {
       $state.transitionTo('index');
     }
+  };
+
+  state.goToPoint = function (id) {
+    if (_.isUndefined(id)) {
+      throw new Error('Point ID not specified');
+    }
+
+    state.redirect('point', {
+      pointId: id
+    });
   };
 
   state.goToExternalPage = function (url) {

@@ -110,6 +110,14 @@ CMAQ.config(function ($httpProvider, $urlRouterProvider, $stateProvider, appConf
         }
       }
     })
+    .state('point', {
+      url: '/point/:pointId',
+      views: {
+        content: {
+          controller: 'PointController',
+          templateUrl: 'partials/point.html'
+        }
+      }
     });
 });
 

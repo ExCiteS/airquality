@@ -90,11 +90,9 @@ CMAQ.controller('PointsAddController', function ($window, $scope, viewport, stat
     });
 
     if (!$scope.formGroup.form.$error.required) {
-      viewport.calling = true;
-
       var data = marker.toGeoJSON();
 
-      data.properties.name = $scope.point.name;
+      data.name = $scope.point.name;
 
       if ($scope.point.height) {
         data.properties.height = $scope.point.height;
@@ -111,13 +109,12 @@ CMAQ.controller('PointsAddController', function ($window, $scope, viewport, stat
       api.addPoint(data).then(
         function (point) {
           viewport.message = 'The point has been added. Now you can start your measurement.';
-          state.redirect('point', {
-            pointId: point.id
-          });
+          state.goToPoint(point.id);
+        },
+        function (error) {
+          viewport.message = 'An error occurred when trying to add the point. Please try again.';
         }
-      ).finally(function () {
-        viewport.calling = false;
-      });
+      );
     }
   };
 });
