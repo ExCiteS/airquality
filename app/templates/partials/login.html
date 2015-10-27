@@ -1,22 +1,28 @@
-<form role="form" id="form-authentication" ng-submit="authenticate()" novalidate="novalidate">
-  <div class="form-group has-error" ng-if="authentication.error.api">
-    <span class="help-block text-center">There was a problem logging you in, maybe your email or password is incorrect?</span>
-  </div>
+<a href="http://mappingforchange.org.uk" target="_blank"><img ng-src="images/mfc.png" class="img-responsive center-block" alt="Mapping for Change" /></a>
 
-  <div class="form-group" ng-class="{'has-error': authentication.error.api || authentication.error.email}">
-    <label for="form-authentication-email">Email address</label>
-    <span class="help-block text-center" ng-if="authentication.error.email">Please enter a valid email address in the field below</span>
-    <input type="email" id="form-authentication-email" class="form-control" ng-model="authentication.email" ng-disabled="authentication.calling" />
-  </div>
+<div class="row">
+  <form role="form" id="form-authentication" class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2" ng-submit="authenticate()" novalidate="novalidate">
+    <div class="form-group has-error" ng-if="authentication.error.api">
+      <span class="help-block text-center">There was a problem logging you in, maybe your email or password is incorrect?</span>
+    </div>
 
-  <div class="form-group" ng-class="{'has-error': authentication.error.api || authentication.error.password}">
-    <label for="form-authentication-password">Password</label>
-    <span class="help-block text-center" ng-if="authentication.error.password">Please enter your current password in the field below</span>
-    <input type="password" id="form-authentication-password" class="form-control" ng-model="authentication.password" ng-disabled="authentication.calling" />
-  </div>
+    <div class="form-group" ng-class="{'has-error': authentication.error.api || authentication.error.email}">
+      <label for="form-authentication-email">Email address</label>
+      <span class="help-block text-center" ng-if="authentication.error.email">Please enter a valid email address in the field below</span>
+      <input type="email" id="form-authentication-email" class="form-control" ng-model="authentication.email" ng-disabled="viewport.calling" />
+    </div>
 
-  <p class="text-right">
-    <button type="button" class="btn btn-link" ng-click="state.goToExternalPage(viewport.platform + '/admin/account/password/reset')">Reset password</button>
-    <button type="submit" class="btn btn-primary" ng-disabled="authentication.calling">Log me in</button>
-  </p>
-</form>
+    <div class="form-group" ng-class="{'has-error': authentication.error.api || authentication.error.password}">
+      <label for="form-authentication-password">Password</label>
+      <span class="help-block text-center" ng-if="authentication.error.password">Please enter your current password in the field below</span>
+      <input type="password" id="form-authentication-password" class="form-control" ng-model="authentication.password" ng-disabled="viewport.calling" />
+    </div>
+
+    <p class="text-right">
+      <button type="button" class="btn btn-link" ng-click="state.goToExternalPage(viewport.platform + '/admin/account/password/reset')">Reset password</button>
+      <button type="submit" class="btn btn-primary" ng-disabled="viewport.calling">Log me in</button>
+    </p>
+  </form>
+</div>
+
+<p class="text-center">Don't have an account yet? <button type="button" class="btn btn-sm btn-link" ng-click="state.redirect('register')">Register!</button></p>

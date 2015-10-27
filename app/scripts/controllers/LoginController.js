@@ -1,6 +1,6 @@
 'use strict';
 
-CMAQ.controller('LoginController', function ($scope, state, oauth, helpers) {
+CMAQ.controller('LoginController', function ($scope, viewport, state, oauth, storage, helpers) {
   state.setTitle('Log in');
   $scope.authentication = {};
 
@@ -19,17 +19,19 @@ CMAQ.controller('LoginController', function ($scope, state, oauth, helpers) {
     }
 
     if (_.isEmpty($scope.authentication.error)) {
-      $scope.authentication.calling = true;
+      viewport.calling = true;
 
       oauth.authenticate(email, password).then(
         function () {
+          storage.remove('POINTS');
           state.redirect();
         },
         function () {
-          $scope.authentication.calling = false;
           $scope.authentication.error.api = true;
         }
-      );
+      ).finally(function () {
+        viewport.calling = false;
+      });
     }
   };
 });
