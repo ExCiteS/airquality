@@ -76,6 +76,8 @@ CMAQ.controller('PointsAddController', function ($window, $scope, viewport, stat
               errorMessage('An unknown error occurred.');
           }
         });
+
+        viewport.calling = false;
       }
     );
   } else {
