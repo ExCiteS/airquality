@@ -16,11 +16,45 @@
         <label>Distance from road</label>
         <p>{{ data.point.properties.distance }}m</p>
       </div>
+
+      <div ng-show="data.point.properties.characteristics">
+        <label>Site characteristics</label>
+        <p ng-bind-html="data.point.properties.characteristics | newline"></p>
+      </div>
     </div>
 
-    <div class="col-sm-7" ng-show="data.point.properties.characteristics">
-      <label>Site characteristics</label>
-      <p ng-bind-html="data.point.properties.characteristics | newline"></p>
+    <hr class="visible-xs" />
+
+    <div class="col-sm-7">
+      <h4>Measurements</h4>
+
+      <form role="form" id="form-measurement-add" ng-submit="start()" novalidate="novalidate">
+        <div ng-form="formGroup.form">
+          <div ng-form="BarcodeField" class="form-group" ng-class="{'has-error': measurement.error.api || (BarcodeField.$dirty && BarcodeField.$invalid)}">
+            <label for="form-measurement-barcode">Barcode</label>
+            <span class="help-block text-center" ng-if="BarcodeField.$dirty && BarcodeField.$error.required">Please enter the barcode of a diffusion tube in the field below</span>
+            <span class="help-block text-center" ng-if="BarcodeField.$error.number || BarcodeField.$error.min">Barcode must be a valid number</span>
+
+            <div class="input-group">
+              <input type="number" min="0" id="form-measurement-barcode" class="form-control" ng-model="measurement.barcode" ng-disabled="viewport.calling" required />
+
+              <span class="input-group-btn">
+                <button type="submit" class="btn btn-success" ng-disabled="viewport.calling">Start</button>
+              </span>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <p class="lead text-center" ng-hide="measurements.length">No measurements have been added so far</p>
+
+      <ul class="list-group">
+        <li class="list-group-item" ng-repeat="measurement in measurements = (data.point.measurements|active) track by $index">
+          <h5 class="list-group-item-heading">{{ measurement.barcode }}</h5>
+          <span class="text-warning" ng-show="measurement.id.indexOf('x') > -1 || measurement.updated">Measurement has not been synced yet</span>
+          <span class="list-group-item-text help-block">Started <time datetime="{{ measurement.started }}" am-time-ago="measurement.started"></time></span>
+        </li>
+      </ul>
     </div>
   </div>
 

@@ -5,6 +5,11 @@ CMAQ.controller('PointController', function ($stateParams, $scope, data, viewpor
 
   state.setTitle('Point');
 
+  $scope.formGroup = {};
+  $scope.measurement = {
+    error: {}
+  };
+
   if (_.isEmpty(data.points)) {
     api.getPoints().finally(function () {
       getPoint();
@@ -57,5 +62,30 @@ CMAQ.controller('PointController', function ($stateParams, $scope, data, viewpor
     ).finally(function () {
       state.redirect('points');
     });
+  };
+
+  $scope.start = function (measurement) {
+    $scope.measurement.error = {};
+
+    _.each($scope.formGroup.form.$error.required, function (field) {
+      field.$setDirty();
+    });
+
+    if (!$scope.formGroup.form.$error.required) {
+      var data = {
+        barcode: $scope.measurement.barcode
+      };
+
+      api.startMeasurement(data).then(
+        function () {
+          viewport.message = 'The measurement has been started.';
+          $scope.measurement.barcode = undefined;
+          $scope.formGroup.form.$setPristine();
+        },
+        function () {
+          viewport.message = 'An error occurred when trying to start the measurement. Please try again.';
+        }
+      );
+    }
   };
 });

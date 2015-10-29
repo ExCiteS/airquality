@@ -23,9 +23,9 @@ CMAQ.controller('MainController', function ($scope, appConfig, platformConfig, d
             if ((_.isString(point.id) && point.id.indexOf('x') > -1) || point.deleted) {
               viewport.unsynced = true;
               data.unsynced.points.push(point);
-            } else {
+            } else if (!_.isEmpty(point.measurements)) {
               _.each(point.measurements, function (measurement) {
-                if ((_.isString(measurement.id) && measurement.id.indexOf('x') > -1) || measurement.deleted) {
+                if ((_.isString(measurement.id) && measurement.id.indexOf('x') > -1) || measurement.deleted || measurement.updated) {
                   viewport.unsynced = true;
                   data.unsynced.points.push(point);
                 }

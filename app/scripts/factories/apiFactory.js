@@ -232,6 +232,56 @@ CMAQ.factory('api', function ($window, $q, $http, platformConfig, data, viewport
     return deferred.promise;
   };
 
+  api.startMeasurement = function (measurement) {
+    var deferred = $q.defer();
+
+    if (_.isUndefined(data.point)) {
+      throw new Error('Point not set');
+    } else if (_.isUndefined(measurement)) {
+      throw new Error('Measurement not specified');
+    } else if (!_.isPlainObject(measurement)) {
+      throw new Error('Measurement must be plain object');
+    }
+
+    viewport.calling = true;
+
+    api.online().then(
+      function () {
+        api.sync().finally(function () {
+          oauth.refresh().finally(function () {
+            // TODO
+          });
+        });
+      },
+      function () {
+        var now = new Date();
+
+        if (!_.isString(measurement.id) || measurement.id.indexOf('x') === -1) {
+          var id = 'x';
+
+          var newUnsyncedMeasurements = _.filter(data.point.measurements, function (currentMeasurement) {
+            return _.isString(currentMeasurement.id) && currentMeasurement.id.indexOf('x') !== -1;
+          });
+
+          if (!_.isEmpty(newUnsyncedMeasurements)) {
+            id += parseInt(newUnsyncedMeasurements[newUnsyncedMeasurements.length - 1].id.replace('x', ''), 10) + 1;
+          } else {
+            id += 1;
+          }
+
+          measurement.id = id;
+          measurement.started = now.toISOString();
+          data.point.measurements.push(measurement);
+        }
+
+        viewport.calling = false;
+        deferred.resolve(measurement);
+      }
+    );
+
+    return deferred.promise;
+  };
+
   api.getProjects = function () {
     var deferred = $q.defer();
 
