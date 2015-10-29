@@ -59,9 +59,9 @@
               <p>It seems like you're offline. Don't worry, you can still use cashed data to add points and measurements.</p>
             </div>
 
-            <div role="alert" class="alert alert-info" ng-show="!viewport.offline && viewport.unsynced">
-              <p>You have unsynced data that has been stored locally. This is probably you had no connection. Please sync it manually, otherwise data might be lost.</p>
-              <p class="text-right"><button type="button" class="btn btn-sm btn-info" ng-click="sync()" ng-disabled="viewport.calling">Sync now</button></p>
+            <div role="alert" class="alert alert-info" ng-show="viewport.unsynced">
+              <p>You have unsynced data that has been stored locally. Please sync it manually, otherwise data might be lost.</p>
+              <p class="text-right" ng-hide="viewport.offline"><button type="button" class="btn btn-sm btn-info" ng-click="sync()" ng-disabled="viewport.calling">Sync now</button></p>
             </div>
 
             <div ui-view="content"></div>
