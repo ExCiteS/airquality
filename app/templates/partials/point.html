@@ -5,18 +5,36 @@
 
   <div id="map"></div>
 
-  <div class="row" ng-show="data.point.properties.height">
-    <div class="col-sm-6 text-right"><label>Height from ground</label></div>
-    <div class="col-sm-6 text-left">{{ data.point.properties.height }}m</div>
+  <div class="row">
+    <div class="col-sm-5">
+      <div ng-show="data.point.properties.height">
+        <label>Height from ground</label>
+        <p>{{ data.point.properties.height }}m</p>
+      </div>
+
+      <div ng-show="data.point.properties.distance">
+        <label>Distance from road</label>
+        <p>{{ data.point.properties.distance }}m</p>
+      </div>
+    </div>
+
+    <div class="col-sm-7" ng-show="data.point.properties.characteristics">
+      <label>Site characteristics</label>
+      <p ng-bind-html="data.point.properties.characteristics | newline"></p>
+    </div>
   </div>
 
-  <div class="row" ng-show="data.point.properties.distance">
-    <div class="col-sm-6 text-right"><label>Distance from road</label></div>
-    <div class="col-sm-6 text-left">{{ data.point.properties.distance }}m</div>
-  </div>
+  <hr />
 
-  <div class="row" ng-show="data.point.properties.characteristics">
-    <div class="col-sm-6 text-right"><label>Site characteristics</label></div>
-    <div class="col-sm-6 text-left" ng-bind-html="data.point.properties.characteristics | newline"></div>
+  <div class="row">
+    <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+      <div class="panel panel-danger">
+        <div class="panel-body">
+          <p>Deleting a point removes all current measurements too. However, it does not remove finished measurements that have been converted to contributions.</p>
+          <p>This action cannot be undone.</p>
+          <p class="text-right"><button type="button" class="btn btn-danger" ng-click="delete()">Delete this point</button></p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

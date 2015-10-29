@@ -18,7 +18,7 @@ CMAQ.controller('PointController', function ($stateParams, $scope, data, viewpor
       return currentPoint.id === pointId;
     });
 
-    if (point) {
+    if (point && !point.deleted) {
       var center, panning;
 
       leaflet.init(point);
@@ -44,4 +44,18 @@ CMAQ.controller('PointController', function ($stateParams, $scope, data, viewpor
       state.redirect('points');
     }
   }
+
+  $scope.delete = function () {
+    api.deletePoint(pointId).then(
+      function () {
+        viewport.message = 'The point has been deleted.';
+      },
+      function () {
+        api.getPoints();
+        viewport.message = 'An error occurred when trying to delete the point.';
+      }
+    ).finally(function () {
+      state.redirect('points');
+    });
+  };
 });

@@ -29,21 +29,28 @@ CMAQ.factory('api', function ($window, $q, $http, platformConfig, data, viewport
     var deferred = $q.defer();
     var total = 0;
 
+    function resolve(index, total) {
+      if (index + 1 === total) {
+        unsynced.points = [];
+        deferred.resolve();
+      }
+    }
+
     if (_.isEmpty(unsynced.points)) {
       if (!_.isEmpty(data.unsynced.points)) {
         unsynced.points = _.cloneDeep(data.unsynced.points);
         total += unsynced.points.length;
 
         _.each(_.cloneDeep(unsynced.points), function (point, index) {
-          api.addPoint(point).finally(function () {
-            _.remove(unsynced.points, function (currentPoint) {
-              return currentPoint.id === point.id;
+          if (point.deleted) {
+            api.deletePoint(point.id).finally(function () {
+              resolve(index, total);
             });
-
-            if (index + 1 === total) {
-              deferred.resolve();
-            }
-          });
+          } else {
+            api.addPoint(point).finally(function () {
+              resolve(index, total);
+            });
+          }
         });
       } else {
         deferred.resolve();
@@ -76,8 +83,6 @@ CMAQ.factory('api', function ($window, $q, $http, platformConfig, data, viewport
             $http.get(url + '/airquality/points/').then(
               function (retrievedPoints) {
                 data.points = retrievedPoints;
-                storage.put('POINTS', JSON.stringify(data.points));
-
                 deferred.resolve(data.points);
               },
               function (error) {
@@ -126,16 +131,12 @@ CMAQ.factory('api', function ($window, $q, $http, platformConfig, data, viewport
                 _.remove(data.points, function (currentPoint) {
                   return currentPoint.id === point.id;
                 });
-                _.remove(data.unsynced.points, function (currentPoint) {
-                  return currentPoint.id === point.id;
-                });
 
                 point.id = addedPoint.id;
                 point.created = addedPoint.created;
                 point.measurements = addedPoint.measurements;
 
                 data.points.push(point);
-                storage.put('POINTS', JSON.stringify(data.points));
 
                 deferred.resolve(point);
               },
@@ -164,11 +165,67 @@ CMAQ.factory('api', function ($window, $q, $http, platformConfig, data, viewport
           point.created = now.toISOString();
           point.measurements = [];
           data.points.push(point);
-          storage.put('POINTS', JSON.stringify(data.points));
         }
 
         viewport.calling = false;
         deferred.resolve(point);
+      }
+    );
+
+    return deferred.promise;
+  };
+
+  api.deletePoint = function (pointId) {
+    var deferred = $q.defer();
+
+    if (_.isUndefined(pointId)) {
+      throw new Error('Point ID not specified');
+    }
+
+    viewport.calling = true;
+
+    delete data.point;
+
+    api.online().then(
+      function () {
+        api.sync().finally(function () {
+          oauth.refresh().finally(function () {
+            $http.delete(url + '/airquality/points/' + pointId).then(
+              function () {
+                _.remove(data.points, function (currentPoint) {
+                  return currentPoint.id === pointId;
+                });
+
+                deferred.resolve();
+              },
+              function (error) {
+                deferred.reject(error);
+              }
+            ).finally(function () {
+              viewport.calling = false;
+            });
+          });
+        });
+      },
+      function () {
+        var unsyncedPoint = _.find(data.unsynced.points, function (currentPoint) {
+          return currentPoint.id === pointId;
+        });
+
+        if (unsyncedPoint) {
+          _.remove(data.points, function (currentPoint) {
+            return currentPoint.id === pointId;
+          });
+        } else {
+          var point = _.find(data.points, function (currentPoint) {
+            return currentPoint.id === pointId;
+          });
+
+          point.deleted = true;
+        }
+
+        viewport.calling = false;
+        deferred.resolve();
       }
     );
 

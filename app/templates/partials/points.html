@@ -5,12 +5,12 @@
 
   <div ng-hide="viewport.history.currentState == 'points.add'">
     <p class="lead text-center">
-      <span ng-hide="data.points.length">No points have been added so far</span>
-      <span ng-show="data.points.length">Choose data point</span>
+      <span ng-hide="points.length">No points have been added so far</span>
+      <span ng-show="points.length">Choose data point</span>
     </p>
 
     <div class="list-group">
-      <a href="#" class="list-group-item" ng-click="$event.preventDefault(); state.goToPoint(point.id)" ng-repeat="point in data.points track by $index">
+      <a href="#" class="list-group-item" ng-click="$event.preventDefault(); state.goToPoint(point.id)" ng-repeat="point in points = (data.points|active) track by $index">
         <span class="badge">{{ point.measurements.length }}</span>
         <h4 class="list-group-item-heading">{{ point.name }}</h4>
         <span class="text-warning" ng-show="point.id.indexOf('x') > -1">Point has not been synced yet</span>
