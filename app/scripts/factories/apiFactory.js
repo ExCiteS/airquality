@@ -64,7 +64,9 @@ CMAQ.factory('api', function ($window, $q, $http, platformConfig, data, viewport
     data.points = [];
 
     if (!_.isEmpty(points)) {
-      data.points = JSON.parse(points);
+      points = JSON.parse(points);
+    } else {
+      points = undefined;
     }
 
     api.online().then(
@@ -79,6 +81,10 @@ CMAQ.factory('api', function ($window, $q, $http, platformConfig, data, viewport
                 deferred.resolve(data.points);
               },
               function (error) {
+                if (points) {
+                  data.points = points;
+                }
+
                 deferred.reject(error);
               }
             ).finally(function () {
@@ -88,6 +94,11 @@ CMAQ.factory('api', function ($window, $q, $http, platformConfig, data, viewport
         });
       },
       function () {
+        if (points) {
+          data.points = points;
+        }
+
+        viewport.calling = false;
         deferred.resolve(data.points);
       }
     );
@@ -144,7 +155,7 @@ CMAQ.factory('api', function ($window, $q, $http, platformConfig, data, viewport
           var id = 'x';
 
           if (!_.isEmpty(data.unsynced.points)) {
-            id += parseInt(data.unsynced.points[data.unsynced.points.length - 1].id, 10) + 1;
+            id += parseInt(data.unsynced.points[data.unsynced.points.length - 1].id.replace('x', ''), 10) + 1;
           } else {
             id += 1;
           }
