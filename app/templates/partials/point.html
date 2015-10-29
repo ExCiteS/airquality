@@ -1,0 +1,22 @@
+<div ng-show="data.point">
+  <button type="button" class="btn btn-sm btn-default" ng-click="state.redirect('points')">&#8592; Back to points</button>
+
+  <h3>{{ data.point.name }}</h3>
+
+  <div id="map"></div>
+
+  <div class="row" ng-show="data.point.properties.height">
+    <div class="col-sm-6 text-right"><label>Height from ground</label></div>
+    <div class="col-sm-6 text-left">{{ data.point.properties.height }}m</div>
+  </div>
+
+  <div class="row" ng-show="data.point.properties.distance">
+    <div class="col-sm-6 text-right"><label>Distance from road</label></div>
+    <div class="col-sm-6 text-left">{{ data.point.properties.distance }}m</div>
+  </div>
+
+  <div class="row" ng-show="data.point.properties.characteristics">
+    <div class="col-sm-6 text-right"><label>Site characteristics</label></div>
+    <div class="col-sm-6 text-left" ng-bind-html="data.point.properties.characteristics | newline"></div>
+  </div>
+</div>
