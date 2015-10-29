@@ -81,7 +81,7 @@ CMAQ.controller('PointsAddController', function ($window, $scope, viewport, stat
           viewport.message = 'The point has been added. You can now start your measurement.';
           state.goToPoint(point.id);
         },
-        function (error) {
+        function () {
           viewport.message = 'An error occurred when trying to add the point. Please try again.';
         }
       );
