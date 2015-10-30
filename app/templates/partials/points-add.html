@@ -1,5 +1,5 @@
 <div class="well">
-  <div id="map"></div>
+  <div id="map" ng-hide="viewport.offline"></div>
 
   <form role="form" id="form-point" ng-submit="add()" novalidate="novalidate">
     <div ng-form="formGroup.form">

@@ -3,7 +3,7 @@
 
   <h3>{{ data.point.name }}</h3>
 
-  <div id="map"></div>
+  <div id="map" ng-hide="viewport.offline"></div>
 
   <div class="row">
     <div class="col-sm-5" ng-show="data.point.properties.height || data.point.properties.distance || data.point.properties.characteristics">
