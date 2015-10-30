@@ -53,6 +53,12 @@
           <h5 class="list-group-item-heading">{{ measurement.barcode }}</h5>
           <span class="text-warning" ng-show="measurement.id.indexOf('x') > -1 || measurement.updated">Measurement has not been synced yet</span>
           <span class="list-group-item-text help-block">Started <time datetime="{{ measurement.started }}" am-time-ago="measurement.started"></time></span>
+          <span ng-init="measurement.expires = (measurement.started | amAdd : '30' : 'days')"></span>
+          <span class="list-group-item-text help-block">
+            <span ng-show="(measurement.expires|amDifference : null : 'seconds') < 0">Should have finished</span>
+            <span ng-show="(measurement.expires|amDifference : null : 'seconds') >= 0">Should finish</span>
+            <time datetime="{{ measurement.expires }}" am-time-ago="measurement.expires"></time>
+          </span>
         </li>
       </ul>
     </div>
