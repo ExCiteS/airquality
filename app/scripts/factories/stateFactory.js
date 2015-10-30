@@ -1,6 +1,6 @@
 'use strict';
 
-CMAQ.factory('state', function ($window, $state, appConfig, data, viewport) {
+CMAQ.factory('state', function ($window, $state, data, viewport) {
   var state = {};
 
   state.redirect = function (state, params) {
@@ -63,11 +63,13 @@ CMAQ.factory('state', function ($window, $state, appConfig, data, viewport) {
   };
 
   state.setTitle = function (title, subtitle) {
+    var mainTitle = 'Community Maps Air Quality';
+
     if (_.isEmpty(title)) {
-      viewport.title = appConfig.title;
+      viewport.title = mainTitle;
     } else {
       title += subtitle ? ': ' + subtitle : '';
-      title += ' | ' + appConfig.title;
+      title += ' | ' + mainTitle;
 
       viewport.title = title;
     }

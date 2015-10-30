@@ -1,8 +1,8 @@
 'use strict';
 
-CMAQ.factory('api', function ($window, $q, $http, platformConfig, data, viewport, storage, oauth) {
+CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storage, oauth) {
   var api = {};
-  var url = platformConfig.url + '/api';
+  var url = config.url + '/api';
 
   var unsynced = {
     points: []

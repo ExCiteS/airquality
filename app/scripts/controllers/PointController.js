@@ -4,7 +4,6 @@ CMAQ.controller('PointController', function ($stateParams, $scope, data, viewpor
   var pointId = $stateParams.pointId;
 
   state.setTitle('Point');
-
   $scope.formGroup = {};
   $scope.measurement = {
     error: {}
@@ -78,12 +77,13 @@ CMAQ.controller('PointController', function ($stateParams, $scope, data, viewpor
 
       api.startMeasurement(data).then(
         function () {
-          viewport.message = 'The measurement has been started.';
+          viewport.message = 'The measurement has started.';
           $scope.measurement.barcode = undefined;
           $scope.formGroup.form.$setPristine();
         },
         function () {
           viewport.message = 'An error occurred when trying to start the measurement. Please try again.';
+          $scope.measurement.error.api = true;
         }
       );
     }

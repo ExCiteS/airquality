@@ -9,19 +9,15 @@ var CMAQ = angular.module('CMAQ', [
   'angularMoment',
 ]);
 
-CMAQ.config(function ($httpProvider, $urlRouterProvider, $stateProvider, appConfig, platformConfig) {
-  if (_.isEmpty(appConfig)) {
-    throw new Error('App configuration not set');
-  } else if (!appConfig.title) {
-    throw new Error('App title not set');
-  } else if (_.isEmpty(platformConfig)) {
-    throw new Error('Platform configuration not set');
-  } else if (!platformConfig.url) {
+CMAQ.config(function ($httpProvider, $urlRouterProvider, $stateProvider, config) {
+  if (_.isEmpty(config)) {
+    throw new Error('Configuration not set');
+  } else if (!config.url) {
     throw new Error('Path to platform not set');
   }
 
-  appConfig.version = '@@version';
-  platformConfig.url = platformConfig.url.replace(/\/$/, '');
+  config.version = '@@version';
+  config.url = config.url.replace(/\/$/, '');
 
   $httpProvider.defaults.headers.post['Content-Type'] = 'application/json';
   $urlRouterProvider.when('', '/').otherwise('/404');
@@ -121,14 +117,9 @@ CMAQ.config(function ($httpProvider, $urlRouterProvider, $stateProvider, appConf
     });
 });
 
-CMAQ.run(function ($window, $rootScope, appConfig, viewport, data, state, oauth) {
-  viewport.version = appConfig.version;
-
-  if (!_.isEmpty(appConfig.ga) && _.isFunction($window.ga)) {
-    $window.ga('create', appConfig.ga, 'auto');
-  }
-
+CMAQ.run(function ($window, $rootScope, config, viewport, data, state, oauth) {
   oauth.authorize();
+  viewport.platform = config.url;
   viewport.ready = true;
 
   $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {

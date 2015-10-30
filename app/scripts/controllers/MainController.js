@@ -1,9 +1,6 @@
 'use strict';
 
-CMAQ.controller('MainController', function ($scope, appConfig, platformConfig, data, viewport, state, storage, api) {
-  viewport.appTitle = appConfig.title;
-  viewport.platformUrl = platformConfig.url;
-
+CMAQ.controller('MainController', function ($scope, data, viewport, state, storage, api) {
   $scope.data = data;
   $scope.viewport = viewport;
   $scope.state = state;

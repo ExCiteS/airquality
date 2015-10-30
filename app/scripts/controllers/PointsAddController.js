@@ -83,6 +83,7 @@ CMAQ.controller('PointsAddController', function ($window, $scope, viewport, stat
         },
         function () {
           viewport.message = 'An error occurred when trying to add the point. Please try again.';
+          $scope.measurement.error.api = true;
         }
       );
     }

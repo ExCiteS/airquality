@@ -1,8 +1,8 @@
 'use strict';
 
-CMAQ.factory('oauth', function ($q, $http, platformConfig, data, viewport, state, storage, helpers) {
+CMAQ.factory('oauth', function ($q, $http, config, data, viewport, state, storage, helpers) {
   var oauth = {};
-  var url = platformConfig.url + '/oauth2/';
+  var url = config.url + '/oauth2/';
 
   oauth.register = function (email, displayName, password1, password2) {
     var deferred = $q.defer();
@@ -28,7 +28,7 @@ CMAQ.factory('oauth', function ($q, $http, platformConfig, data, viewport, state
     }
 
     var customData = {
-      client_id: platformConfig.client,
+      client_id: config.client,
       email: email,
       display_name: displayName,
       password1: password1,
@@ -37,7 +37,7 @@ CMAQ.factory('oauth', function ($q, $http, platformConfig, data, viewport, state
 
     viewport.calling = true;
 
-    $http.post(platformConfig.url + '/api/user/', customData).then(
+    $http.post(config.url + '/api/user/', customData).then(
       function () {
         deferred.resolve();
       },
@@ -66,7 +66,7 @@ CMAQ.factory('oauth', function ($q, $http, platformConfig, data, viewport, state
 
     var customData = {
       grant_type: 'password',
-      client_id: platformConfig.client,
+      client_id: config.client,
       username: email,
       password: password
     };
@@ -106,7 +106,7 @@ CMAQ.factory('oauth', function ($q, $http, platformConfig, data, viewport, state
 
     if (!_.isEmpty(data.authentication) && !_.isUndefined(data.authentication.access_token)) {
       var customData = {
-        client_id: platformConfig.client,
+        client_id: config.client,
         token: data.authentication.access_token
       };
 
@@ -141,7 +141,7 @@ CMAQ.factory('oauth', function ($q, $http, platformConfig, data, viewport, state
     if (!_.isEmpty(data.authentication) && !_.isUndefined(data.authentication.refresh_token) && data.authentication.expires_at < Math.floor(Date.now() / 1000)) {
       var customData = {
         grant_type: 'refresh_token',
-        client_id: platformConfig.client,
+        client_id: config.client,
         refresh_token: data.authentication.refresh_token
       };
 
