@@ -15,21 +15,19 @@ CMAQ.controller('MainController', function ($scope, data, viewport, state, stora
       if (!_.isEmpty(data.points)) {
         data.unsynced.points = [];
 
-        if (!_.isEmpty(data.points)) {
-          _.each(data.points, function (point) {
-            if ((_.isString(point.id) && point.id.indexOf('x') > -1) || point.deleted) {
-              viewport.unsynced = true;
-              data.unsynced.points.push(point);
-            } else if (!_.isEmpty(point.measurements)) {
-              _.each(point.measurements, function (measurement) {
-                if ((_.isString(measurement.id) && measurement.id.indexOf('x') > -1) || measurement.deleted || measurement.updated) {
-                  viewport.unsynced = true;
-                  data.unsynced.points.push(point);
-                }
-              });
-            }
-          });
-        }
+        _.each(data.points, function (point) {
+          if ((_.isString(point.id) && point.id.indexOf('x') > -1) || point.deleted) {
+            viewport.unsynced = true;
+            data.unsynced.points.push(point);
+          } else if (!_.isEmpty(point.measurements)) {
+            _.each(point.measurements, function (measurement) {
+              if ((_.isString(measurement.id) && measurement.id.indexOf('x') > -1) || measurement.deleted || measurement.updated) {
+                viewport.unsynced = true;
+                data.unsynced.points.push(point);
+              }
+            });
+          }
+        });
 
         storage.put('POINTS', JSON.stringify(data.points));
       }
