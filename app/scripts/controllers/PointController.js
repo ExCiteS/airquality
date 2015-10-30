@@ -4,7 +4,9 @@ CMAQ.controller('PointController', function ($stateParams, $scope, data, viewpor
   var pointId = $stateParams.pointId;
 
   state.setTitle('Point');
-  $scope.formGroup = {};
+  $scope.formGroup = {
+    measurements: {}
+  };
   $scope.measurement = {
     error: {}
   };
@@ -42,6 +44,10 @@ CMAQ.controller('PointController', function ($stateParams, $scope, data, viewpor
           panning = true;
           leaflet.map.panTo(center);
         }
+      });
+
+      _.each(point.measurements, function (measurement) {
+        measurement.addResults = false;
       });
     } else {
       viewport.message = 'It looks like the data point can\'t be found. Please choose an existing point from the list.';
@@ -102,17 +108,40 @@ CMAQ.controller('PointController', function ($stateParams, $scope, data, viewpor
     );
   };
 
-  $scope.submit = function (measurement) {
-    measurement.submit = true;
-
-    api.updateMeasurement(measurement).then(
-      function () {
-        viewport.message = 'The measurement has submitted.';
-      },
-      function () {
-        viewport.message = 'An error occurred when trying to submit the measurement. Please try again.';
+  $scope.addResults = function (measurement) {
+    api.getProjects().finally(function () {
+      if (_.isEmpty(data.projects)) {
+        viewport.message = 'It looks like there are no projects the measurement can be submitted to.';
+      } else {
+        measurement.error = {};
+        delete measurement.results;
+        delete measurement.project;
+        $scope.formGroup.measurements[measurement.id].form.$setPristine();
+        measurement.addResults = true;
       }
-    );
+    });
+  };
+
+  $scope.submit = function (measurement) {
+    measurement.error = {};
+
+    _.each($scope.formGroup.measurements[measurement.id].form.$error.required, function (field) {
+      field.$setDirty();
+    });
+
+    if (!$scope.formGroup.measurements[measurement.id].form.$error.required) {
+      measurement.submit = true;
+      measurement.addResults = false;
+
+      api.updateMeasurement(measurement).then(
+        function () {
+          viewport.message = 'The measurement has been submitted.';
+        },
+        function () {
+          viewport.message = 'An error occurred when trying to submit the measurement. Please try again.';
+        }
+      );
+    }
   };
 
   $scope.remove = function (measurement) {

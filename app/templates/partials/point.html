@@ -53,10 +53,12 @@
       <ul class="list-group">
         <li class="list-group-item clearfix" ng-repeat="measurement in measurements = (data.point.measurements|active) track by $index">
           <h5 class="list-group-item-heading">{{ measurement.barcode }}</h5>
+          <h6 ng-show="measurement.submitted"><strong>{{ measurement.results }} µg/m³</strong></h6>
           <span class="text-warning" ng-show="measurement.id.indexOf('x') > -1 || measurement.updated">Measurement has not been synced yet</span>
 
           <span class="list-group-item-text help-block">Started <time datetime="{{ measurement.started }}" am-time-ago="measurement.started"></time></span>
           <span class="list-group-item-text help-block" ng-show="measurement.finished">Finished <time datetime="{{ measurement.finished }}" am-time-ago="measurement.finished"></time></span>
+          <span class="list-group-item-text help-block" ng-show="measurement.submitted">Submitted <time datetime="{{ measurement.submitted }}" am-time-ago="measurement.submitted"></time></span>
           <span class="list-group-item-text help-block" ng-hide="measurement.finished">
             <span ng-init="measurement.expires = (measurement.started | amAdd : '30' : 'days')"></span>
             <span ng-show="(measurement.expires|amDifference : null : 'seconds') < 0">Should have finished</span>
@@ -64,12 +66,37 @@
             <time datetime="{{ measurement.expires }}" am-time-ago="measurement.expires"></time>
           </span>
 
-          <p>
-            <div role="group" class="btn-group pull-right">
-              <button type="button" class="btn btn-danger" ng-click="remove(measurement)">Remove</button>
-              <button type="button" class="btn btn-primary" ng-hide="measurement.finished" ng-click="finish(measurement)">Finish now</button>
-              <button type="button" class="btn btn-success" ng-show="measurement.finished" ng-click="submit(measurement)">Submit result</button>
+          <div ng-form="formGroup.measurements[measurement.id].form" ng-show="measurement.addResults">
+            <hr />
+
+            <div ng-form="ResultsField" class="form-group" ng-class="{'has-error': measurement.error.api || (ResultsField.$dirty && ResultsField.$invalid)}">
+              <label for="measurement-project">µg/m³</label>
+              <span class="help-block text-center" ng-if="ResultsField.$dirty && ResultsField.$error.required">Please enter µg/m³ for this measurement in the field below</span>
+              <span class="help-block text-center" ng-if="ResultsField.$error.number">µg/m³ must be a valid number</span>
+              <span class="help-block text-center" ng-if="ResultsField.$error.min">µg/m³ can only be 0 or greater</span>
+              <input type="number" min="0" id="measurement-results" class="form-control" ng-model="measurement.results" ng-disabled="viewport.calling" required />
             </div>
+
+            <div ng-form="ProjectField" class="form-group" ng-class="{'has-error': measurement.error.api || (ProjectField.$dirty && ProjectField.$invalid)}">
+              <label for="measurement-project">Project</label>
+              <span class="help-block text-center" ng-if="ProjectField.$dirty && ProjectField.$error.required">Please choose a project from the options below</span>
+              <select id="measurement-project" class="form-control" ng-model="measurement.project" ng-options="project.id as project.name for project in data.projects" ng-disabled="viewport.calling" required>
+                <option value=""></option>
+              </select>
+            </div>
+          </div>
+
+          <p class="text-right">
+            <span ng-hide="measurement.addResults || measurement.submitted">
+              <button type="button" class="btn btn-danger" ng-hide="measurement.addResults" ng-click="remove(measurement)" ng-disabled="viewport.calling">Remove</button>
+              <button type="button" class="btn btn-primary" ng-hide="measurement.finished" ng-click="finish(measurement)" ng-disabled="viewport.calling">Finish now</button>
+              <button type="button" class="btn btn-success" ng-show="measurement.finished" ng-click="addResults(measurement)" ng-disabled="viewport.calling">Add results</button>
+            </span>
+
+            <span ng-show="measurement.addResults && !measurement.submitted">
+              <button type="button" class="btn btn-default" ng-show="measurement.addResults" ng-click="measurement.addResults = false" ng-disabled="viewport.calling">Cancel</button>
+              <button type="button" class="btn btn-primary" ng-show="measurement.finished" ng-click="submit(measurement)" ng-disabled="viewport.calling">Submit measurement</button>
+            </span>
           </p>
         </li>
       </ul>
@@ -82,7 +109,7 @@
     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
       <div class="panel panel-danger">
         <div class="panel-body">
-          <p>Deleting a point removes all current measurements too. However, it does not remove finished measurements that have been converted to contributions.</p>
+          <p>Deleting a point removes all current measurements too. However, it does not remove finished and submitted to projects measurements.</p>
           <p>This action cannot be undone.</p>
           <p class="text-right"><button type="button" class="btn btn-danger" ng-click="delete()" ng-disabled="viewport.calling">Delete this point</button></p>
         </div>

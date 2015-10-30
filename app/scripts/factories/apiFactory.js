@@ -426,6 +426,10 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
       function () {
         measurement.updated = true;
 
+        if (measurement.submit) {
+          measurement.submitted = now.toISOString();
+        }
+
         viewport.calling = false;
         deferred.resolve(measurement);
       }
