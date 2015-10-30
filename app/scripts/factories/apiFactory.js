@@ -124,7 +124,7 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
           oauth.refresh().finally(function () {
             $http.get(url + '/airquality/points/').then(
               function (retrievedPoints) {
-                data.points = retrievedPoints;
+                data.points = retrievedPoints.data;
                 deferred.resolve(data.points);
               },
               function (error) {
@@ -170,6 +170,8 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
           oauth.refresh().finally(function () {
             $http.post(url + '/airquality/points/', point).then(
               function (addedPoint) {
+                addedPoint = addedPoint.data;
+
                 _.remove(data.points, function (currentPoint) {
                   return currentPoint.id === point.id;
                 });
@@ -306,6 +308,8 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
           oauth.refresh().finally(function () {
             $http.post(url + '/airquality/points/' + pointId + '/measurements/', measurement).then(
               function (addedMeasurement) {
+                addedMeasurement = addedMeasurement.data;
+
                 _.remove(point.measurements, function (currentMeasurement) {
                   return currentMeasurement.id === measurement.id;
                 });
@@ -398,6 +402,8 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
           oauth.refresh().finally(function () {
             $http.patch(url + '/airquality/points/' + pointId + '/measurements/' + measurement.id, measurement).then(
               function (updatedMeasurement) {
+                updatedMeasurement = updatedMeasurement.data;
+
                 _.remove(point.measurements, function (currentMeasurement) {
                   return currentMeasurement.id === measurement.id;
                 });
