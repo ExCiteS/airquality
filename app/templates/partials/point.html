@@ -1,5 +1,5 @@
 <div ng-show="data.point">
-  <button type="button" class="btn btn-sm btn-default" ng-click="state.redirect('points')">&#8592; Back to points</button>
+  <button type="button" class="btn btn-sm btn-default" ng-click="state.redirect('points')" ng-disabled="viewport.calling">&#8592; Back to points</button>
 
   <h3>{{ data.point.name }}</h3>
 
@@ -84,7 +84,7 @@
         <div class="panel-body">
           <p>Deleting a point removes all current measurements too. However, it does not remove finished measurements that have been converted to contributions.</p>
           <p>This action cannot be undone.</p>
-          <p class="text-right"><button type="button" class="btn btn-danger" ng-click="delete()">Delete this point</button></p>
+          <p class="text-right"><button type="button" class="btn btn-danger" ng-click="delete()" ng-disabled="viewport.calling">Delete this point</button></p>
         </div>
       </div>
     </div>
