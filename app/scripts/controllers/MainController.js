@@ -33,6 +33,10 @@ CMAQ.controller('MainController', function ($scope, data, viewport, state, stora
 
         storage.put('POINTS', JSON.stringify(data.points));
       }
+
+      if (!_.isEmpty(data.projects)) {
+        storage.put('PROJECTS', JSON.stringify(data.projects));
+      }
     }, true
   );
 

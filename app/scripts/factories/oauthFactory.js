@@ -191,6 +191,7 @@ CMAQ.factory('oauth', function ($q, $http, config, data, viewport, state, storag
       deferred.resolve();
     } else {
       storage.remove('POINTS');
+      storage.remove('PROJECTS');
 
       delete data.authentication;
       delete data.points;

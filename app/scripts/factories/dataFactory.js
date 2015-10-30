@@ -5,6 +5,7 @@ CMAQ.factory('data', function () {
 
   data.authentication = {};
   data.points = [];
+  data.projects = [];
 
   data.unsynced = {
     points: []

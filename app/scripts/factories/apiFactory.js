@@ -493,21 +493,49 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
 
   api.getProjects = function () {
     var deferred = $q.defer();
+    var projects = storage.get('PROJECTS');
 
-    oauth.refresh().finally(function () {
-      $http.get(url + '/airquality/projects/').then(
-        function (projects) {
-          projects = projects.data;
+    viewport.calling = true;
 
+    data.projects = [];
+
+    if (!_.isEmpty(projects)) {
+      projects = JSON.parse(projects);
+    } else {
+      projects = undefined;
+    }
+
+    api.online().then(
+      function () {
+        api.sync().finally(function () {
+          oauth.refresh().finally(function () {
+            $http.get(url + '/airquality/projects/').then(
+              function (retrievedProjects) {
+                data.projects = retrievedProjects.data;
+                deferred.resolve(data.projects);
+              },
+              function (error) {
+                if (projects) {
+                  data.projects = projects;
+                }
+
+                deferred.reject(error);
+              }
+            ).finally(function () {
+              viewport.calling = false;
+            });
+          });
+        });
+      },
+      function () {
+        if (projects) {
           data.projects = projects;
-
-          deferred.resolve(projects);
-        },
-        function (error) {
-          deferred.reject(error);
         }
-      );
-    });
+
+        viewport.calling = false;
+        deferred.resolve(data.projects);
+      }
+    );
 
     return deferred.promise;
   };
