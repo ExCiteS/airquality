@@ -89,6 +89,31 @@ CMAQ.controller('PointController', function ($stateParams, $scope, data, viewpor
     }
   };
 
+  $scope.finish = function (measurement) {
+    measurement.finish = true;
+
+    api.updateMeasurement(measurement).then(
+      function () {
+        viewport.message = 'The measurement has finished.';
+      },
+      function () {
+        viewport.message = 'An error occurred when trying to finish the measurement. Please try again.';
+      }
+    );
+  };
+
+  $scope.submit = function (measurement) {
+    measurement.submit = true;
+
+    api.updateMeasurement(measurement).then(
+      function () {
+        viewport.message = 'The measurement has submitted.';
+      },
+      function () {
+        viewport.message = 'An error occurred when trying to submit the measurement. Please try again.';
+      }
+    );
+  };
 
   $scope.remove = function (measurement) {
     api.removeMeasurement(measurement.id).then(

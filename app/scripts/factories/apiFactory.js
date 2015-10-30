@@ -52,14 +52,16 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
           } else {
             if ((_.isString(measurement.id) && measurement.id.indexOf('x') > -1)) {
               api.startMeasurement(measurement, point.id).finally(function () {
-
                 if (index + 1 === total) {
-
                   resolve(pointIndex, totalPoints);
                 }
               });
             } else if (measurement.updated) {
-              // TODO
+              api.updatedMeasurement(measurement, point.id).finally(function () {
+                if (index + 1 === total) {
+                  resolve(pointIndex, totalPoints);
+                }
+              });
             }
           }
         });
@@ -289,6 +291,10 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
       pointId = data.point.id;
     }
 
+    var point = _.find(data.points, function (currentPoint) {
+      return currentPoint.id === pointId;
+    });
+
     viewport.calling = true;
 
     api.online().then(
@@ -297,14 +303,14 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
           oauth.refresh().finally(function () {
             $http.post(url + '/airquality/points/' + pointId + '/measurements/', measurement).then(
               function (addedMeasurement) {
-                _.remove(data.point.measurements, function (currentMeasurement) {
+                _.remove(point.measurements, function (currentMeasurement) {
                   return currentMeasurement.id === measurement.id;
                 });
 
                 measurement.id = addedMeasurement.id;
                 measurement.created = addedMeasurement.created;
 
-                data.point.measurements.push(measurement);
+                point.measurements.push(measurement);
 
                 deferred.resolve(measurement);
               },
@@ -323,7 +329,7 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
         if (!_.isString(measurement.id) || measurement.id.indexOf('x') === -1) {
           var id = 'x';
 
-          var newUnsyncedMeasurements = _.filter(data.point.measurements, function (currentMeasurement) {
+          var newUnsyncedMeasurements = _.filter(point.measurements, function (currentMeasurement) {
             return _.isString(currentMeasurement.id) && currentMeasurement.id.indexOf('x') !== -1;
           });
 
@@ -335,8 +341,81 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
 
           measurement.id = id;
           measurement.started = now.toISOString();
-          data.point.measurements.push(measurement);
+          point.measurements.push(measurement);
         }
+
+        viewport.calling = false;
+        deferred.resolve(measurement);
+      }
+    );
+
+    return deferred.promise;
+  };
+
+  api.updateMeasurement = function (measurement, pointId) {
+    var deferred = $q.defer();
+
+    if (_.isUndefined(measurement)) {
+      throw new Error('Measurement not specified');
+    } else if (!_.isPlainObject(measurement)) {
+      throw new Error('Measurement must be plain object');
+    } else if (_.isUndefined(pointId)) {
+      if (_.isUndefined(data.point)) {
+        throw new Error('Point not set');
+      } else if (!_.isPlainObject(data.point)) {
+        throw new Error('Point must be plain object');
+      }
+
+      pointId = data.point.id;
+    }
+
+    var point = _.find(data.points, function (currentPoint) {
+      return currentPoint.id === pointId;
+    });
+
+    viewport.calling = true;
+
+    var now = new Date();
+
+    if (measurement.finish && !measurement.finished) {
+      measurement.finished = now.toISOString();
+    }
+
+    if (measurement.submit) {
+      measurement.finish = false;
+
+      if (!measurement.finished) {
+        measurement.finished = now.toISOString();
+      }
+    }
+
+    api.online().then(
+      function () {
+        api.sync().finally(function () {
+          oauth.refresh().finally(function () {
+            $http.patch(url + '/airquality/points/' + pointId + '/measurements/' + measurement.id, measurement).then(
+              function (updatedMeasurement) {
+                _.remove(point.measurements, function (currentMeasurement) {
+                  return currentMeasurement.id === measurement.id;
+                });
+
+                if (!measurement.submit) {
+                  point.measurements.push(updatedMeasurement);
+                }
+
+                deferred.resolve();
+              },
+              function (error) {
+                deferred.reject(error);
+              }
+            ).finally(function () {
+              viewport.calling = false;
+            });
+          });
+        });
+      },
+      function () {
+        measurement.updated = true;
 
         viewport.calling = false;
         deferred.resolve(measurement);
@@ -361,6 +440,10 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
       pointId = data.point.id;
     }
 
+    var point = _.find(data.points, function (currentPoint) {
+      return currentPoint.id === pointId;
+    });
+
     viewport.calling = true;
 
     api.online().then(
@@ -369,7 +452,7 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
           oauth.refresh().finally(function () {
             $http.delete(url + '/airquality/points/' + pointId + '/measurements/' + measurementId).then(
               function () {
-                _.remove(data.point.measurements, function (currentMeasurement) {
+                _.remove(point.measurements, function (currentMeasurement) {
                   return currentMeasurement.id === measurementId;
                 });
 
@@ -386,11 +469,11 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
       },
       function () {
         if (_.isString(measurementId) && measurementId.indexOf('x') > -1) {
-          _.remove(data.point.measurements, function (currentPoint) {
+          _.remove(point.measurements, function (currentPoint) {
             return currentPoint.id === measurementId;
           });
         } else {
-          var measurement = _.find(data.point.measurements, function (currentMeasurement) {
+          var measurement = _.find(point.measurements, function (currentMeasurement) {
             return currentMeasurement.id === measurementId;
           });
 
