@@ -1,6 +1,6 @@
 'use strict';
 
-CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storage, oauth) {
+CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storage, state, oauth) {
   var api = {};
   var url = config.url + '/api';
 
@@ -226,7 +226,10 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
 
     viewport.calling = true;
 
-    delete data.point;
+    if (!_.isEmpty(data.point) && data.point.id === pointId) {
+      delete data.point;
+      state.redirect('points');
+    }
 
     api.online().then(
       function () {
