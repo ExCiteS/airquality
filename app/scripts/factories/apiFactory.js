@@ -36,23 +36,25 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
       }
     }
 
-    function syncMeasurements(measurements, pointIndex, totalPoints) {
+    function syncMeasurements(point, pointIndex, totalPoints) {
       var total = 0;
 
-      if (!_.isEmpty(measurements)) {
-        total += measurements.length;
+      if (!_.isEmpty(point.measurements)) {
+        total += point.measurements.length;
 
-        _.each(measurements, function (measurement, index) {
+        _.each(point.measurements, function (measurement, index) {
           if (measurement.deleted) {
-            api.removeMeasurement(measurement.id).finally(function () {
+            api.removeMeasurement(measurement.id, point.id).finally(function () {
               if (index + 1 === total) {
                 resolve(pointIndex, totalPoints);
               }
             });
           } else {
             if ((_.isString(measurement.id) && measurement.id.indexOf('x') > -1)) {
-              api.startMeasurement(measurement).finally(function () {
+              api.startMeasurement(measurement, point.id).finally(function () {
+
                 if (index + 1 === total) {
+
                   resolve(pointIndex, totalPoints);
                 }
               });
@@ -61,6 +63,8 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
             }
           }
         });
+      } else {
+        resolve(pointIndex, totalPoints);
       }
     }
 
@@ -76,11 +80,15 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
             });
           } else {
             if ((_.isString(point.id) && point.id.indexOf('x') > -1)) {
-              api.addPoint(point).finally(function () {
-                syncMeasurements(point.measurements, pointIndex, totalPoints);
-              });
-            } else {
-              syncMeasurements(point.measurements, pointIndex, totalPoints);
+              api.addPoint(point).then(
+                function (addedPoint) {
+                  point.id = addedPoint.id;
+                  syncMeasurements(point, pointIndex, totalPoints);
+                },
+                function () {
+                  resolve(pointIndex, totalPoints);
+                }
+              );
             }
           }
         });
@@ -264,15 +272,21 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
     return deferred.promise;
   };
 
-  api.startMeasurement = function (measurement) {
+  api.startMeasurement = function (measurement, pointId) {
     var deferred = $q.defer();
 
-    if (_.isUndefined(data.point)) {
-      throw new Error('Point not set');
-    } else if (_.isUndefined(measurement)) {
+    if (_.isUndefined(measurement)) {
       throw new Error('Measurement not specified');
     } else if (!_.isPlainObject(measurement)) {
       throw new Error('Measurement must be plain object');
+    } else if (_.isUndefined(pointId)) {
+      if (_.isUndefined(data.point)) {
+        throw new Error('Point not set');
+      } else if (!_.isPlainObject(data.point)) {
+        throw new Error('Point must be plain object');
+      }
+
+      pointId = data.point.id;
     }
 
     viewport.calling = true;
@@ -281,7 +295,7 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
       function () {
         api.sync().finally(function () {
           oauth.refresh().finally(function () {
-            $http.post(url + '/airquality/points/' + data.point.id + '/measurements/', measurement).then(
+            $http.post(url + '/airquality/points/' + pointId + '/measurements/', measurement).then(
               function (addedMeasurement) {
                 _.remove(data.point.measurements, function (currentMeasurement) {
                   return currentMeasurement.id === measurement.id;
@@ -332,11 +346,19 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
     return deferred.promise;
   };
 
-  api.removeMeasurement = function (measurementId) {
+  api.removeMeasurement = function (measurementId, pointId) {
     var deferred = $q.defer();
 
     if (_.isUndefined(measurementId)) {
       throw new Error('Measurement ID not specified');
+    } else if (_.isUndefined(pointId)) {
+      if (_.isUndefined(data.point)) {
+        throw new Error('Point not set');
+      } else if (!_.isPlainObject(data.point)) {
+        throw new Error('Point must be plain object');
+      }
+
+      pointId = data.point.id;
     }
 
     viewport.calling = true;
@@ -345,7 +367,7 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
       function () {
         api.sync().finally(function () {
           oauth.refresh().finally(function () {
-            $http.delete(url + '/airquality/points/' + data.point.id + '/measurements/' + measurementId).then(
+            $http.delete(url + '/airquality/points/' + pointId + '/measurements/' + measurementId).then(
               function () {
                 _.remove(data.point.measurements, function (currentMeasurement) {
                   return currentMeasurement.id === measurementId;

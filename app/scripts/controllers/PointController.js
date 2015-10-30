@@ -89,6 +89,7 @@ CMAQ.controller('PointController', function ($stateParams, $scope, data, viewpor
     }
   };
 
+
   $scope.remove = function (measurement) {
     api.removeMeasurement(measurement.id).then(
       function () {
