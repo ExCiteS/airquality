@@ -49,9 +49,10 @@
       <p class="lead text-center" ng-hide="measurements.length">No measurements have been added so far</p>
 
       <ul class="list-group">
-        <li class="list-group-item" ng-repeat="measurement in measurements = (data.point.measurements|active) track by $index">
+        <li class="list-group-item clearfix" ng-repeat="measurement in measurements = (data.point.measurements|active) track by $index">
           <h5 class="list-group-item-heading">{{ measurement.barcode }}</h5>
           <span class="text-warning" ng-show="measurement.id.indexOf('x') > -1 || measurement.updated">Measurement has not been synced yet</span>
+
           <span class="list-group-item-text help-block">Started <time datetime="{{ measurement.started }}" am-time-ago="measurement.started"></time></span>
           <span ng-init="measurement.expires = (measurement.started | amAdd : '30' : 'days')"></span>
           <span class="list-group-item-text help-block">
@@ -59,6 +60,13 @@
             <span ng-show="(measurement.expires|amDifference : null : 'seconds') >= 0">Should finish</span>
             <time datetime="{{ measurement.expires }}" am-time-ago="measurement.expires"></time>
           </span>
+
+          <p>
+            <div role="group" class="btn-group pull-right">
+              <button type="button" class="btn btn-danger" ng-click="remove(measurement)">Remove</button>
+              <button type="button" class="btn btn-primary" ng-click="finish(measurement)">Finish now</button>
+            </div>
+          </p>
         </li>
       </ul>
     </div>

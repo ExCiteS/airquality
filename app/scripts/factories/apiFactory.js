@@ -27,7 +27,7 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
 
   api.sync = function () {
     var deferred = $q.defer();
-    var total = 0;
+    var totalPoints = 0;
 
     function resolve(index, total) {
       if (index + 1 === total) {
@@ -36,20 +36,52 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
       }
     }
 
+    function syncMeasurements(measurements, pointIndex, totalPoints) {
+      var total = 0;
+
+      if (!_.isEmpty(measurements)) {
+        total += measurements.length;
+
+        _.each(measurements, function (measurement, index) {
+          if (measurement.deleted) {
+            api.removeMeasurement(measurement.id).finally(function () {
+              if (index + 1 === total) {
+                resolve(pointIndex, totalPoints);
+              }
+            });
+          } else {
+            if ((_.isString(measurement.id) && measurement.id.indexOf('x') > -1)) {
+              api.startMeasurement(measurement).finally(function () {
+                if (index + 1 === total) {
+                  resolve(pointIndex, totalPoints);
+                }
+              });
+            } else if (measurement.updated) {
+              // TODO
+            }
+          }
+        });
+      }
+    }
+
     if (_.isEmpty(unsynced.points)) {
       if (!_.isEmpty(data.unsynced.points)) {
         unsynced.points = _.cloneDeep(data.unsynced.points);
-        total += unsynced.points.length;
+        totalPoints += unsynced.points.length;
 
-        _.each(_.cloneDeep(unsynced.points), function (point, index) {
+        _.each(_.cloneDeep(unsynced.points), function (point, pointIndex) {
           if (point.deleted) {
             api.deletePoint(point.id).finally(function () {
-              resolve(index, total);
+              resolve(pointIndex, totalPoints);
             });
           } else {
-            api.addPoint(point).finally(function () {
-              resolve(index, total);
-            });
+            if ((_.isString(point.id) && point.id.indexOf('x') > -1)) {
+              api.addPoint(point).finally(function () {
+                syncMeasurements(point.measurements, pointIndex, totalPoints);
+              });
+            } else {
+              syncMeasurements(point.measurements, pointIndex, totalPoints);
+            }
           }
         });
       } else {
@@ -249,7 +281,7 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
       function () {
         api.sync().finally(function () {
           oauth.refresh().finally(function () {
-            $http.post(url + '/airquality/points/' + data.point.id + 'measurements/', measurement).then(
+            $http.post(url + '/airquality/points/' + data.point.id + '/measurements/', measurement).then(
               function (addedMeasurement) {
                 _.remove(data.point.measurements, function (currentMeasurement) {
                   return currentMeasurement.id === measurement.id;
@@ -294,6 +326,57 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
 
         viewport.calling = false;
         deferred.resolve(measurement);
+      }
+    );
+
+    return deferred.promise;
+  };
+
+  api.removeMeasurement = function (measurementId) {
+    var deferred = $q.defer();
+
+    if (_.isUndefined(measurementId)) {
+      throw new Error('Measurement ID not specified');
+    }
+
+    viewport.calling = true;
+
+    api.online().then(
+      function () {
+        api.sync().finally(function () {
+          oauth.refresh().finally(function () {
+            $http.delete(url + '/airquality/points/' + data.point.id + '/measurements/' + measurementId).then(
+              function () {
+                _.remove(data.point.measurements, function (currentMeasurement) {
+                  return currentMeasurement.id === measurementId;
+                });
+
+                deferred.resolve();
+              },
+              function (error) {
+                deferred.reject(error);
+              }
+            ).finally(function () {
+              viewport.calling = false;
+            });
+          });
+        });
+      },
+      function () {
+        if (_.isString(measurementId) && measurementId.indexOf('x') > -1) {
+          _.remove(data.point.measurements, function (currentPoint) {
+            return currentPoint.id === measurementId;
+          });
+        } else {
+          var measurement = _.find(data.point.measurements, function (currentMeasurement) {
+            return currentMeasurement.id === measurementId;
+          });
+
+          measurement.deleted = true;
+        }
+
+        viewport.calling = false;
+        deferred.resolve();
       }
     );
 

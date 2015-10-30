@@ -63,7 +63,7 @@ CMAQ.controller('PointController', function ($stateParams, $scope, data, viewpor
     });
   };
 
-  $scope.start = function (measurement) {
+  $scope.start = function () {
     $scope.measurement.error = {};
 
     _.each($scope.formGroup.form.$error.required, function (field) {
@@ -87,5 +87,16 @@ CMAQ.controller('PointController', function ($stateParams, $scope, data, viewpor
         }
       );
     }
+  };
+
+  $scope.remove = function (measurement) {
+    api.removeMeasurement(measurement.id).then(
+      function () {
+        viewport.message = 'The measurement has been removed.';
+      },
+      function () {
+        viewport.message = 'An error occurred when trying to remove the point.';
+      }
+    );
   };
 });
