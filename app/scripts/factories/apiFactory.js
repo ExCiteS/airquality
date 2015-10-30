@@ -249,7 +249,25 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
       function () {
         api.sync().finally(function () {
           oauth.refresh().finally(function () {
-            // TODO
+            $http.post(url + '/airquality/points/' + data.point.id + 'measurements/', measurement).then(
+              function (addedMeasurement) {
+                _.remove(data.point.measurements, function (currentMeasurement) {
+                  return currentMeasurement.id === measurement.id;
+                });
+
+                measurement.id = addedMeasurement.id;
+                measurement.created = addedMeasurement.created;
+
+                data.point.measurements.push(measurement);
+
+                deferred.resolve(measurement);
+              },
+              function (error) {
+                deferred.reject(error);
+              }
+            ).finally(function () {
+              viewport.calling = false;
+            });
           });
         });
       },
