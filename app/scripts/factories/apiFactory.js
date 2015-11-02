@@ -31,7 +31,6 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
 
     function resolve(index, total) {
       if (index + 1 === total) {
-        console.log('resolved');
         unsynced.points = [];
         deferred.resolve();
       }
@@ -58,13 +57,12 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
                 }
               });
             } else if (measurement.updated) {
-              console.log('b');
               resolve(pointIndex, totalPoints);
-              // api.updatedMeasurement(measurement, point.id).finally(function () {
-              //   if (index + 1 === total) {
-              //     resolve(pointIndex, totalPoints);
-              //   }
-              // });
+              api.updatedMeasurement(measurement, point.id).finally(function () {
+                if (index + 1 === total) {
+                  resolve(pointIndex, totalPoints);
+                }
+              });
             }
           }
         });
@@ -77,7 +75,7 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
       if (!_.isEmpty(data.unsynced.points)) {
         unsynced.points = _.cloneDeep(data.unsynced.points);
         totalPoints += unsynced.points.length;
-        console.log(unsynced.points);
+
         _.each(_.cloneDeep(unsynced.points), function (point, pointIndex) {
           if (point.deleted) {
             api.deletePoint(point.id).finally(function () {
@@ -95,7 +93,6 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
                 }
               );
             } else {
-              console.log('a');
               syncMeasurements(point, pointIndex, totalPoints);
             }
           }

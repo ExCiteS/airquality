@@ -16,14 +16,20 @@ AQ.controller('MainController', function ($scope, data, viewport, state, storage
         data.unsynced.points = [];
 
         _.each(data.points, function (point) {
+          var pointAdded;
+
           if ((_.isString(point.id) && point.id.indexOf('x') > -1) || point.deleted) {
             viewport.unsynced = true;
             data.unsynced.points.push(point);
+            pointAdded = true;
           } else if (!_.isEmpty(point.measurements)) {
             _.each(point.measurements, function (measurement) {
               if ((_.isString(measurement.id) && measurement.id.indexOf('x') > -1) || measurement.deleted || measurement.updated) {
-                viewport.unsynced = true;
-                data.unsynced.points.push(point);
+                if (!pointAdded) {
+                  viewport.unsynced = true;
+                  data.unsynced.points.push(point);
+                  pointAdded = true;
+                }
               }
             });
           }
