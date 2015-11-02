@@ -133,6 +133,10 @@ AQ.controller('PointController', function ($stateParams, $scope, data, viewport,
       measurement.submit = true;
       measurement.addResults = false;
 
+      if (_.size(measurement.barcode) > 25) {
+        measurement.barcode = measurement.barcode.substring(0, 22) + '...';
+      }
+
       api.updateMeasurement(measurement).then(
         function () {
           viewport.message = 'The measurement has been submitted.';

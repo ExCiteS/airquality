@@ -64,6 +64,10 @@ AQ.controller('PointsAddController', function ($window, $scope, viewport, state,
 
       data.name = $scope.point.name;
 
+      if (_.size(data.name) > 100) {
+        data.name = data.name.substring(0, 97) + '...';
+      }
+
       if ($scope.point.height) {
         data.properties.height = $scope.point.height;
       }
