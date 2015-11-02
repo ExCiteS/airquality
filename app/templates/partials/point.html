@@ -74,7 +74,7 @@
               <span class="help-block text-center" ng-if="ResultsField.$dirty && ResultsField.$error.required">Please enter µg/m³ for this measurement in the field below</span>
               <span class="help-block text-center" ng-if="ResultsField.$error.number">µg/m³ must be a valid number</span>
               <span class="help-block text-center" ng-if="ResultsField.$error.min">µg/m³ can only be 0 or greater</span>
-              <input type="number" min="0" id="measurement-results" class="form-control" ng-model="measurement.results" ng-disabled="viewport.calling" required />
+              <input type="number" min="0" id="measurement-results" class="form-control" ng-model="measurement.properties.results" ng-disabled="viewport.calling" required />
             </div>
 
             <div ng-form="ProjectField" class="form-group" ng-class="{'has-error': measurement.error.api || (ProjectField.$dirty && ProjectField.$invalid)}">
@@ -86,7 +86,7 @@
             </div>
           </div>
 
-          <p class="text-right">
+          <p class="text-center">
             <span ng-hide="measurement.addResults || measurement.submitted">
               <button type="button" class="btn btn-danger" ng-hide="measurement.addResults" ng-click="remove(measurement)" ng-disabled="viewport.calling">Remove</button>
               <button type="button" class="btn btn-primary" ng-hide="measurement.finished" ng-click="finish(measurement)" ng-disabled="viewport.calling">Finish now</button>

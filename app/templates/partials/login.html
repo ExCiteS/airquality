@@ -15,12 +15,14 @@
         <input type="password" id="form-authentication-password" class="form-control" ng-model="authentication.password" ng-disabled="viewport.calling" />
       </div>
 
-      <p class="text-right">
+      <p class="text-center">
         <button type="button" class="btn btn-link" ng-click="state.goToExternalPage(viewport.platform + '/admin/account/password/reset')">Reset password</button>
         <button type="submit" class="btn btn-primary" ng-disabled="viewport.calling">Log me in</button>
       </p>
     </form>
   </div>
+
+  <hr />
 
   <p class="text-center">Don't have an account yet? <button type="button" class="btn btn-sm btn-link" ng-click="state.redirect('register')" ng-disabled="viewport.calling">Register!</button></p>
 </div>
