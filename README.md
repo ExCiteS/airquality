@@ -1,5 +1,11 @@
 # Air Quality
 
+Air Quality is a mini web application for collecting measurements that is currently developed by [Mapping for Change](http://mappingforchange.org.uk), and is supporting the [GeoKey platform](http://geokey.org.uk) developed by [Extreme Citizen Science Research Group](http://ucl.ac.uk/excites) at University College London.
+
+## Requirements
+
+Air Quality requires the [geokey-airquality](https://github.com/ExCiteS/geokey-airquality) extension to be installed alongside GeoKey.
+
 ## Build Application
 
 1. [Install Node.js](https://github.com/joyent/node/wiki/installation) [1]
