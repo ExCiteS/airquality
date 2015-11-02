@@ -165,12 +165,17 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
       throw new Error('Point must be plain object');
     }
 
+    var now = new Date();
+    now = now.toISOString();
+
     viewport.calling = true;
 
     api.online().then(
       function () {
         api.sync().finally(function () {
           oauth.refresh().finally(function () {
+            point.called = now;
+
             $http.post(url + '/airquality/points/', point).then(
               function (addedPoint) {
                 addedPoint = addedPoint.data;
@@ -197,8 +202,6 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
         });
       },
       function () {
-        var now = new Date();
-
         if (!_.isString(point.id) || point.id.indexOf('x') === -1) {
           var id = 'x';
 
@@ -209,7 +212,7 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
           }
 
           point.id = id;
-          point.created = now.toISOString();
+          point.created = now;
           point.measurements = [];
           data.points.push(point);
         }
@@ -299,6 +302,9 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
       pointId = data.point.id;
     }
 
+    var now = new Date();
+    now = now.toISOString();
+
     var point = _.find(data.points, function (currentPoint) {
       return currentPoint.id === pointId;
     });
@@ -309,6 +315,8 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
       function () {
         api.sync().finally(function () {
           oauth.refresh().finally(function () {
+            measurement.called = now;
+
             $http.post(url + '/airquality/points/' + pointId + '/measurements/', measurement).then(
               function (addedMeasurement) {
                 addedMeasurement = addedMeasurement.data;
@@ -334,8 +342,6 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
         });
       },
       function () {
-        var now = new Date();
-
         if (!_.isString(measurement.id) || measurement.id.indexOf('x') === -1) {
           var id = 'x';
 
@@ -350,7 +356,7 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
           }
 
           measurement.id = id;
-          measurement.started = now.toISOString();
+          measurement.started = now;
           point.measurements.push(measurement);
         }
 
@@ -379,23 +385,24 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
       pointId = data.point.id;
     }
 
+    var now = new Date();
+    now = now.toISOString();
+
     var point = _.find(data.points, function (currentPoint) {
       return currentPoint.id === pointId;
     });
 
     viewport.calling = true;
 
-    var now = new Date();
-
     if (measurement.finish && !measurement.finished) {
-      measurement.finished = now.toISOString();
+      measurement.finished = now;
     }
 
     if (measurement.submit) {
       measurement.finish = false;
 
       if (!measurement.finished) {
-        measurement.finished = now.toISOString();
+        measurement.finished = now;
       }
     }
 
@@ -403,6 +410,8 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
       function () {
         api.sync().finally(function () {
           oauth.refresh().finally(function () {
+            measurement.called = now;
+
             $http.patch(url + '/airquality/points/' + pointId + '/measurements/' + measurement.id, measurement).then(
               function (updatedMeasurement) {
                 updatedMeasurement = updatedMeasurement.data;
@@ -430,7 +439,7 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
         measurement.updated = true;
 
         if (measurement.submit) {
-          measurement.submitted = now.toISOString();
+          measurement.submitted = now;
         }
 
         viewport.calling = false;
