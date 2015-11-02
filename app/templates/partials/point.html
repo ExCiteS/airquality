@@ -86,7 +86,9 @@
             </div>
           </div>
 
-          <p class="text-center">
+          <hr ng-show="measurement.addResults || !measurement.submitted" />
+
+          <p class="text-right">
             <span ng-hide="measurement.addResults || measurement.submitted">
               <button type="button" class="btn btn-danger" ng-hide="measurement.addResults" ng-click="remove(measurement)" ng-disabled="viewport.calling">Remove</button>
               <button type="button" class="btn btn-primary" ng-hide="measurement.finished" ng-click="finish(measurement)" ng-disabled="viewport.calling">Finish now</button>
