@@ -1,6 +1,6 @@
 'use strict';
 
-CMAQ.controller('RegisterController', function ($scope, data, viewport, state, oauth, helpers) {
+AQ.controller('RegisterController', function ($scope, data, viewport, state, oauth, helpers) {
   state.setTitle('Register');
   $scope.registration = {};
 

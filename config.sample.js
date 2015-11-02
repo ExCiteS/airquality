@@ -1,6 +1,6 @@
 'use strict';
 
-CMAQ.constant('config', {
+AQ.constant('config', {
   url: '',
   client: ''
 });

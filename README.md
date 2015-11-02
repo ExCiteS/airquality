@@ -1,4 +1,4 @@
-# Community Maps Air Quality
+# Air Quality
 
 ## Build Application
 
@@ -10,7 +10,7 @@
 6. Run `bower install` to download required components [3]
 7. Copy configuration file from the sample with `cp config.sample.js config.js`
 8. Edit application's configuration and add the URL of GeoKey platform (without `/api/`), also client's ID
-9. Run `grunt build`[5] from main directory to build Community Maps Air Quality web application [4]
+9. Run `grunt build`[4] from main directory to build Air Quality web application
 
 NOTES:
 

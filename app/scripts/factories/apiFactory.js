@@ -1,6 +1,6 @@
 'use strict';
 
-CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storage, state, oauth) {
+AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage, state, oauth) {
   var api = {};
   var url = config.url + '/api';
 
@@ -31,6 +31,7 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
 
     function resolve(index, total) {
       if (index + 1 === total) {
+        console.log('resolved');
         unsynced.points = [];
         deferred.resolve();
       }
@@ -57,11 +58,13 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
                 }
               });
             } else if (measurement.updated) {
-              api.updatedMeasurement(measurement, point.id).finally(function () {
-                if (index + 1 === total) {
-                  resolve(pointIndex, totalPoints);
-                }
-              });
+              console.log('b');
+              resolve(pointIndex, totalPoints);
+              // api.updatedMeasurement(measurement, point.id).finally(function () {
+              //   if (index + 1 === total) {
+              //     resolve(pointIndex, totalPoints);
+              //   }
+              // });
             }
           }
         });
@@ -74,7 +77,7 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
       if (!_.isEmpty(data.unsynced.points)) {
         unsynced.points = _.cloneDeep(data.unsynced.points);
         totalPoints += unsynced.points.length;
-
+        console.log(unsynced.points);
         _.each(_.cloneDeep(unsynced.points), function (point, pointIndex) {
           if (point.deleted) {
             api.deletePoint(point.id).finally(function () {
@@ -91,6 +94,9 @@ CMAQ.factory('api', function ($window, $q, $http, config, data, viewport, storag
                   resolve(pointIndex, totalPoints);
                 }
               );
+            } else {
+              console.log('a');
+              syncMeasurements(point, pointIndex, totalPoints);
             }
           }
         });

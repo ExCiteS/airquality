@@ -1,6 +1,6 @@
 'use strict';
 
-CMAQ.controller('PointsAddController', function ($window, $scope, viewport, state, api, leaflet) {
+AQ.controller('PointsAddController', function ($window, $scope, viewport, state, api, leaflet) {
   $scope.formGroup = {};
   $scope.point = {
     error: {}

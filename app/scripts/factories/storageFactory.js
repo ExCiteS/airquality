@@ -1,6 +1,6 @@
 'use strict';
 
-CMAQ.factory('storage', function ($window) {
+AQ.factory('storage', function ($window) {
   var storage = {};
 
   storage.get = function (name) {

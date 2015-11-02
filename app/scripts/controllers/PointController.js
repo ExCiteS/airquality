@@ -1,6 +1,6 @@
 'use strict';
 
-CMAQ.controller('PointController', function ($stateParams, $scope, data, viewport, state, api, leaflet) {
+AQ.controller('PointController', function ($stateParams, $scope, data, viewport, state, api, leaflet) {
   var pointId = $stateParams.pointId;
 
   state.setTitle('Point');

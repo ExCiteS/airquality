@@ -1,6 +1,6 @@
 'use strict';
 
-CMAQ.filter('active', function () {
+AQ.filter('active', function () {
   return function (points) {
     var activeOnly = [];
 

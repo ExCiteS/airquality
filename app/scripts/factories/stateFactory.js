@@ -1,6 +1,6 @@
 'use strict';
 
-CMAQ.factory('state', function ($window, $state, data, viewport) {
+AQ.factory('state', function ($window, $state, data, viewport) {
   var state = {};
 
   state.redirect = function (state, params) {

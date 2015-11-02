@@ -2,14 +2,14 @@
 
 'use strict';
 
-var CMAQ = angular.module('CMAQ', [
+var AQ = angular.module('AQ', [
   'templates',
   'ngSanitize',
   'ui.router',
   'angularMoment',
 ]);
 
-CMAQ.config(function ($httpProvider, $urlRouterProvider, $stateProvider, config) {
+AQ.config(function ($httpProvider, $urlRouterProvider, $stateProvider, config) {
   if (_.isEmpty(config)) {
     throw new Error('Configuration not set');
   } else if (!config.url) {
@@ -117,7 +117,7 @@ CMAQ.config(function ($httpProvider, $urlRouterProvider, $stateProvider, config)
     });
 });
 
-CMAQ.run(function ($window, $rootScope, config, viewport, data, state, oauth) {
+AQ.run(function ($window, $rootScope, config, viewport, data, state, oauth) {
   oauth.authorize();
   viewport.platform = config.url;
   viewport.ready = true;

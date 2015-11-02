@@ -1,6 +1,6 @@
 'use strict';
 
-CMAQ.factory('leaflet', function () {
+AQ.factory('leaflet', function () {
   var leaflet = {};
 
   leaflet.init = function (geoJson) {

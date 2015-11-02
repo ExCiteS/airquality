@@ -1,6 +1,6 @@
 'use strict';
 
-CMAQ.factory('helpers', function () {
+AQ.factory('helpers', function () {
   var helpers = {};
 
   helpers.serialize = function (object) {

@@ -1,6 +1,6 @@
 'use strict';
 
-CMAQ.factory('oauth', function ($q, $http, config, data, viewport, state, storage, helpers) {
+AQ.factory('oauth', function ($q, $http, config, data, viewport, state, storage, helpers) {
   var oauth = {};
   var url = config.url + '/oauth2/';
 

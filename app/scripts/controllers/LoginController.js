@@ -1,6 +1,6 @@
 'use strict';
 
-CMAQ.controller('LoginController', function ($scope, viewport, state, oauth, storage, helpers) {
+AQ.controller('LoginController', function ($scope, viewport, state, oauth, storage, helpers) {
   state.setTitle('Log in');
   $scope.authentication = {};
 

@@ -1,6 +1,6 @@
 'use strict';
 
-CMAQ.factory('data', function () {
+AQ.factory('data', function () {
   var data = {};
 
   data.authentication = {};
