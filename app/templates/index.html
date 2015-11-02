@@ -56,7 +56,8 @@
         <div class="row">
           <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
             <div role="alert" class="alert alert-warning" ng-show="viewport.offline">
-              <p>It seems like you're offline. Don't worry, you can still use cashed data to add points and measurements.</p>
+              <p ng-hide="data.authentication">It seems like you're offline. Unfortunately, Air Quality requires a user to be logged in before using it in offline mode.</p>
+              <p ng-show="data.authentication">It seems like you're offline. Don't worry, you can still use cashed data to add points and measurements. Please sync your data when you're online.</p>
             </div>
 
             <div role="alert" class="alert alert-info" ng-show="viewport.unsynced">

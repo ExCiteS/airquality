@@ -117,8 +117,10 @@ AQ.config(function ($httpProvider, $urlRouterProvider, $stateProvider, config) {
     });
 });
 
-AQ.run(function ($window, $rootScope, config, viewport, data, state, oauth) {
+AQ.run(function ($window, $rootScope, config, viewport, data, state, oauth, api) {
   oauth.authorize();
+  api.online();
+
   viewport.platform = config.url;
   viewport.ready = true;
 
