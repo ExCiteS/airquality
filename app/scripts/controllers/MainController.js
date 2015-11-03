@@ -12,7 +12,7 @@ AQ.controller('MainController', function ($scope, data, viewport, state, storage
     function (data) {
       viewport.unsynced = false;
 
-      if (!_.isEmpty(data.points)) {
+      if (data.points) {
         data.unsynced.points = [];
 
         _.each(data.points, function (point) {
@@ -38,7 +38,7 @@ AQ.controller('MainController', function ($scope, data, viewport, state, storage
         storage.put('POINTS', JSON.stringify(data.points));
       }
 
-      if (!_.isEmpty(data.projects)) {
+      if (data.projects) {
         storage.put('PROJECTS', JSON.stringify(data.projects));
       }
     }, true
