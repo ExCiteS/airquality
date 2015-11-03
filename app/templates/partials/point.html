@@ -36,9 +36,10 @@
             <label for="form-measurement-barcode">Barcode</label>
             <span class="help-block text-center" ng-if="BarcodeField.$dirty && BarcodeField.$error.required">Please enter the barcode of a diffusion tube in the field below</span>
             <span class="help-block text-center" ng-if="BarcodeField.$error.number || BarcodeField.$error.min">Barcode must be a valid number</span>
+            <span class="help-block text-center" ng-if="BarcodeField.$error.maxlength">Barcode must consist of no more than 6 numbers</span>
 
             <div class="input-group">
-              <input type="number" min="0" id="form-measurement-barcode" class="form-control" ng-model="measurement.barcode" ng-disabled="viewport.calling" required />
+              <input type="number" min="0" ng-maxlength="6" id="form-measurement-barcode" class="form-control" ng-model="measurement.barcode" ng-disabled="viewport.calling" required />
 
               <span class="input-group-btn">
                 <button type="submit" class="btn btn-success" ng-disabled="viewport.calling">Start</button>

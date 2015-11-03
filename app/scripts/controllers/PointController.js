@@ -78,8 +78,12 @@ AQ.controller('PointController', function ($stateParams, $scope, data, viewport,
 
     if (!$scope.formGroup.form.$error.required) {
       var data = {
-        barcode: $scope.measurement.barcode
+        barcode: $scope.measurement.barcode.toString()
       };
+
+      if (_.size(data.barcode) < 6) {
+        data.barcode = Array(6 - _.size(data.barcode) + 1).join('0') + data.barcode;
+      }
 
       api.startMeasurement(data).then(
         function () {
@@ -132,10 +136,6 @@ AQ.controller('PointController', function ($stateParams, $scope, data, viewport,
     if (!$scope.formGroup.measurements[measurement.id].form.$error.required) {
       measurement.submit = true;
       measurement.addResults = false;
-
-      if (_.size(measurement.barcode) > 25) {
-        measurement.barcode = measurement.barcode.substring(0, 22) + '...';
-      }
 
       api.updateMeasurement(measurement).then(
         function () {
