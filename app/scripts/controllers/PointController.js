@@ -108,6 +108,7 @@ AQ.controller('PointController', function ($stateParams, $scope, data, viewport,
       },
       function () {
         viewport.message = 'An error occurred when trying to finish the measurement. Please try again.';
+        delete measurement.finished;
       }
     );
   };
@@ -143,6 +144,7 @@ AQ.controller('PointController', function ($stateParams, $scope, data, viewport,
         },
         function () {
           viewport.message = 'An error occurred when trying to submit the measurement. Please try again.';
+          delete measurement.submitted;
         }
       );
     }
