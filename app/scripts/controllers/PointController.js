@@ -21,7 +21,7 @@ AQ.controller('PointController', function ($stateParams, $scope, data, viewport,
 
   function getPoint() {
     var point = _.find(data.points, function (currentPoint) {
-      return currentPoint.id === pointId;
+      return currentPoint.id == pointId;
     });
 
     if (point && !point.deleted) {

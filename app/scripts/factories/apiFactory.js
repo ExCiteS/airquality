@@ -181,15 +181,15 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
                 addedPoint = addedPoint.data;
 
                 _.remove(data.points, function (currentPoint) {
-                  return currentPoint.id === point.id;
+                  return currentPoint.id == point.id;
                 });
 
                 point.id = addedPoint.id;
                 point.created = addedPoint.created;
+                point.geometry = addedPoint.geometry;
                 point.measurements = addedPoint.measurements;
 
                 data.points.push(point);
-
                 deferred.resolve(point);
               },
               function (error) {
@@ -234,7 +234,7 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
 
     viewport.calling = true;
 
-    if (!_.isEmpty(data.point) && data.point.id === pointId) {
+    if (!_.isEmpty(data.point) && data.point.id == pointId) {
       delete data.point;
       state.redirect('points');
     }
@@ -243,10 +243,10 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
       function () {
         api.sync().finally(function () {
           oauth.refresh().finally(function () {
-            $http.delete(url + '/airquality/points/' + pointId).then(
+            $http.delete(url + '/airquality/points/' + pointId + '/').then(
               function () {
                 _.remove(data.points, function (currentPoint) {
-                  return currentPoint.id === pointId;
+                  return currentPoint.id == pointId;
                 });
 
                 deferred.resolve();
@@ -262,16 +262,16 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
       },
       function () {
         var unsyncedPoint = _.find(data.unsynced.points, function (currentPoint) {
-          return currentPoint.id === pointId;
+          return currentPoint.id == pointId;
         });
 
         if (unsyncedPoint) {
           _.remove(data.points, function (currentPoint) {
-            return currentPoint.id === pointId;
+            return currentPoint.id == pointId;
           });
         } else {
           var point = _.find(data.points, function (currentPoint) {
-            return currentPoint.id === pointId;
+            return currentPoint.id == pointId;
           });
 
           point.deleted = true;
@@ -306,7 +306,7 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
     now = now.toISOString();
 
     var point = _.find(data.points, function (currentPoint) {
-      return currentPoint.id === pointId;
+      return currentPoint.id == pointId;
     });
 
     viewport.calling = true;
@@ -322,14 +322,13 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
                 addedMeasurement = addedMeasurement.data;
 
                 _.remove(point.measurements, function (currentMeasurement) {
-                  return currentMeasurement.id === measurement.id;
+                  return currentMeasurement.id == measurement.id;
                 });
 
                 measurement.id = addedMeasurement.id;
                 measurement.created = addedMeasurement.created;
 
                 point.measurements.push(measurement);
-
                 deferred.resolve(measurement);
               },
               function (error) {
@@ -389,7 +388,7 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
     now = now.toISOString();
 
     var point = _.find(data.points, function (currentPoint) {
-      return currentPoint.id === pointId;
+      return currentPoint.id == pointId;
     });
 
     viewport.calling = true;
@@ -417,7 +416,7 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
                 updatedMeasurement = updatedMeasurement.data;
 
                 _.remove(point.measurements, function (currentMeasurement) {
-                  return currentMeasurement.id === measurement.id;
+                  return currentMeasurement.id == measurement.id;
                 });
 
                 if (!measurement.submit) {
@@ -466,7 +465,7 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
     }
 
     var point = _.find(data.points, function (currentPoint) {
-      return currentPoint.id === pointId;
+      return currentPoint.id == pointId;
     });
 
     viewport.calling = true;
@@ -475,10 +474,10 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
       function () {
         api.sync().finally(function () {
           oauth.refresh().finally(function () {
-            $http.delete(url + '/airquality/points/' + pointId + '/measurements/' + measurementId).then(
+            $http.delete(url + '/airquality/points/' + pointId + '/measurements/' + measurementId + '/').then(
               function () {
                 _.remove(point.measurements, function (currentMeasurement) {
-                  return currentMeasurement.id === measurementId;
+                  return currentMeasurement.id == measurementId;
                 });
 
                 deferred.resolve();
@@ -495,11 +494,11 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
       function () {
         if (_.isString(measurementId) && measurementId.indexOf('x') > -1) {
           _.remove(point.measurements, function (currentPoint) {
-            return currentPoint.id === measurementId;
+            return currentPoint.id == measurementId;
           });
         } else {
           var measurement = _.find(point.measurements, function (currentMeasurement) {
-            return currentMeasurement.id === measurementId;
+            return currentMeasurement.id == measurementId;
           });
 
           measurement.deleted = true;
