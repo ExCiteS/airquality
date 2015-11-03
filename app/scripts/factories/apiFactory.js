@@ -326,7 +326,7 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
                 });
 
                 measurement.id = addedMeasurement.id;
-                measurement.created = addedMeasurement.created;
+                measurement.started = addedMeasurement.started;
 
                 point.measurements.push(measurement);
                 deferred.resolve(measurement);
