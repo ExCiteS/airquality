@@ -410,7 +410,7 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
           oauth.refresh().finally(function () {
             measurement.called = now;
 
-            $http.patch(url + '/airquality/points/' + pointId + '/measurements/' + measurement.id, measurement).then(
+            $http.patch(url + '/airquality/points/' + pointId + '/measurements/' + measurement.id + '/', measurement).then(
               function (updatedMeasurement) {
                 updatedMeasurement = updatedMeasurement.data;
 
