@@ -57,7 +57,6 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
                 }
               });
             } else if (measurement.updated) {
-              resolve(pointIndex, totalPoints);
               api.updatedMeasurement(measurement, point.id).finally(function () {
                 if (index + 1 === total) {
                   resolve(pointIndex, totalPoints);
