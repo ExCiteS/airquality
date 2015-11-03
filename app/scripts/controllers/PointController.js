@@ -82,7 +82,7 @@ AQ.controller('PointController', function ($stateParams, $scope, data, viewport,
       };
 
       if (_.size(data.barcode) < 6) {
-        data.barcode = Array(6 - _.size(data.barcode) + 1).join('0') + data.barcode;
+        data.barcode = new Array(6 - _.size(data.barcode) + 1).join('0') + data.barcode;
       }
 
       api.startMeasurement(data).then(
