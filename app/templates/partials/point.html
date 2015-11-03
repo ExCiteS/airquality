@@ -49,7 +49,7 @@
         </div>
       </form>
 
-      <p class="lead text-center" ng-hide="measurements.length">No measurements have been added so far</p>
+      <p class="lead text-center" ng-hide="measurements.length">No measurements have been started so far.</p>
 
       <ul class="list-group">
         <li class="list-group-item clearfix" ng-repeat="measurement in measurements = (data.point.measurements|active)">
@@ -112,7 +112,7 @@
     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
       <div class="panel panel-danger">
         <div class="panel-body">
-          <p>Deleting a point removes all current measurements too. However, it does not remove finished and submitted to projects measurements.</p>
+          <p>Deleting a point removes all current measurements too. However, it does not remove measurements that have been finished and submitted to projects.</p>
           <p>This action cannot be undone.</p>
           <p class="text-right"><button type="button" class="btn btn-danger" ng-click="delete()" ng-disabled="viewport.calling">Delete this point</button></p>
         </div>

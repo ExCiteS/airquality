@@ -1,4 +1,6 @@
 <div ng-hide="viewport.offline">
+  <p class="lead text-center">Register to start your measurements.</p>
+
   <div class="row">
     <form role="form" id="form-registration" class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2" ng-submit="register()" novalidate="novalidate">
       <div class="form-group" ng-class="{'has-error': registration.error.api || registration.error.email}">
