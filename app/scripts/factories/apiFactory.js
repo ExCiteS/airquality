@@ -324,11 +324,12 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
                   return currentMeasurement.id == measurement.id;
                 });
 
-                measurement.id = addedMeasurement.id;
-                measurement.started = addedMeasurement.started;
-
-                point.measurements.push(measurement);
-                deferred.resolve(measurement);
+                if (!_.isEmpty(addedMeasurement) && addedMeasurement.id) {
+                  point.measurements.push(addedMeasurement);
+                  deferred.resolve(addedMeasurement);
+                } else {
+                  deferred.resolve();
+                }
               },
               function (error) {
                 deferred.reject(error);
@@ -418,11 +419,12 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
                   return currentMeasurement.id == measurement.id;
                 });
 
-                if (!measurement.submit) {
+                if (!_.isEmpty(updatedMeasurement) && updatedMeasurement.id) {
                   point.measurements.push(updatedMeasurement);
+                  deferred.resolve(updatedMeasurement);
+                } else {
+                  deferred.resolve();
                 }
-
-                deferred.resolve();
               },
               function (error) {
                 deferred.reject(error);
