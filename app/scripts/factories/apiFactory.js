@@ -11,7 +11,7 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
   api.online = function () {
     var deferred = $q.defer();
 
-    $http.get('//' + $window.location.hostname).then(
+    $http.get('//' + $window.location.hostname + '/?' + new Date().getTime()).then(
       function () {
         viewport.offline = false;
         deferred.resolve();
