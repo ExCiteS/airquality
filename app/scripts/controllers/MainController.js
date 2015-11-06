@@ -1,6 +1,6 @@
 'use strict';
 
-AQ.controller('MainController', function ($scope, data, viewport, state, storage, api) {
+AQ.controller('MainController', function ($interval, $scope, data, viewport, state, storage, api) {
   $scope.data = data;
   $scope.viewport = viewport;
   $scope.state = state;
@@ -47,4 +47,8 @@ AQ.controller('MainController', function ($scope, data, viewport, state, storage
   $scope.sync = function () {
     api.sync();
   };
+
+  $interval(function () {
+    api.online();
+  }, 5000);
 });
