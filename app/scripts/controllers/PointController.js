@@ -1,6 +1,6 @@
 'use strict';
 
-AQ.controller('PointController', function ($stateParams, $scope, data, viewport, state, storage, api, leaflet) {
+AQ.controller('PointController', function ($timeout, $stateParams, $scope, data, viewport, state, storage, api, leaflet) {
   var pointId = $stateParams.pointId;
 
   state.setTitle('Point');
@@ -45,6 +45,10 @@ AQ.controller('PointController', function ($stateParams, $scope, data, viewport,
           leaflet.map.panTo(center);
         }
       });
+
+      $timeout(function () {
+        leaflet.map.invalidateSize();
+      }, 10);
 
       _.each(point.measurements, function (measurement) {
         measurement.addResults = false;
