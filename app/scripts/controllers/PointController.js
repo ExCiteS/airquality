@@ -1,6 +1,6 @@
 'use strict';
 
-AQ.controller('PointController', function ($stateParams, $scope, data, viewport, state, api, leaflet) {
+AQ.controller('PointController', function ($stateParams, $scope, data, viewport, state, storage, api, leaflet) {
   var pointId = $stateParams.pointId;
 
   state.setTitle('Point');
@@ -121,6 +121,14 @@ AQ.controller('PointController', function ($stateParams, $scope, data, viewport,
         measurement.error = {};
         delete measurement.results;
         delete measurement.project;
+        var lastProjectUsed = storage.get('LAST_PROJECT_USED');
+
+        if (lastProjectUsed) {
+          measurement.project = JSON.parse(lastProjectUsed);
+        } else {
+          delete measurement.project;
+        }
+
         $scope.formGroup.measurements[measurement.id].form.$setPristine();
         measurement.addResults = true;
       }
@@ -135,11 +143,14 @@ AQ.controller('PointController', function ($stateParams, $scope, data, viewport,
     });
 
     if (!$scope.formGroup.measurements[measurement.id].form.$error.required) {
+      var lastProjectUsed = measurement.project;
+
       measurement.submit = true;
       measurement.addResults = false;
 
       api.updateMeasurement(measurement).then(
         function () {
+          storage.put('LAST_PROJECT_USED', JSON.stringify(lastProjectUsed));
           viewport.message = 'The measurement has been submitted. Shortly it will be converted to a contribution, which can then be accessed using the Community Maps platform.';
         },
         function () {

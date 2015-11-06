@@ -192,6 +192,7 @@ AQ.factory('oauth', function ($q, $http, config, data, viewport, state, storage,
     } else {
       storage.remove('POINTS');
       storage.remove('PROJECTS');
+      storage.remove('LAST_PROJECT_USED');
 
       delete data.authentication;
       delete data.points;
