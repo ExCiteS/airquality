@@ -30,12 +30,12 @@ AQ.controller('PointsAddController', function ($window, $scope, viewport, state,
         $scope.$apply(function () {
           switch (error.code) {
             case 1:
-              viewport.message = 'It seems like you\'re not allowing to use your current location. You can\'t add new data points without a location, but you can still add new or finalise previous measurements.';
+              viewport.message = 'It seems like you\'re not allowing to use your current position. You can\'t add new locations without it, but you can still start new or finalise previous measurements.';
               break;
 
             case 2:
             case 3:
-              viewport.message = 'There was an error trying to get your current location. You can\'t add new data points without a location, but you can still add new or finalise previous measurements.';
+              viewport.message = 'There was an error trying to get your current position. You can\'t add new locations without it, but you can still start new or finalise previous measurements.';
               break;
 
             default:
@@ -48,7 +48,7 @@ AQ.controller('PointsAddController', function ($window, $scope, viewport, state,
       }
     );
   } else {
-    viewport.message = 'It seems like your browser does not support geolocation. You can\'t add new data points, but you can still add new or finalise previous measurements.';
+    viewport.message = 'It seems like your browser does not support geolocation. You can\'t add new locations, but you can still start new or finalise previous measurements.';
     state.redirect('points');
   }
 
@@ -82,11 +82,11 @@ AQ.controller('PointsAddController', function ($window, $scope, viewport, state,
 
       api.addPoint(data).then(
         function (point) {
-          viewport.message = 'The point has been added. You can now start your measurement.';
+          viewport.message = 'The location has been added. You can now start your measurement.';
           state.goToPoint(point.id);
         },
         function () {
-          viewport.message = 'An error occurred when trying to add the point. Please try again.';
+          viewport.message = 'An error occurred when trying to add the location. Please try again.';
           $scope.point.error.api = true;
         }
       );

@@ -50,7 +50,7 @@ AQ.controller('PointController', function ($stateParams, $scope, data, viewport,
         measurement.addResults = false;
       });
     } else {
-      viewport.message = 'It looks like the data point can\'t be found. Please choose an existing point from the list.';
+      viewport.message = 'It looks like the location can\'t be found. Please choose an existing location from the list.';
       state.redirect('points');
     }
   }
@@ -58,11 +58,11 @@ AQ.controller('PointController', function ($stateParams, $scope, data, viewport,
   $scope.delete = function () {
     api.deletePoint(pointId).then(
       function () {
-        viewport.message = 'The point has been deleted.';
+        viewport.message = 'The location has been deleted.';
       },
       function () {
         api.getPoints();
-        viewport.message = 'An error occurred when trying to delete the point.';
+        viewport.message = 'An error occurred when trying to delete the location.';
       }
     ).finally(function () {
       state.redirect('points');
@@ -167,7 +167,7 @@ AQ.controller('PointController', function ($stateParams, $scope, data, viewport,
         viewport.message = 'The measurement has been removed.';
       },
       function () {
-        viewport.message = 'An error occurred when trying to remove the point.';
+        viewport.message = 'An error occurred when trying to remove the measurement.';
       }
     );
   };

@@ -1,14 +1,14 @@
-<h3>Add new point</h3>
+<h3>Add new location</h3>
 
 <div id="map" ng-hide="viewport.offline"></div>
 
-<p class="lead text-center">You can adjust points location by moving the map.</p>
+<p class="lead text-center">You can adjust location by moving the map.</p>
 
 <form role="form" id="form-point" ng-submit="add()" novalidate="novalidate">
   <div ng-form="formGroup.form">
     <div ng-form="NameField" class="form-group" ng-class="{'has-error': point.error.api || (NameField.$dirty && NameField.$invalid)}">
-      <label for="form-point-name">Point name</label>
-      <span class="help-block text-center" ng-if="NameField.$dirty && NameField.$error.required">Please choose and enter name for this point in the field below</span>
+      <label for="form-point-name">Name of the location</label>
+      <span class="help-block text-center" ng-if="NameField.$dirty && NameField.$error.required">Please choose and enter name for this location in the field below</span>
       <input type="text" id="form-point-name" class="form-control" ng-model="point.name" ng-disabled="viewport.calling" required />
     </div>
 
@@ -33,7 +33,7 @@
 
     <p class="text-center">
       <button type="button" class="btn btn-default" ng-click="state.redirect('points')" ng-disabled="viewport.calling">Cancel</button>
-      <button type="submit" class="btn btn-primary" ng-disabled="viewport.calling">Add point</button>
+      <button type="submit" class="btn btn-primary" ng-disabled="viewport.calling">Add location</button>
     </p>
   </div>
 </form>
