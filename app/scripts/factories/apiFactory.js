@@ -82,9 +82,12 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
             });
           } else {
             if ((_.isString(point.id) && point.id.indexOf('x') > -1)) {
+              var measurements = _.cloneDeep(point.measurements);
+
               api.addPoint(point).then(
                 function (addedPoint) {
                   point.id = addedPoint.id;
+                  point.measurements = measurements;
                   syncMeasurements(point, pointIndex, totalPoints);
                 },
                 function () {
@@ -112,12 +115,8 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
 
     viewport.calling = true;
 
-    data.points = [];
-
     if (!_.isEmpty(points)) {
-      points = JSON.parse(points);
-    } else {
-      points = undefined;
+      data.points = JSON.parse(points);
     }
 
     api.online().then(
@@ -130,10 +129,7 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
                 deferred.resolve(data.points);
               },
               function (error) {
-                if (points) {
-                  data.points = points;
-                }
-
+                data.points = [];
                 deferred.reject(error);
               }
             ).finally(function () {
@@ -143,10 +139,6 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
         });
       },
       function () {
-        if (points) {
-          data.points = points;
-        }
-
         viewport.calling = false;
         deferred.resolve(data.points);
       }
@@ -204,8 +196,12 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
         if (!_.isString(point.id) || point.id.indexOf('x') === -1) {
           var id = 'x';
 
-          if (!_.isEmpty(data.unsynced.points)) {
-            id += parseInt(data.unsynced.points[data.unsynced.points.length - 1].id.replace('x', ''), 10) + 1;
+          var newUnsyncedPoints = _.filter(data.unsynced.points, function (point) {
+            return _.isString(point.id) && point.id.indexOf('x') > -1;
+          });
+
+          if (!_.isEmpty(newUnsyncedPoints)) {
+            id += parseInt(newUnsyncedPoints[newUnsyncedPoints.length - 1].id.replace('x', ''), 10) + 1;
           } else {
             id += 1;
           }
