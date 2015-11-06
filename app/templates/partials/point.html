@@ -26,7 +26,7 @@
     <hr class="visible-xs" />
 
     <div class="col-sm-12" ng-class="{'col-sm-7': data.point.properties.height || data.point.properties.distance || data.point.properties.characteristics}">
-      <h4>Measurements</h4>
+      <h4>Start new measurement</h4>
 
       <form role="form" id="form-measurement-add" ng-submit="start()" novalidate="novalidate">
         <div ng-form="formGroup.form">
@@ -47,11 +47,13 @@
         </div>
       </form>
 
+      <h4>Measurements</h4>
+
       <p class="lead text-center" ng-hide="measurements.length">No measurements started so far.</p>
 
       <ul class="list-group">
-        <li class="list-group-item clearfix" ng-repeat="measurement in measurements = (data.point.measurements|active)">
-          <h5 class="list-group-item-heading">{{ measurement.barcode }}</h5>
+        <li class="list-group-item clearfix" ng-class="{'list-group-item-success': measurement.addResults}" ng-repeat="measurement in measurements = (data.point.measurements|active)">
+          <h5 class="list-group-item-heading">Barcode: {{ measurement.barcode }}</h5>
           <h6 ng-show="measurement.submitted"><strong>{{ measurement.results }} µg/m³</strong></h6>
           <span class="text-warning" ng-show="measurement.id.indexOf('x') > -1 || measurement.updated">Measurement has not been synced yet</span>
 

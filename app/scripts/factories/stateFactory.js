@@ -63,7 +63,7 @@ AQ.factory('state', function ($window, $state, data, viewport) {
   };
 
   state.setTitle = function (title, subtitle) {
-    var mainTitle = 'Community Maps Air Quality';
+    var mainTitle = 'Air Quality';
 
     if (_.isEmpty(title)) {
       viewport.title = mainTitle;

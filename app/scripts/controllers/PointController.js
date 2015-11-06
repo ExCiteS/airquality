@@ -87,7 +87,7 @@ AQ.controller('PointController', function ($stateParams, $scope, data, viewport,
 
       api.startMeasurement(data).then(
         function () {
-          viewport.message = 'The measurement has started. You will get an email notification on a day when this measurement should finish (in a month time).';
+          viewport.message = 'The measurement has started. You will receive an email in one month to notify you that you can finish the measurement.';
           $scope.measurement.barcode = undefined;
           $scope.formGroup.form.$setPristine();
         },
@@ -104,7 +104,7 @@ AQ.controller('PointController', function ($stateParams, $scope, data, viewport,
 
     api.updateMeasurement(measurement).then(
       function () {
-        viewport.message = 'The measurement has finished. You can now add results and submit this measurement to a project.';
+        viewport.message = 'The measurement has finished. You can add results and submit this measurement to a project.';
       },
       function () {
         viewport.message = 'An error occurred when trying to finish the measurement. Please try again.';
@@ -140,7 +140,7 @@ AQ.controller('PointController', function ($stateParams, $scope, data, viewport,
 
       api.updateMeasurement(measurement).then(
         function () {
-          viewport.message = 'The measurement has been submitted. It will be converted to a contribution, which can then be accessed using Community Maps platform.';
+          viewport.message = 'The measurement has been submitted. Shortly it will be converted to a contribution, which can then be accessed using the Community Maps platform.';
         },
         function () {
           viewport.message = 'An error occurred when trying to submit the measurement. Please try again.';
