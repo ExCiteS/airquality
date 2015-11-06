@@ -82,7 +82,7 @@ AQ.controller('PointsAddController', function ($window, $scope, viewport, state,
 
       api.addPoint(data).then(
         function (point) {
-          viewport.message = 'The location has been added. You can now start your measurement.';
+          viewport.message = 'The location has been added. You can now start your measurements by adding a barcode.';
           state.goToPoint(point.id);
         },
         function () {

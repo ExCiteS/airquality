@@ -28,6 +28,8 @@
     <div class="col-sm-12" ng-class="{'col-sm-7': data.point.properties.height || data.point.properties.distance || data.point.properties.characteristics}">
       <h4>Start new measurement</h4>
 
+      <p>Enter barcode displayed on the diffusion tube.</p>
+
       <form role="form" id="form-measurement-add" ng-submit="start()" novalidate="novalidate">
         <div ng-form="formGroup.form">
           <div ng-form="BarcodeField" class="form-group" ng-class="{'has-error': measurement.error.api || (BarcodeField.$dirty && BarcodeField.$invalid)}">
