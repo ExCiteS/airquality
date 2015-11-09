@@ -3,7 +3,7 @@
 AQ.controller('PointController', function ($timeout, $stateParams, $scope, data, viewport, state, storage, api, leaflet) {
   var pointId = $stateParams.pointId;
 
-  state.setTitle('Point');
+  state.setTitle('Location');
   $scope.formGroup = {
     measurements: {}
   };
