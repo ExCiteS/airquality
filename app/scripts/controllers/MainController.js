@@ -1,10 +1,11 @@
 'use strict';
 
-AQ.controller('MainController', function ($interval, $scope, data, viewport, state, storage, api) {
+AQ.controller('MainController', function ($window, $scope, data, viewport, state, storage, oauth, api) {
   $scope.data = data;
   $scope.viewport = viewport;
   $scope.state = state;
 
+  // Watch data factory...
   $scope.$watch(
     function () {
       return data;
@@ -12,33 +13,38 @@ AQ.controller('MainController', function ($interval, $scope, data, viewport, sta
     function (data) {
       viewport.unsynced = false;
 
-      if (data.points) {
-        data.unsynced.points = [];
+      if (data.locations) {
+        // ...and keep track of all unsynced data
+        data.unsynced.locations = [];
 
-        _.each(data.points, function (point) {
-          var pointAdded;
+        _.each(data.locations, function (location) {
+          var locationAdded;
 
-          if ((_.isString(point.id) && point.id.indexOf('x') > -1) || point.deleted) {
+          if ((_.isString(location.id) && location.id.indexOf('x') > -1) || location.deleted) {
             viewport.unsynced = true;
-            data.unsynced.points.push(point);
-            pointAdded = true;
-          } else if (!_.isEmpty(point.measurements)) {
-            _.each(point.measurements, function (measurement) {
+            data.unsynced.locations.push(location);
+            // Make sure location is added to the list of unsynced locations only once
+            locationAdded = true;
+          } else if (!_.isEmpty(location.measurements)) {
+            _.each(location.measurements, function (measurement) {
               if ((_.isString(measurement.id) && measurement.id.indexOf('x') > -1) || measurement.deleted || measurement.updated) {
-                if (!pointAdded) {
+                // Add the whole location to the list of unsynced locations even only measurements are unsynced (this is sorted out later)
+                if (!locationAdded) {
                   viewport.unsynced = true;
-                  data.unsynced.points.push(point);
-                  pointAdded = true;
+                  data.unsynced.locations.push(location);
+                  locationAdded = true;
                 }
               }
             });
           }
         });
 
-        storage.put('POINTS', JSON.stringify(data.points));
+        // ...also store locations locally
+        storage.put('LOCATIONS', JSON.stringify(data.locations));
       }
 
       if (data.projects) {
+        // ...and don't forget to store projects locally too
         storage.put('PROJECTS', JSON.stringify(data.projects));
       }
     }, true
@@ -48,7 +54,28 @@ AQ.controller('MainController', function ($interval, $scope, data, viewport, sta
     api.sync();
   };
 
-  $interval(function () {
-    api.online();
-  }, 5000);
+  $scope.logout = function () {
+    var message = 'Are you sure you want to log out?';
+
+    // Add additional message when unsynced data is present
+    if (viewport.unsynced) {
+      message += ' All unsynced data will be lost.';
+    }
+
+    $window.navigator.notification.confirm(
+      message,
+      function (buttonIndex) {
+        // Log out when "Log me out" button is pressed
+        if (buttonIndex === 2) {
+          oauth.revoke().finally(function () {
+            state.redirect('index');
+          });
+        }
+      },
+      'Log out?', [
+        'Stay logged in', // 1
+        'Log me out' //2
+      ]
+    );
+  };
 });

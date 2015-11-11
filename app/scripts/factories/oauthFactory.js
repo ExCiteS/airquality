@@ -190,12 +190,12 @@ AQ.factory('oauth', function ($q, $http, config, data, viewport, state, storage,
 
       deferred.resolve();
     } else {
-      storage.remove('POINTS');
+      storage.remove('LOCATIONS');
       storage.remove('PROJECTS');
       storage.remove('LAST_PROJECT_USED');
 
       delete data.authentication;
-      delete data.points;
+      delete data.locations;
 
       delete $http.defaults.headers.common.Authorization;
 

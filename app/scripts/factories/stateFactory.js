@@ -13,13 +13,13 @@ AQ.factory('state', function ($window, $state, data, viewport) {
     }
   };
 
-  state.goToPoint = function (id) {
+  state.goToLocation = function (id) {
     if (_.isUndefined(id)) {
-      throw new Error('Point ID not specified');
+      throw new Error('Location ID not specified');
     }
 
-    state.redirect('point', {
-      pointId: id
+    state.redirect('location', {
+      locationId: id
     });
   };
 
@@ -40,7 +40,7 @@ AQ.factory('state', function ($window, $state, data, viewport) {
       throw new Error('Current state must be a string');
     }
 
-    if (viewport.history.currentState && (['404', 'redirect', 'logout'].indexOf(viewport.history.currentState) === -1)) {
+    if (viewport.history.currentState && (['404', 'redirect'].indexOf(viewport.history.currentState) === -1)) {
       viewport.history.previousState = viewport.history.currentState;
 
       if (!_.isEmpty(viewport.history.currentParams)) {

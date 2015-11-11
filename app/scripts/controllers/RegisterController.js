@@ -1,12 +1,13 @@
 'use strict';
 
-AQ.controller('RegisterController', function ($scope, data, viewport, state, oauth, helpers) {
+AQ.controller('RegisterController', function ($window, $scope, data, viewport, state, oauth, helpers) {
   state.setTitle('Register');
-  $scope.registration = {};
 
   if (!_.isEmpty(data.authentication)) {
     state.redirect('index');
   }
+
+  $scope.registration = {};
 
   $scope.register = function () {
     var email = $scope.registration.email;
@@ -43,12 +44,24 @@ AQ.controller('RegisterController', function ($scope, data, viewport, state, oau
     if (_.isEmpty($scope.registration.error)) {
       oauth.register(email, displayName, password1, password2).then(
         function () {
-          viewport.message = 'You have been registered. Please confirm your email address using the link in the email sent to your mailbox.';
+          $window.navigator.notification.alert(
+            'You have been registered. Please confirm your email address using the link in the email sent to your mailbox.',
+            undefined,
+            'Successfully registered',
+            'OK, I\'ll do that'
+          );
+
           state.redirect('login');
         },
         function () {
-          viewport.message = 'There was a problem registering you, probably this email address or display name is already in use.';
           $scope.registration.error.api = true;
+
+          $window.navigator.notification.alert(
+            'There was a n error registering you, probably this email address or display name is already in use.',
+            undefined,
+            'Error',
+            'OK, I\'ll try again'
+          );
         }
       );
     }

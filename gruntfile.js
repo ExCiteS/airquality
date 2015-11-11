@@ -7,7 +7,7 @@ module.exports = function (grunt) {
     pkg: grunt.file.readJSON('package.json'),
 
     clean: {
-      build: ['build'],
+      www: ['www'],
       temp: ['temp']
     },
 
@@ -17,7 +17,7 @@ module.exports = function (grunt) {
         dot: true,
         cwd: 'temp/html',
         src: '{,*/}*.html',
-        dest: 'build'
+        dest: 'www'
       },
 
       css: {
@@ -25,7 +25,7 @@ module.exports = function (grunt) {
         dot: true,
         cwd: 'temp/css',
         src: '{,*/}*.css',
-        dest: 'build/stylesheets'
+        dest: 'www/stylesheets'
       },
 
       js: {
@@ -33,7 +33,7 @@ module.exports = function (grunt) {
         dot: true,
         cwd: 'temp/js',
         src: '{,*/}*.js',
-        dest: 'build/scripts'
+        dest: 'www/scripts'
       },
 
       images: {
@@ -41,7 +41,7 @@ module.exports = function (grunt) {
         dot: true,
         cwd: 'temp/images',
         src: '{,*/}*.{png,jpg,jpeg,gif,svg}',
-        dest: 'build/images'
+        dest: 'www/images'
       }
     },
 
@@ -258,7 +258,7 @@ module.exports = function (grunt) {
     'imagemin',
     'concat',
     'replace',
-    'clean:build',
+    'clean:www',
     'copy:html',
     'copy:css',
     'copy:js',
@@ -279,7 +279,7 @@ module.exports = function (grunt) {
     'htmlmin',
     'ngAnnotate',
     'uglify',
-    'clean:build',
+    'clean:www',
     'copy:html',
     'copy:css',
     'copy:js',

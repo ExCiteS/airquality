@@ -1,6 +1,6 @@
 'use strict';
 
-AQ.controller('LoginController', function ($scope, viewport, state, oauth, storage, helpers) {
+AQ.controller('LoginController', function ($window, $scope, viewport, state, oauth, storage, helpers) {
   state.setTitle('Log in');
   $scope.authentication = {};
 
@@ -24,8 +24,14 @@ AQ.controller('LoginController', function ($scope, viewport, state, oauth, stora
           state.redirect();
         },
         function () {
-          viewport.message = 'There was a problem logging you in, maybe your email or password is incorrect?';
           $scope.authentication.error.api = true;
+
+          $window.navigator.notification.alert(
+            'There was a problem logging you in, maybe your email or password is incorrect?',
+            undefined,
+            'Error',
+            'OK, I\'ll try again'
+          );
         }
       );
     }

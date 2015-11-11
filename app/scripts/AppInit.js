@@ -9,19 +9,11 @@ var AQ = angular.module('AQ', [
   'angularMoment',
 ]);
 
-AQ.config(function ($httpProvider, $urlRouterProvider, $stateProvider, config) {
-  if (_.isEmpty(config)) {
-    throw new Error('Configuration not set');
-  } else if (!config.url) {
-    throw new Error('Path to platform not set');
-  }
-
-  config.version = '@@version';
-  config.url = config.url.replace(/\/$/, '');
-
+AQ.config(function ($httpProvider, $urlRouterProvider, $stateProvider) {
   $httpProvider.defaults.headers.post['Content-Type'] = 'application/json';
   $urlRouterProvider.when('', '/').otherwise('/404');
 
+  // Get rid of trailing slash from the URL
   $urlRouterProvider.rule(function ($injector, $location) {
     var path = $location.url();
 
@@ -36,6 +28,7 @@ AQ.config(function ($httpProvider, $urlRouterProvider, $stateProvider, config) {
     return false;
   });
 
+  // Configure states
   $stateProvider
     .state('index', {
       url: '/',
@@ -79,51 +72,39 @@ AQ.config(function ($httpProvider, $urlRouterProvider, $stateProvider, config) {
         }
       }
     })
-    .state('logout', {
-      url: '/logout',
+    .state('locations', {
+      url: '/locations',
       views: {
         content: {
-          controller: 'LogoutController',
-          templateUrl: 'partials/logout.html'
+          controller: 'LocationsController',
+          templateUrl: 'partials/locations.html'
         }
       }
     })
-    .state('points', {
-      url: '/points',
-      views: {
-        content: {
-          controller: 'PointsController',
-          templateUrl: 'partials/points.html'
-        }
-      }
-    })
-    .state('points.add', {
+    .state('locations.add', {
       url: '/add',
       views: {
         subcontent: {
-          controller: 'PointsAddController',
-          templateUrl: 'partials/points-add.html'
+          controller: 'LocationsAddController',
+          templateUrl: 'partials/locations-add.html'
         }
       }
     })
-    .state('point', {
-      url: '/point/:pointId',
+    .state('location', {
+      url: '/location/:locationId',
       views: {
         content: {
-          controller: 'PointController',
-          templateUrl: 'partials/point.html'
+          controller: 'LocationController',
+          templateUrl: 'partials/location.html'
         }
       }
     });
 });
 
-AQ.run(function ($window, $rootScope, config, viewport, data, state, oauth, api) {
+AQ.run(function ($window, $rootScope, config, viewport, data, state, oauth) {
   oauth.authorize();
-  api.online();
 
-  viewport.platform = config.url;
-  viewport.ready = true;
-
+  // Always redirect to Login state when user is not authenticated (unless it is a state for logging in or registering)
   $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
     if (_.isEmpty(data.authentication) && ['register', 'login'].indexOf(toState.name) === -1) {
       event.preventDefault();
@@ -131,7 +112,67 @@ AQ.run(function ($window, $rootScope, config, viewport, data, state, oauth, api)
     }
   });
 
+  // Save state history each time it changes
   $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
     state.saveHistory(toState.name, toParams, fromState.name, fromParams);
   });
+
+  // Make viewport ready only when device is ready
+  document.addEventListener('deviceready', function () {
+    function exitApp() {
+      $window.navigator.app.exitApp();
+    }
+
+    if (_.isEmpty(config)) {
+      $window.navigator.notification.alert(
+        'App configuration not set.',
+        exitApp,
+        'Error',
+        'OK'
+      );
+
+      return;
+    }
+
+    if (!config.url) {
+      $window.navigator.notification.alert(
+        'Path to platform not set.',
+        exitApp,
+        'Error',
+        'OK'
+      );
+
+      return;
+    }
+
+    config.url = config.url.replace(/\/$/, '');
+    config.version = '@@version';
+    viewport.platform = config.url;
+
+    // Check if network connection is available on the run...
+    if ($window.navigator.connection.type !== 'none') {
+      $rootScope.$apply(function () {
+        viewport.online = true;
+        viewport.ready = true;
+      });
+    } else {
+      $rootScope.$apply(function () {
+        viewport.online = false;
+        viewport.ready = true;
+      });
+    }
+
+    // ...and while running the app
+    document.addEventListener('online', function () {
+      $rootScope.$apply(function () {
+        viewport.online = true;
+      });
+    }, false);
+
+    document.addEventListener('offline', function () {
+      $rootScope.$apply(function () {
+        viewport.online = false;
+      });
+    }, false);
+  }, false);
 });

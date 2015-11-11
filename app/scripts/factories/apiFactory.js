@@ -5,97 +5,93 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
   var url = config.url + '/api';
 
   var unsynced = {
-    points: []
+    locations: []
   };
 
   api.online = function () {
     var deferred = $q.defer();
 
-    $http.get('//' + $window.location.hostname + '/?' + new Date().getTime()).then(
-      function () {
-        viewport.offline = false;
-        deferred.resolve();
-      },
-      function () {
-        viewport.offline = true;
-        deferred.reject();
-      }
-    );
+    if (viewport.online) {
+      deferred.resolve();
+    } else {
+      deferred.reject();
+    }
 
+    deferred.resolve();
     return deferred.promise;
   };
 
   api.sync = function () {
     var deferred = $q.defer();
-    var totalPoints = 0;
+    var totalLocations = 0;
 
     function resolve(index, total) {
       if (index + 1 === total) {
-        unsynced.points = [];
+        unsynced.locations = [];
         deferred.resolve();
       }
     }
 
-    function syncMeasurements(point, pointIndex, totalPoints) {
+    function syncMeasurements(location, locationIndex, totalLocations) {
       var total = 0;
 
-      if (!_.isEmpty(point.measurements)) {
-        total += point.measurements.length;
+      if (!_.isEmpty(location.measurements)) {
+        total += location.measurements.length;
 
-        _.each(point.measurements, function (measurement, index) {
+        _.each(location.measurements, function (measurement, index) {
           if (measurement.deleted) {
-            api.removeMeasurement(measurement.id, point.id).finally(function () {
+            api.removeMeasurement(measurement.id, location.id).finally(function () {
               if (index + 1 === total) {
-                resolve(pointIndex, totalPoints);
+                resolve(locationIndex, totalLocations);
               }
             });
           } else {
             if ((_.isString(measurement.id) && measurement.id.indexOf('x') > -1)) {
-              api.startMeasurement(measurement, point.id).finally(function () {
+              api.startMeasurement(measurement, location.id).finally(function () {
                 if (index + 1 === total) {
-                  resolve(pointIndex, totalPoints);
+                  resolve(locationIndex, totalLocations);
                 }
               });
             } else if (measurement.updated) {
-              api.updateMeasurement(measurement, point.id).finally(function () {
+              api.updateMeasurement(measurement, location.id).finally(function () {
                 if (index + 1 === total) {
-                  resolve(pointIndex, totalPoints);
+                  resolve(locationIndex, totalLocations);
                 }
               });
             }
           }
         });
       } else {
-        resolve(pointIndex, totalPoints);
+        resolve(locationIndex, totalLocations);
       }
     }
 
-    if (_.isEmpty(unsynced.points)) {
-      if (!_.isEmpty(data.unsynced.points)) {
-        unsynced.points = _.cloneDeep(data.unsynced.points);
-        totalPoints += unsynced.points.length;
+    if (_.isEmpty(unsynced.locations)) {
+      if (!_.isEmpty(data.unsynced.locations)) {
+        unsynced.locations = _.cloneDeep(data.unsynced.locations);
+        totalLocations += unsynced.locations.length;
 
-        _.each(_.cloneDeep(unsynced.points), function (point, pointIndex) {
-          if (point.deleted) {
-            api.deletePoint(point.id).finally(function () {
-              resolve(pointIndex, totalPoints);
+        _.each(_.cloneDeep(unsynced.locations), function (location, locationIndex) {
+          if (location.deleted) {
+            api.deleteLocation(location.id).finally(function () {
+              resolve(locationIndex, totalLocations);
             });
           } else {
-            if ((_.isString(point.id) && point.id.indexOf('x') > -1)) {
-              var measurements = _.cloneDeep(point.measurements);
+            if ((_.isString(location.id) && location.id.indexOf('x') > -1)) {
+              var measurements = _.cloneDeep(location.measurements);
 
-              api.addPoint(point).then(
-                function (addedPoint) {
-                  point.id = addedPoint.id;
-                  point.measurements = measurements;
-                  syncMeasurements(point, pointIndex, totalPoints);
+              api.addLocation(location).then(
+                function (addedLocation) {
+                  location.id = addedLocation.id;
+                  location.measurements = measurements;
+                  syncMeasurements(location, locationIndex, totalLocations);
                 },
                 function () {
-                  resolve(pointIndex, totalPoints);
+                  resolve(locationIndex, totalLocations);
                 }
               );
             } else {
-              syncMeasurements(point, pointIndex, totalPoints);
+              syncMeasurements(location, locationIndex, totalLocations);
             }
           }
         });
@@ -109,14 +105,14 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
     return deferred.promise;
   };
 
-  api.getPoints = function () {
+  api.getLocations = function () {
     var deferred = $q.defer();
-    var points = storage.get('POINTS');
+    var locations = storage.get('LOCATIONS');
 
     viewport.calling = true;
 
-    if (!_.isEmpty(points)) {
-      data.points = JSON.parse(points);
+    if (!_.isEmpty(locations)) {
+      data.locations = JSON.parse(locations);
     }
 
     api.online().then(
@@ -124,12 +120,12 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
         api.sync().finally(function () {
           oauth.refresh().finally(function () {
             $http.get(url + '/airquality/points/').then(
-              function (retrievedPoints) {
-                data.points = retrievedPoints.data;
-                deferred.resolve(data.points);
+              function (retrievedLocations) {
+                data.locations = retrievedLocations.data;
+                deferred.resolve(data.locations);
               },
               function (error) {
-                data.points = [];
+                data.locations = [];
                 deferred.reject(error);
               }
             ).finally(function () {
@@ -140,20 +136,20 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
       },
       function () {
         viewport.calling = false;
-        deferred.resolve(data.points);
+        deferred.resolve(data.locations);
       }
     );
 
     return deferred.promise;
   };
 
-  api.addPoint = function (point) {
+  api.addLocation = function (location) {
     var deferred = $q.defer();
 
-    if (_.isUndefined(point)) {
-      throw new Error('Point not specified');
-    } else if (!_.isPlainObject(point)) {
-      throw new Error('Point must be plain object');
+    if (_.isUndefined(location)) {
+      throw new Error('Location not specified');
+    } else if (!_.isPlainObject(location)) {
+      throw new Error('Location must be plain object');
     }
 
     var now = new Date();
@@ -165,23 +161,23 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
       function () {
         api.sync().finally(function () {
           oauth.refresh().finally(function () {
-            point.called = now;
+            location.called = now;
 
-            $http.post(url + '/airquality/points/', point).then(
-              function (addedPoint) {
-                addedPoint = addedPoint.data;
+            $http.post(url + '/airquality/points/', location).then(
+              function (addedLocation) {
+                addedLocation = addedLocation.data;
 
-                _.remove(data.points, function (currentPoint) {
-                  return currentPoint.id == point.id;
+                _.remove(data.locations, function (currentLocation) {
+                  return currentLocation.id == location.id;
                 });
 
-                point.id = addedPoint.id;
-                point.created = addedPoint.created;
-                point.geometry = addedPoint.geometry;
-                point.measurements = addedPoint.measurements;
+                location.id = addedLocation.id;
+                location.created = addedLocation.created;
+                location.geometry = addedLocation.geometry;
+                location.measurements = addedLocation.measurements;
 
-                data.points.push(point);
-                deferred.resolve(point);
+                data.locations.push(location);
+                deferred.resolve(location);
               },
               function (error) {
                 deferred.reject(error);
@@ -193,55 +189,55 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
         });
       },
       function () {
-        if (!_.isString(point.id) || point.id.indexOf('x') === -1) {
+        if (!_.isString(location.id) || location.id.indexOf('x') === -1) {
           var id = 'x';
 
-          var newUnsyncedPoints = _.filter(data.unsynced.points, function (point) {
-            return _.isString(point.id) && point.id.indexOf('x') > -1;
+          var newUnsyncedLocations = _.filter(data.unsynced.locations, function (location) {
+            return _.isString(location.id) && location.id.indexOf('x') > -1;
           });
 
-          if (!_.isEmpty(newUnsyncedPoints)) {
-            id += parseInt(newUnsyncedPoints[newUnsyncedPoints.length - 1].id.replace('x', ''), 10) + 1;
+          if (!_.isEmpty(newUnsyncedLocations)) {
+            id += parseInt(newUnsyncedLocations[newUnsyncedLocations.length - 1].id.replace('x', ''), 10) + 1;
           } else {
             id += 1;
           }
 
-          point.id = id;
-          point.created = now;
-          point.measurements = [];
-          data.points.push(point);
+          location.id = id;
+          location.created = now;
+          location.measurements = [];
+          data.locations.push(location);
         }
 
         viewport.calling = false;
-        deferred.resolve(point);
+        deferred.resolve(location);
       }
     );
 
     return deferred.promise;
   };
 
-  api.deletePoint = function (pointId) {
+  api.deleteLocation = function (locationId) {
     var deferred = $q.defer();
 
-    if (_.isUndefined(pointId)) {
-      throw new Error('Point ID not specified');
+    if (_.isUndefined(locationId)) {
+      throw new Error('Location ID not specified');
     }
 
     viewport.calling = true;
 
-    if (!_.isEmpty(data.point) && data.point.id == pointId) {
-      delete data.point;
-      state.redirect('points');
+    if (!_.isEmpty(data.location) && data.location.id == locationId) {
+      delete data.location;
+      state.redirect('locations');
     }
 
     api.online().then(
       function () {
         api.sync().finally(function () {
           oauth.refresh().finally(function () {
-            $http.delete(url + '/airquality/points/' + pointId + '/').then(
+            $http.delete(url + '/airquality/points/' + locationId + '/').then(
               function () {
-                _.remove(data.points, function (currentPoint) {
-                  return currentPoint.id == pointId;
+                _.remove(data.locations, function (currentLocation) {
+                  return currentLocation.id == locationId;
                 });
 
                 deferred.resolve();
@@ -256,20 +252,20 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
         });
       },
       function () {
-        var unsyncedPoint = _.find(data.unsynced.points, function (currentPoint) {
-          return currentPoint.id == pointId;
+        var unsyncedLocation = _.find(data.unsynced.locations, function (currentLocation) {
+          return currentLocation.id == locationId;
         });
 
-        if (unsyncedPoint) {
-          _.remove(data.points, function (currentPoint) {
-            return currentPoint.id == pointId;
+        if (unsyncedLocation) {
+          _.remove(data.locations, function (currentLocation) {
+            return currentLocation.id == locationId;
           });
         } else {
-          var point = _.find(data.points, function (currentPoint) {
-            return currentPoint.id == pointId;
+          var location = _.find(data.locations, function (currentLocation) {
+            return currentLocation.id == locationId;
           });
 
-          point.deleted = true;
+          location.deleted = true;
         }
 
         viewport.calling = false;
@@ -280,28 +276,28 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
     return deferred.promise;
   };
 
-  api.startMeasurement = function (measurement, pointId) {
+  api.startMeasurement = function (measurement, locationId) {
     var deferred = $q.defer();
 
     if (_.isUndefined(measurement)) {
       throw new Error('Measurement not specified');
     } else if (!_.isPlainObject(measurement)) {
       throw new Error('Measurement must be plain object');
-    } else if (_.isUndefined(pointId)) {
-      if (_.isUndefined(data.point)) {
-        throw new Error('Point not set');
-      } else if (!_.isPlainObject(data.point)) {
-        throw new Error('Point must be plain object');
+    } else if (_.isUndefined(locationId)) {
+      if (_.isUndefined(data.location)) {
+        throw new Error('Location not set');
+      } else if (!_.isPlainObject(data.location)) {
+        throw new Error('Location must be plain object');
       }
 
-      pointId = data.point.id;
+      locationId = data.location.id;
     }
 
     var now = new Date();
     now = now.toISOString();
 
-    var point = _.find(data.points, function (currentPoint) {
-      return currentPoint.id == pointId;
+    var location = _.find(data.locations, function (currentLocation) {
+      return currentLocation.id == locationId;
     });
 
     viewport.calling = true;
@@ -312,16 +308,16 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
           oauth.refresh().finally(function () {
             measurement.called = now;
 
-            $http.post(url + '/airquality/points/' + pointId + '/measurements/', measurement).then(
+            $http.post(url + '/airquality/points/' + locationId + '/measurements/', measurement).then(
               function (addedMeasurement) {
                 addedMeasurement = addedMeasurement.data;
 
-                _.remove(point.measurements, function (currentMeasurement) {
+                _.remove(location.measurements, function (currentMeasurement) {
                   return currentMeasurement.id == measurement.id;
                 });
 
                 if (!_.isEmpty(addedMeasurement) && addedMeasurement.id) {
-                  point.measurements.push(addedMeasurement);
+                  location.measurements.push(addedMeasurement);
                   deferred.resolve(addedMeasurement);
                 } else {
                   deferred.resolve();
@@ -340,7 +336,7 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
         if (!_.isString(measurement.id) || measurement.id.indexOf('x') === -1) {
           var id = 'x';
 
-          var newUnsyncedMeasurements = _.filter(point.measurements, function (currentMeasurement) {
+          var newUnsyncedMeasurements = _.filter(location.measurements, function (currentMeasurement) {
             return _.isString(currentMeasurement.id) && currentMeasurement.id.indexOf('x') !== -1;
           });
 
@@ -352,7 +348,7 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
 
           measurement.id = id;
           measurement.started = now;
-          point.measurements.push(measurement);
+          location.measurements.push(measurement);
         }
 
         viewport.calling = false;
@@ -363,28 +359,28 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
     return deferred.promise;
   };
 
-  api.updateMeasurement = function (measurement, pointId) {
+  api.updateMeasurement = function (measurement, locationId) {
     var deferred = $q.defer();
 
     if (_.isUndefined(measurement)) {
       throw new Error('Measurement not specified');
     } else if (!_.isPlainObject(measurement)) {
       throw new Error('Measurement must be plain object');
-    } else if (_.isUndefined(pointId)) {
-      if (_.isUndefined(data.point)) {
-        throw new Error('Point not set');
-      } else if (!_.isPlainObject(data.point)) {
-        throw new Error('Point must be plain object');
+    } else if (_.isUndefined(locationId)) {
+      if (_.isUndefined(data.location)) {
+        throw new Error('Location not set');
+      } else if (!_.isPlainObject(data.location)) {
+        throw new Error('Location must be plain object');
       }
 
-      pointId = data.point.id;
+      locationId = data.location.id;
     }
 
     var now = new Date();
     now = now.toISOString();
 
-    var point = _.find(data.points, function (currentPoint) {
-      return currentPoint.id == pointId;
+    var location = _.find(data.locations, function (currentLocation) {
+      return currentLocation.id == locationId;
     });
 
     viewport.calling = true;
@@ -407,16 +403,16 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
           oauth.refresh().finally(function () {
             measurement.called = now;
 
-            $http.patch(url + '/airquality/points/' + pointId + '/measurements/' + measurement.id + '/', measurement).then(
+            $http.patch(url + '/airquality/points/' + locationId + '/measurements/' + measurement.id + '/', measurement).then(
               function (updatedMeasurement) {
                 updatedMeasurement = updatedMeasurement.data;
 
-                _.remove(point.measurements, function (currentMeasurement) {
+                _.remove(location.measurements, function (currentMeasurement) {
                   return currentMeasurement.id == measurement.id;
                 });
 
                 if (!_.isEmpty(updatedMeasurement) && updatedMeasurement.id) {
-                  point.measurements.push(updatedMeasurement);
+                  location.measurements.push(updatedMeasurement);
                   deferred.resolve(updatedMeasurement);
                 } else {
                   deferred.resolve();
@@ -446,23 +442,23 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
     return deferred.promise;
   };
 
-  api.removeMeasurement = function (measurementId, pointId) {
+  api.removeMeasurement = function (measurementId, locationId) {
     var deferred = $q.defer();
 
     if (_.isUndefined(measurementId)) {
       throw new Error('Measurement ID not specified');
-    } else if (_.isUndefined(pointId)) {
-      if (_.isUndefined(data.point)) {
-        throw new Error('Point not set');
-      } else if (!_.isPlainObject(data.point)) {
-        throw new Error('Point must be plain object');
+    } else if (_.isUndefined(locationId)) {
+      if (_.isUndefined(data.location)) {
+        throw new Error('Location not set');
+      } else if (!_.isPlainObject(data.location)) {
+        throw new Error('Location must be plain object');
       }
 
-      pointId = data.point.id;
+      locationId = data.location.id;
     }
 
-    var point = _.find(data.points, function (currentPoint) {
-      return currentPoint.id == pointId;
+    var location = _.find(data.locations, function (currentLocation) {
+      return currentLocation.id == locationId;
     });
 
     viewport.calling = true;
@@ -471,9 +467,9 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
       function () {
         api.sync().finally(function () {
           oauth.refresh().finally(function () {
-            $http.delete(url + '/airquality/points/' + pointId + '/measurements/' + measurementId + '/').then(
+            $http.delete(url + '/airquality/points/' + locationId + '/measurements/' + measurementId + '/').then(
               function () {
-                _.remove(point.measurements, function (currentMeasurement) {
+                _.remove(location.measurements, function (currentMeasurement) {
                   return currentMeasurement.id == measurementId;
                 });
 
@@ -490,11 +486,11 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
       },
       function () {
         if (_.isString(measurementId) && measurementId.indexOf('x') > -1) {
-          _.remove(point.measurements, function (currentPoint) {
-            return currentPoint.id == measurementId;
+          _.remove(location.measurements, function (currentLocation) {
+            return currentLocation.id == measurementId;
           });
         } else {
-          var measurement = _.find(point.measurements, function (currentMeasurement) {
+          var measurement = _.find(location.measurements, function (currentMeasurement) {
             return currentMeasurement.id == measurementId;
           });
 
