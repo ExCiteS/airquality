@@ -144,7 +144,7 @@ AQ.run(function ($window, $rootScope, config, viewport, data, state, oauth) {
     }
 
     config.url = config.url.replace(/\/$/, '');
-    config.version = '@@version';
+    config.version = '0.1.0';
     viewport.platform = config.url;
 
     // Check if network connection is available on the run...
@@ -508,7 +508,7 @@ AQ.controller('LoginController', function ($window, $scope, viewport, state, oau
 
           $window.navigator.notification.alert(
             'There was a problem logging you in, maybe your email or password is incorrect?',
-            undefined, // no callback
+            undefined,
             'Error',
             'OK, I\'ll try again'
           );
@@ -586,13 +586,16 @@ AQ.controller('MainController', function ($window, $scope, data, viewport, state
       message,
       function (buttonIndex) {
         // Log out when "Log me out" button is pressed
-        if (buttonIndex === 1) {
+        if (buttonIndex === 2) {
           oauth.revoke().finally(function () {
             state.redirect('index');
           });
         }
       },
-      'Log out?', ['Stay logged in', 'Log me out']
+      'Log out?', [
+        'Stay logged in', // 1
+        'Log me out' //2
+      ]
     );
   };
 });

@@ -54,7 +54,7 @@
       <p class="lead text-center" ng-hide="measurements.length">No measurements started so far.</p>
 
       <ul class="list-group">
-        <li class="list-group-item clearfix" ng-class="{'list-group-item-success': measurement.addResults}" ng-repeat="measurement in measurements = (data.plocation.measurements|active)">
+        <li class="list-group-item clearfix" ng-class="{'list-group-item-success': measurement.addResults}" ng-repeat="measurement in measurements = (data.location.measurements|active)">
           <h5 class="list-group-item-heading">Barcode: {{ measurement.barcode }}</h5>
           <h6 ng-show="measurement.submitted"><strong>{{ measurement.results }} µg/m³</strong></h6>
           <span class="text-warning" ng-show="measurement.id.indexOf('x') > -1 || measurement.updated">Measurement has not been synced yet</span>
