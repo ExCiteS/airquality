@@ -18,15 +18,7 @@ sudo npm install -g grunt-cli
 sudo npm install -g cordova
 ```
 
-Navigate to project's directory and download all the required Cordova plugins:
-
-```console
-cordova plugin add cordova-plugin-dialogs
-cordova plugin add cordova-plugin-network-information
-cordova plugin add cordova-plugin-geolocation
-```
-
-Also, download and install required Bower components and npm modules locally:
+Navigate to project's directory and install required Bower components and npm modules locally:
 
 ```console
 bower install
@@ -41,7 +33,15 @@ Build Angular application:
 grunt build
 ```
 
-Add platforms (SDK must be installed for each platform):
+Download all the required Cordova plugins:
+
+```console
+cordova plugin add cordova-plugin-dialogs
+cordova plugin add cordova-plugin-network-information
+cordova plugin add cordova-plugin-geolocation
+```
+
+Also, add platforms (SDK must be installed for each platform):
 
 ```console
 cordova platform add ios
