@@ -139,7 +139,15 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
           state.redirect('locations');
         },
         function () {
-          $scope.measurement.error.api = true;
+          api.getLocations().finally(function () {
+            var location = _.find(data.locations, function (currentLocation) {
+              return currentLocation.id == locationId;
+            });
+
+            if (location) {
+              data.location = location;
+            }
+          });
 
           $window.navigator.notification.alert(
             'An error occurred when trying to start the measurement. Please try again.',
@@ -170,7 +178,15 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
               );
             },
             function () {
-              delete measurement.finished;
+              api.getLocations().finally(function () {
+                var location = _.find(data.locations, function (currentLocation) {
+                  return currentLocation.id == locationId;
+                });
+
+                if (location) {
+                  data.location = location;
+                }
+              });
 
               $window.navigator.notification.alert(
                 'An error occurred when trying to finish the measurement. Please try again.',
@@ -242,7 +258,15 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
           );
         },
         function () {
-          delete measurement.submitted;
+          api.getLocations().finally(function () {
+            var location = _.find(data.locations, function (currentLocation) {
+              return currentLocation.id == locationId;
+            });
+
+            if (location) {
+              data.location = location;
+            }
+          });
 
           $window.navigator.notification.alert(
             'An error occurred when trying to submit the measurement. Please try again.',
@@ -271,6 +295,16 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
               );
             },
             function () {
+              api.getLocations().finally(function () {
+                var location = _.find(data.locations, function (currentLocation) {
+                  return currentLocation.id == locationId;
+                });
+
+                if (location) {
+                  data.location = location;
+                }
+              });
+
               $window.navigator.notification.alert(
                 'An error occurred when trying to remove the measurement.',
                 undefined,
