@@ -1,8 +1,9 @@
 <h3>Add new location</h3>
 
-<div id="map" ng-show="viewport.online"></div>
-
-<p class="lead text-center">You can adjust location by moving the map.</p>
+<div ng-show="viewport.online">
+  <div id="map"></div>
+  <p class="lead text-center">You can adjust location by moving the map.</p>
+</div>
 
 <form role="form" id="form-location" ng-submit="add()" novalidate="novalidate">
   <div ng-form="formGroup.form">
