@@ -5,6 +5,7 @@
   <description>Mini Cordova application for collecting Air Quality measurements.</description>
   <author email="info@mappingforchange.org.uk" href="http://mappingforchange.org.uk">Mapping for Change</author>
   <icon src="res/ios/icon.png" platform="ios" width="57" height="57" density="mdpi" />
+  <icon src="res/icons/default.png" />
   <content src="index.html" />
   <plugin name="cordova-plugin-whitelist" version="1" />
   <access origin="*" />
