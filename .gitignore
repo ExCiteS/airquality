@@ -1,6 +1,7 @@
 node_modules
 bower_components
 platforms
+plugins
 build
 temp
 config.js
