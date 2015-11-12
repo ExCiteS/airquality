@@ -3,6 +3,7 @@
 AQ.controller('RegisterController', function ($window, $scope, data, viewport, state, oauth, helpers) {
   state.setTitle('Register');
 
+  // Redirect to Index state when user is already authenticated
   if (!_.isEmpty(data.authentication)) {
     state.redirect('index');
   }
@@ -47,8 +48,8 @@ AQ.controller('RegisterController', function ($window, $scope, data, viewport, s
           $window.navigator.notification.alert(
             'You have been registered. Please confirm your email address using the link in the email sent to your mailbox.',
             undefined,
-            'Successfully registered',
-            'OK, I\'ll do that'
+            'Success',
+            'OK'
           );
 
           state.redirect('login');
@@ -60,7 +61,7 @@ AQ.controller('RegisterController', function ($window, $scope, data, viewport, s
             'There was a n error registering you, probably this email address or display name is already in use.',
             undefined,
             'Error',
-            'OK, I\'ll try again'
+            'OK'
           );
         }
       );

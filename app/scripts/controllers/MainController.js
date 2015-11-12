@@ -74,7 +74,7 @@ AQ.controller('MainController', function ($window, $scope, data, viewport, state
       },
       'Log out?', [
         'Stay logged in', // 1
-        'Log me out' //2
+        'Log me out' // 2
       ]
     );
   };

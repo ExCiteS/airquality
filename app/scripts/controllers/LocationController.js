@@ -1,6 +1,6 @@
 'use strict';
 
-AQ.controller('LocationController', function ($timeout, $stateParams, $scope, data, viewport, state, storage, api, leaflet) {
+AQ.controller('LocationController', function ($window, $timeout, $stateParams, $scope, data, viewport, state, storage, api, leaflet) {
   var locationId = $stateParams.locationId;
 
   state.setTitle('Location');
@@ -12,6 +12,7 @@ AQ.controller('LocationController', function ($timeout, $stateParams, $scope, da
   };
 
   if (_.isEmpty(data.locations)) {
+    // First get all locations, only then retrieve the current location accessed
     api.getLocations().finally(function () {
       getLocation();
     });
@@ -20,6 +21,7 @@ AQ.controller('LocationController', function ($timeout, $stateParams, $scope, da
   }
 
   function getLocation() {
+    // Find current location accessed in the list of all locations
     var location = _.find(data.locations, function (currentLocation) {
       return currentLocation.id == locationId;
     });
@@ -46,6 +48,7 @@ AQ.controller('LocationController', function ($timeout, $stateParams, $scope, da
         }
       });
 
+      // Make sure the map is displayed correctly
       $timeout(function () {
         leaflet.map.invalidateSize();
       }, 10);
@@ -54,25 +57,56 @@ AQ.controller('LocationController', function ($timeout, $stateParams, $scope, da
         measurement.addResults = false;
       });
     } else {
-      viewport.message = 'It looks like the location can\'t be found. Please choose an existing location from the list.';
+      $window.navigator.notification.alert(
+        'The location you\'re trying to access is not found. Please choose an existing location from the list.',
+        undefined,
+        'Not found',
+        'OK'
+      );
+
       state.redirect('locations');
     }
   }
 
+  // Deletes location (needs confirmation)
   $scope.delete = function () {
-    api.deleteLocation(locationId).then(
-      function () {
-        viewport.message = 'The location has been deleted.';
+    $window.navigator.notification.confirm(
+      'Are you sure you want to delete this location?',
+      function (buttonIndex) {
+        if (buttonIndex === 2) {
+          api.deleteLocation(locationId).then(
+            function () {
+              $window.navigator.notification.alert(
+                'The location has been deleted.',
+                undefined,
+                'Success',
+                'OK'
+              );
+            },
+            function () {
+              api.getLocations();
+
+              $window.navigator.notification.alert(
+                'An error occurred when trying to delete the location.',
+                undefined,
+                'Error',
+                'OK'
+              );
+            }
+          ).finally(function () {
+            // Always redirect to Locations state
+            state.redirect('locations');
+          });
+        }
       },
-      function () {
-        api.getLocations();
-        viewport.message = 'An error occurred when trying to delete the location.';
-      }
-    ).finally(function () {
-      state.redirect('locations');
-    });
+      'Delete?', [
+        'No, leave it', // 1
+        'Yes, delete' // 2
+      ]
+    );
   };
 
+  // Starts measurement
   $scope.start = function () {
     $scope.measurement.error = {};
 
@@ -82,50 +116,91 @@ AQ.controller('LocationController', function ($timeout, $stateParams, $scope, da
 
     if (!$scope.formGroup.form.$error.required) {
       var data = {
-        barcode: $scope.measurement.barcode.toString()
+        barcode: $scope.measurement.barcode.toString() // always a string
       };
 
+      // Make sure barcode always consists of 6 numbers (add leading zeros)
       if (_.size(data.barcode) < 6) {
         data.barcode = new Array(6 - _.size(data.barcode) + 1).join('0') + data.barcode;
       }
 
       api.startMeasurement(data).then(
         function () {
-          viewport.message = 'The measurement has started. You will receive an email in four weeks to notify you that you should collect the diffusion tube and finish the measurement.';
           $scope.measurement.barcode = undefined;
           $scope.formGroup.form.$setPristine();
+
+          $window.navigator.notification.alert(
+            'The measurement has started. You will receive an email in four weeks to notify you that you should collect the diffusion tube and finish the measurement.',
+            undefined,
+            'Success',
+            'OK'
+          );
+
           state.redirect('locations');
         },
         function () {
-          viewport.message = 'An error occurred when trying to start the measurement. Please try again.';
           $scope.measurement.error.api = true;
+
+          $window.navigator.notification.alert(
+            'An error occurred when trying to start the measurement. Please try again.',
+            undefined,
+            'Error',
+            'OK'
+          );
         }
       );
     }
   };
 
+  // Finishes measurement (needs confirmation)
   $scope.finish = function (measurement) {
-    measurement.finish = true;
+    $window.navigator.notification.confirm(
+      'Are you sure you want to finish this measurement?',
+      function (buttonIndex) {
+        if (buttonIndex === 2) {
+          measurement.finish = true;
 
-    api.updateMeasurement(measurement).then(
-      function () {
-        viewport.message = 'The measurement has finished. You can add the results when they come in to submit this measurement to Community Maps.';
+          api.updateMeasurement(measurement).then(
+            function () {
+              $window.navigator.notification.alert(
+                'The measurement has finished. You can add the results when they come in to submit the measurement to Community Maps.',
+                undefined,
+                'Success',
+                'OK'
+              );
+            },
+            function () {
+              delete measurement.finished;
+
+              $window.navigator.notification.alert(
+                'An error occurred when trying to finish the measurement. Please try again.',
+                undefined,
+                'Error',
+                'OK'
+              );
+            }
+          );
+        }
       },
-      function () {
-        viewport.message = 'An error occurred when trying to finish the measurement. Please try again.';
-        delete measurement.finished;
-      }
+      'Finish?', [
+        'No, not yet', // 1
+        'Yes, finish' // 2
+      ]
     );
   };
 
+  // Allows to add results to measurement
   $scope.addResults = function (measurement) {
     api.getProjects().finally(function () {
       if (_.isEmpty(data.projects)) {
-        viewport.message = 'It looks like there are no projects the measurement can be submitted to.';
+        $window.navigator.notification.alert(
+          'It looks like there are no projects the measurement can be submitted to.',
+          undefined,
+          'Not found',
+          'OK'
+        );
       } else {
-        measurement.error = {};
-        delete measurement.results;
-        delete measurement.project;
+        // Set project automatically to the last one used
         var lastProjectUsed = storage.get('LAST_PROJECT_USED');
 
         if (lastProjectUsed) {
@@ -134,12 +209,15 @@ AQ.controller('LocationController', function ($timeout, $stateParams, $scope, da
           delete measurement.project;
         }
 
+        measurement.error = {};
+        delete measurement.results;
         $scope.formGroup.measurements[measurement.id].form.$setPristine();
         measurement.addResults = true;
       }
     });
   };
 
+  // Submits measurement
   $scope.submit = function (measurement) {
     measurement.error = {};
 
@@ -148,32 +226,65 @@ AQ.controller('LocationController', function ($timeout, $stateParams, $scope, da
     });
 
     if (!$scope.formGroup.measurements[measurement.id].form.$error.required) {
-      var lastProjectUsed = measurement.project;
+      // Save last project used locally
+      storage.put('LAST_PROJECT_USED', JSON.stringify(measurement.project));
 
       measurement.submit = true;
       measurement.addResults = false;
 
       api.updateMeasurement(measurement).then(
         function () {
-          storage.put('LAST_PROJECT_USED', JSON.stringify(lastProjectUsed));
-          viewport.message = 'The measurement has been submitted. Shortly it will be converted to a contribution, which can then be accessed using the Community Maps platform.';
+          $window.navigator.notification.alert(
+            'The measurement has been submitted. Shortly it will be converted to a contribution, which can then be accessed using the Community Maps platform.',
+            undefined,
+            'Success',
+            'OK'
+          );
         },
         function () {
-          viewport.message = 'An error occurred when trying to submit the measurement. Please try again.';
           delete measurement.submitted;
+
+          $window.navigator.notification.alert(
+            'An error occurred when trying to submit the measurement. Please try again.',
+            undefined,
+            'Error',
+            'OK'
+          );
         }
       );
     }
   };
 
+  // Removes measurement (needs confirmation)
   $scope.remove = function (measurement) {
-    api.removeMeasurement(measurement.id).then(
-      function () {
-        viewport.message = 'The measurement has been removed.';
+    $window.navigator.notification.confirm(
+      'Are you sure you want to remove this measurement?',
+      function (buttonIndex) {
+        if (buttonIndex === 2) {
+          api.removeMeasurement(measurement.id).then(
+            function () {
+              $window.navigator.notification.alert(
+                'The measurement has been removed.',
+                undefined,
+                'Success',
+                'OK'
+              );
+            },
+            function () {
+              $window.navigator.notification.alert(
+                'An error occurred when trying to remove the measurement.',
+                undefined,
+                'Error',
+                'OK'
+              );
+            }
+          );
+        }
       },
-      function () {
-        viewport.message = 'An error occurred when trying to remove the measurement.';
-      }
+      'Remove?', [
+        'No, leave it', // 1
+        'Yes, remove' // 2
+      ]
     );
   };
 });

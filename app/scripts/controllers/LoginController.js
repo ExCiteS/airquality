@@ -30,7 +30,7 @@ AQ.controller('LoginController', function ($window, $scope, viewport, state, oau
             'There was a problem logging you in, maybe your email or password is incorrect?',
             undefined,
             'Error',
-            'OK, I\'ll try again'
+            'OK'
           );
         }
       );
