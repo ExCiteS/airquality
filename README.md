@@ -77,8 +77,17 @@ When Air Quality application is compiled, test it on the emulator:
 cordova emulate <platform>
 ```
 
-Or connected device:
+iOS requires ios-sim to be installed globally:
 
 ```console
-cordova run <platform>
+sudo npm install -g ios-sim
 ```
+
+Or connected device:
+To test the app on the actual Android device, use:
+
+```console
+cordova run android --target=<device>
+```
+
+Run `adb devices` to see all available Android devices.
