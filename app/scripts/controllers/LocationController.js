@@ -1,5 +1,18 @@
 'use strict';
 
+/**
+ * @ngdoc function
+ * @name AQ.controller:LocationController
+ * @requires factories/AQ.factory:data
+ * @requires factories/AQ.factory:viewport
+ * @requires factories/AQ.factory:state
+ * @requires factories/AQ.factory:storage
+ * @requires factories/AQ.factory:api
+ * @requires factories/AQ.factory:leaflet
+ *
+ * @description
+ * Controller for the Location state.
+ */
 AQ.controller('LocationController', function ($window, $timeout, $stateParams, $scope, data, viewport, state, storage, api, leaflet) {
   var locationId = $stateParams.locationId;
 
@@ -68,7 +81,14 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
     }
   }
 
-  // Deletes location (needs confirmation)
+  /**
+   * @ngdoc method
+   * @name AQ.controller:LocationController#delete
+   * @methodOf AQ.controller:LocationController
+   *
+   * @description
+   * Deletes location (when confirmed by user).
+   */
   $scope.delete = function () {
     $window.navigator.notification.confirm(
       'Are you sure you want to delete this location?',
@@ -106,7 +126,14 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
     );
   };
 
-  // Starts measurement
+  /**
+   * @ngdoc method
+   * @name AQ.controller:LocationController#start
+   * @methodOf AQ.controller:LocationController
+   *
+   * @description
+   * Starts measurement.
+   */
   $scope.start = function () {
     $scope.measurement.error = {};
 
@@ -116,7 +143,7 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
 
     if (!$scope.formGroup.form.$error.required) {
       var data = {
-        barcode: $scope.measurement.barcode.toString() // always a string
+        barcode: $scope.measurement.barcode.toString() // always a string, not a number
       };
 
       // Make sure barcode always consists of 6 numbers (add leading zeros)
@@ -160,7 +187,16 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
     }
   };
 
-  // Finishes measurement (needs confirmation)
+  /**
+   * @ngdoc method
+   * @name AQ.controller:LocationController#finish
+   * @methodOf AQ.controller:LocationController
+   *
+   * @description
+   * Finishes measurement (when confirmed by user).
+   *
+   * @param {Object} measurement Measurement to be finished.
+   */
   $scope.finish = function (measurement) {
     $window.navigator.notification.confirm(
       'Are you sure you want to finish this measurement?',
@@ -205,7 +241,16 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
     );
   };
 
-  // Allows to add results to measurement
+  /**
+   * @ngdoc method
+   * @name AQ.controller:LocationController#addResults
+   * @methodOf AQ.controller:LocationController
+   *
+   * @description
+   * Allows to add results to measurement.
+   *
+   * @param {Object} measurement Measurement where the results should be added to.
+   */
   $scope.addResults = function (measurement) {
     api.getProjects().finally(function () {
       if (_.isEmpty(data.projects)) {
@@ -233,7 +278,16 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
     });
   };
 
-  // Submits measurement
+  /**
+   * @ngdoc method
+   * @name AQ.controller:LocationController#submit
+   * @methodOf AQ.controller:LocationController
+   *
+   * @description
+   * Submits measurement.
+   *
+   * @param {Object} measurement Measurement to be submitted.
+   */
   $scope.submit = function (measurement) {
     measurement.error = {};
 
@@ -279,7 +333,16 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
     }
   };
 
-  // Removes measurement (needs confirmation)
+  /**
+   * @ngdoc method
+   * @name AQ.controller:LocationController#remove
+   * @methodOf AQ.controller:LocationController
+   *
+   * @description
+   * Removes measurement (when confirmed by user).
+   *
+   * @param {Object} measurement Measurement to be removed.
+   */
   $scope.remove = function (measurement) {
     $window.navigator.notification.confirm(
       'Are you sure you want to remove this measurement?',

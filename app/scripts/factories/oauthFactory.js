@@ -1,9 +1,35 @@
 'use strict';
 
+/**
+ * @ngdoc service
+ * @name AQ.factory:oauth
+ * @requires AQ.factory:data
+ * @requires AQ.factory:viewport
+ * @requires AQ.factory:state
+ * @requires AQ.factory:storage
+ * @requires AQ.factory:helpers
+ *
+ * @description
+ * Factory provides OAuth functionality.
+ */
 AQ.factory('oauth', function ($q, $http, config, data, viewport, state, storage, helpers) {
   var oauth = {};
   var url = config.url + '/oauth2/';
 
+  /**
+   * @ngdoc method
+   * @name AQ.factory:oauth#register
+   * @methodOf AQ.factory:oauth
+   *
+   * @description
+   * Registers user on the platform.
+   *
+   * @param {String} email Email address.
+   * @param {String} name User name.
+   * @param {String} password1 New user password (first entered).
+   * @param {String} password2 New user password (second entered).
+   * @returns {Object} Promise.
+   */
   oauth.register = function (email, displayName, password1, password2) {
     var deferred = $q.defer();
 
@@ -51,6 +77,18 @@ AQ.factory('oauth', function ($q, $http, config, data, viewport, state, storage,
     return deferred.promise;
   };
 
+  /**
+   * @ngdoc method
+   * @name AQ.factory:oauth#authenticate
+   * @methodOf AQ.factory:oauth
+   *
+   * @description
+   * Authenticates user.
+   *
+   * @param {String} email User email address.
+   * @param {String} password User password.
+   * @returns {Object} Promise.
+   */
   oauth.authenticate = function (email, password) {
     var deferred = $q.defer();
 
@@ -101,6 +139,16 @@ AQ.factory('oauth', function ($q, $http, config, data, viewport, state, storage,
     return deferred.promise;
   };
 
+  /**
+   * @ngdoc method
+   * @name AQ.factory:oauth#revoke
+   * @methodOf AQ.factory:oauth
+   *
+   * @description
+   * Revokes user's access token.
+   *
+   * @returns {Object} Promise.
+   */
   oauth.revoke = function () {
     var deferred = $q.defer();
 
@@ -135,6 +183,16 @@ AQ.factory('oauth', function ($q, $http, config, data, viewport, state, storage,
     return deferred.promise;
   };
 
+  /**
+   * @ngdoc method
+   * @name AQ.factory:oauth#refresh
+   * @methodOf AQ.factory:oauth
+   *
+   * @description
+   * Refreshes access token.
+   *
+   * @returns {Object} Promise.
+   */
   oauth.refresh = function () {
     var deferred = $q.defer();
 
@@ -180,6 +238,16 @@ AQ.factory('oauth', function ($q, $http, config, data, viewport, state, storage,
     return deferred.promise;
   };
 
+  /**
+   * @ngdoc method
+   * @name AQ.factory:oauth#authorize
+   * @methodOf AQ.factory:oauth
+   *
+   * @description
+   * Authorizes user.
+   *
+   * @returns {Object} Promise.
+   */
   oauth.authorize = function () {
     var deferred = $q.defer();
     var key = storage.get('AUTHENTICATION');

@@ -1,5 +1,16 @@
 'use strict';
 
+/**
+ * @ngdoc function
+ * @name AQ.controller:LocationsAddController
+ * @requires factories/AQ.factory:viewport
+ * @requires factories/AQ.factory:state
+ * @requires factories/AQ.factory:api
+ * @requires factories/AQ.factory:leaflet
+ *
+ * @description
+ * Controller for the LocationsAdd state.
+ */
 AQ.controller('LocationsAddController', function ($window, $scope, viewport, state, api, leaflet) {
   $scope.formGroup = {};
   $scope.location = {
@@ -76,6 +87,14 @@ AQ.controller('LocationsAddController', function ($window, $scope, viewport, sta
     state.redirect('locations');
   }
 
+  /**
+   * @ngdoc method
+   * @name AQ.controller:LocationsAddController#add
+   * @methodOf AQ.controller:LocationsAddController
+   *
+   * @description
+   * Adds new location.
+   */
   $scope.add = function () {
     $scope.location.error = {};
 

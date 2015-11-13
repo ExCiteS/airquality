@@ -1,8 +1,28 @@
 'use strict';
 
+/**
+ * @ngdoc service
+ * @name AQ.factory:leaflet
+ *
+ * @description
+ * Initializes and stores Leaflet map.
+ */
 AQ.factory('leaflet', function () {
   var leaflet = {};
 
+  /**
+   * @ngdoc method
+   * @name AQ.factory:leaflet#init
+   * @methodOf AQ.factory:leaflet
+   *
+   * @description
+   * Initializes Leaflet map with the given GeoJSON object.
+   *
+   * Map can then be accessed through the property `leaflet.map`, and usual Leaflet functionality
+   * can be used.
+   *
+   * @param {Object} geoJson A valid GeoJSON object.
+   */
   leaflet.init = function (geoJson) {
     if (_.isUndefined(geoJson)) {
       throw new Error('GeoJSON not specified');

@@ -1,6 +1,18 @@
 'use strict';
 
-AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage, state, oauth) {
+/**
+ * @ngdoc service
+ * @name AQ.factory:api
+ * @requires AQ.factory:data
+ * @requires AQ.factory:viewport
+ * @requires AQ.factory:state
+ * @requires AQ.factory:storage
+ * @requires AQ.factory:oauth
+ *
+ * @description
+ * Factory provides API functionality.
+ */
+AQ.factory('api', function ($window, $q, $http, config, data, viewport, state, storage, oauth) {
   var api = {};
   var url = config.url + '/api';
 
@@ -8,6 +20,16 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
     locations: []
   };
 
+  /**
+   * @ngdoc method
+   * @name AQ.factory:api#online
+   * @methodOf AQ.factory:api
+   *
+   * @description
+   * Checks if user is online.
+   *
+   * @returns {Object} Promise
+   */
   api.online = function () {
     var deferred = $q.defer();
 
@@ -21,6 +43,16 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
     return deferred.promise;
   };
 
+  /**
+   * @ngdoc method
+   * @name AQ.factory:api#sync
+   * @methodOf AQ.factory:api
+   *
+   * @description
+   * Syncs all unsynced data.
+   *
+   * @returns {Object} Promise
+   */
   api.sync = function () {
     var deferred = $q.defer();
     var totalLocations = 0;
@@ -105,6 +137,18 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
     return deferred.promise;
   };
 
+  /**
+   * @ngdoc method
+   * @name AQ.factory:api#getLocations
+   * @methodOf AQ.factory:api
+   *
+   * @description
+   * Gets all locations.
+   *
+   * Successful response is saved inside the {@link AQ.factory:data#properties_locations `data` factory}.
+   *
+   * @returns {Object} Promise with locations.
+   */
   api.getLocations = function () {
     var deferred = $q.defer();
     var locations = storage.get('LOCATIONS');
@@ -143,6 +187,17 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
     return deferred.promise;
   };
 
+  /**
+   * @ngdoc method
+   * @name AQ.factory:api#addLocation
+   * @methodOf AQ.factory:api
+   *
+   * @description
+   * Adds a new location.
+   *
+   * @param {Object} location New location to be added.
+   * @returns {Object} Promise with location.
+   */
   api.addLocation = function (location) {
     var deferred = $q.defer();
 
@@ -216,6 +271,17 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
     return deferred.promise;
   };
 
+  /**
+   * @ngdoc method
+   * @name AQ.factory:api#deleteLocation
+   * @methodOf AQ.factory:api
+   *
+   * @description
+   * Deletes a location.
+   *
+   * @param {Number} locationId ID of a location.
+   * @returns {Object} Promise.
+   */
   api.deleteLocation = function (locationId) {
     var deferred = $q.defer();
 
@@ -276,6 +342,18 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
     return deferred.promise;
   };
 
+  /**
+   * @ngdoc method
+   * @name AQ.factory:api#startMeasurement
+   * @methodOf AQ.factory:api
+   *
+   * @description
+   * Starts a new measurement.
+   *
+   * @param {Object} measurement New measurement to be started.
+   * @param {Number} locationId ID of a location.
+   * @returns {Object} Promise with measurement.
+   */
   api.startMeasurement = function (measurement, locationId) {
     var deferred = $q.defer();
 
@@ -359,6 +437,18 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
     return deferred.promise;
   };
 
+  /**
+   * @ngdoc method
+   * @name AQ.factory:api#updateMeasurement
+   * @methodOf AQ.factory:api
+   *
+   * @description
+   * Updates a measurement.
+   *
+   * @param {Object} measurement Current measurement to be updated.
+   * @param {Number} locationId ID of a location.
+   * @returns {Object} Promise with measurement.
+   */
   api.updateMeasurement = function (measurement, locationId) {
     var deferred = $q.defer();
 
@@ -442,6 +532,18 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
     return deferred.promise;
   };
 
+  /**
+   * @ngdoc method
+   * @name AQ.factory:api#removeMeasurement
+   * @methodOf AQ.factory:api
+   *
+   * @description
+   * Removes a measurement.
+   *
+   * @param {Object} measurement Current measurement to be removed.
+   * @param {Number} locationId ID of a location.
+   * @returns {Object} Promise.
+   */
   api.removeMeasurement = function (measurementId, locationId) {
     var deferred = $q.defer();
 
@@ -505,6 +607,18 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, storage,
     return deferred.promise;
   };
 
+  /**
+   * @ngdoc method
+   * @name AQ.factory:api#getProjects
+   * @methodOf AQ.factory:api
+   *
+   * @description
+   * Gets all projects.
+   *
+   * Successful response is saved inside the {@link AQ.factory:data#properties_projects `data` factory}.
+   *
+   * @returns {Object} Promise with projects.
+   */
   api.getProjects = function () {
     var deferred = $q.defer();
     var projects = storage.get('PROJECTS');

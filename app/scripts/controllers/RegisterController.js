@@ -1,5 +1,17 @@
 'use strict';
 
+/**
+ * @ngdoc function
+ * @name AQ.controller:RegisterController
+ * @requires factories/AQ.factory:data
+ * @requires factories/AQ.factory:viewport
+ * @requires factories/AQ.factory:state
+ * @requires factories/AQ.factory:oauth
+ * @requires factories/AQ.factory:helpers
+ *
+ * @description
+ * Controller for the Register state.
+ */
 AQ.controller('RegisterController', function ($window, $scope, data, viewport, state, oauth, helpers) {
   state.setTitle('Register');
 
@@ -10,6 +22,14 @@ AQ.controller('RegisterController', function ($window, $scope, data, viewport, s
 
   $scope.registration = {};
 
+  /**
+   * @ngdoc method
+   * @name AQ.controller:RegisterController#register
+   * @methodOf AQ.controller:RegisterController
+   *
+   * @description
+   * Registers user.
+   */
   $scope.register = function () {
     var email = $scope.registration.email;
     var displayName = $scope.registration.displayName;

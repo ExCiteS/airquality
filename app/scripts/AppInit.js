@@ -1,6 +1,19 @@
 /*jshint -W079 */
 
+/***********************************************************
+ * AIR QUALITY CORDOVA APPLICATION
+ *
+ * Developed by:
+ * Julius Osokinas (j.osokinas@mappingforchange.org.uk)
+ *
+ * Copyright © 2015 Mapping for Change
+ **********************************************************/
+
 'use strict';
+
+/**
+ * MAIN MODULE WITH INCLUDES
+ */
 
 var AQ = angular.module('AQ', [
   'templates',
@@ -9,6 +22,10 @@ var AQ = angular.module('AQ', [
   'ui.router',
   'angularMoment',
 ]);
+
+/**
+ * APP CONFIGURATION
+ */
 
 AQ.config(function ($httpProvider, $urlRouterProvider, $stateProvider) {
   $httpProvider.defaults.headers.post['Content-Type'] = 'application/json';
@@ -101,6 +118,10 @@ AQ.config(function ($httpProvider, $urlRouterProvider, $stateProvider) {
       }
     });
 });
+
+/**
+ * APP RUNNER
+ */
 
 AQ.run(function ($window, $rootScope, config, viewport, data, state, oauth) {
   oauth.authorize();

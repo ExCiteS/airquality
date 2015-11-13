@@ -1,11 +1,31 @@
 'use strict';
 
+/**
+ * @ngdoc function
+ * @name AQ.controller:MainController
+ * @requires factories/AQ.factory:data
+ * @requires factories/AQ.factory:viewport
+ * @requires factories/AQ.factory:state
+ * @requires factories/AQ.factory:storage
+ * @requires factories/AQ.factory:oauth
+ * @requires factories/AQ.factory:api
+ *
+ * @description
+ * Main controller of the app.
+ */
 AQ.controller('MainController', function ($window, $scope, data, viewport, state, storage, oauth, api) {
   $scope.data = data;
   $scope.viewport = viewport;
   $scope.state = state;
 
-  // Watch data factory...
+  /**
+   * @ngdoc event
+   * @name AQ.controller:MainController#data
+   * @eventOf AQ.controller:MainController
+   *
+   * @description
+   * Keeps track of all unsynced data. Also stores locations and projects locally.
+   */
   $scope.$watch(
     function () {
       return data;
@@ -14,7 +34,6 @@ AQ.controller('MainController', function ($window, $scope, data, viewport, state
       viewport.unsynced = false;
 
       if (data.locations) {
-        // ...and keep track of all unsynced data
         data.unsynced.locations = [];
 
         _.each(data.locations, function (location) {
@@ -39,21 +58,35 @@ AQ.controller('MainController', function ($window, $scope, data, viewport, state
           }
         });
 
-        // ...also store locations locally
         storage.put('LOCATIONS', JSON.stringify(data.locations));
       }
 
       if (data.projects) {
-        // ...and don't forget to store projects locally too
         storage.put('PROJECTS', JSON.stringify(data.projects));
       }
     }, true
   );
 
+  /**
+   * @ngdoc method
+   * @name AQ.controller:MainController#sync
+   * @methodOf AQ.controller:MainController
+   *
+   * @description
+   * Syncs all unsynced data.
+   */
   $scope.sync = function () {
     api.sync();
   };
 
+  /**
+   * @ngdoc method
+   * @name AQ.controller:MainController#logout
+   * @methodOf AQ.controller:MainController
+   *
+   * @description
+   * Logs user out.
+   */
   $scope.logout = function () {
     var message = 'Are you sure you want to log out?';
 
@@ -65,7 +98,6 @@ AQ.controller('MainController', function ($window, $scope, data, viewport, state
     $window.navigator.notification.confirm(
       message,
       function (buttonIndex) {
-        // Log out when "Log me out" button is pressed
         if (buttonIndex === 2) {
           oauth.revoke().finally(function () {
             state.redirect('index');

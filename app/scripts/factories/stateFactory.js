@@ -1,8 +1,29 @@
 'use strict';
 
+/**
+ * @ngdoc service
+ * @name AQ.factory:state
+ * @requires AQ.factory:data
+ * @requires AQ.factory:viewport
+ *
+ * @description
+ * Provides state functionality.
+ */
 AQ.factory('state', function ($window, $state, data, viewport) {
   var state = {};
 
+  /**
+   * @ngdoc method
+   * @name AQ.factory:state#redirect
+   * @methodOf AQ.factory:state
+   *
+   * @description
+   * Redirects to a specific state (with optional params). If no state is provided, it redirects to the previous state.
+   * If previous state is not set, then it redirects to the Index state by default.
+   *
+   * @param {String} [state] State to which navigate to.
+   * @param {Object} [params] Params of that state.
+   */
   state.redirect = function (state, params) {
     if (state) {
       $state.transitionTo(state, params);
@@ -13,6 +34,16 @@ AQ.factory('state', function ($window, $state, data, viewport) {
     }
   };
 
+  /**
+   * @ngdoc method
+   * @name AQ.factory:state#goToLocation
+   * @methodOf AQ.factory:state
+   *
+   * @description
+   * Goes to Location state.
+   *
+   * @param {Number} id Location ID.
+   */
   state.goToLocation = function (id) {
     if (_.isUndefined(id)) {
       throw new Error('Location ID not specified');
@@ -23,6 +54,16 @@ AQ.factory('state', function ($window, $state, data, viewport) {
     });
   };
 
+  /**
+   * @ngdoc method
+   * @name AQ.factory:state#goToExternalPage
+   * @methodOf AQ.factory:state
+   *
+   * @description
+   * Goes to external page.
+   *
+   * @param {String} url External URL to go to.
+   */
   state.goToExternalPage = function (url) {
     if (_.isUndefined(url)) {
       throw new Error('URL not specified');
@@ -33,6 +74,18 @@ AQ.factory('state', function ($window, $state, data, viewport) {
     $window.open(url);
   };
 
+  /**
+   * @ngdoc method
+   * @name AQ.factory:state#saveHistory
+   * @methodOf AQ.factory:state
+   *
+   * @description
+   * Saves state history (current state with params, previous state with params). It excludes 404 and Redirect states
+   * from previous state entry.
+   *
+   * @param {String} currentState Current state name.
+   * @param {Object} [currentParams] Params of a current state.
+   */
   state.saveHistory = function (currentState, currentParams) {
     if (_.isUndefined(currentState)) {
       throw new Error('Current state not specified');
@@ -62,6 +115,17 @@ AQ.factory('state', function ($window, $state, data, viewport) {
     }
   };
 
+  /**
+   * @ngdoc method
+   * @name AQ.factory:state#setTitle
+   * @methodOf AQ.factory:state
+   *
+   * @description
+   * Sets the title of the app, including an optional subtitle.
+   *
+   * @param {String} [title] Main title of the app.
+   * @param {String} [subtitle] Subtitle set before the title.
+   */
   state.setTitle = function (title, subtitle) {
     var mainTitle = 'Air Quality';
 

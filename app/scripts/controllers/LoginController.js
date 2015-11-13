@@ -1,9 +1,29 @@
 'use strict';
 
-AQ.controller('LoginController', function ($window, $scope, viewport, state, oauth, storage, helpers) {
+/**
+ * @ngdoc function
+ * @name AQ.controller:LoginController
+ * @requires factories/AQ.factory:viewport
+ * @requires factories/AQ.factory:state
+ * @requires factories/AQ.factory:storage
+ * @requires factories/AQ.factory:oauth
+ * @requires factories/AQ.factory:helpers
+ *
+ * @description
+ * Controller for the Login state.
+ */
+AQ.controller('LoginController', function ($window, $scope, viewport, state, storage, oauth, helpers) {
   state.setTitle('Log in');
   $scope.authentication = {};
 
+  /**
+   * @ngdoc method
+   * @name AQ.controller:LoginController#authenticate
+   * @methodOf AQ.controller:LoginController
+   *
+   * @description
+   * Authenticates user.
+   */
   $scope.authenticate = function () {
     var email = $scope.authentication.email;
     var password = $scope.authentication.password;

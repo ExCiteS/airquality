@@ -1,14 +1,24 @@
 'use strict';
 
+/**
+ * @ngdoc filter
+ * @name AQ.filter:active
+ * @function
+ *
+ * @description
+ * Excludes deleted items from the list.
+ *
+ * @param {Array} items Original list of items.
+ * @returns {Array} List without deleted items.
+ */
 AQ.filter('active', function () {
-  return function (locations) {
+  return function (items) {
     var activeOnly = [];
 
-    if (_.isArray(locations)) {
-      _.each(locations, function (location) {
-        // Do not include deleted locations
-        if (!location.deleted) {
-          activeOnly.push(location);
+    if (_.isArray(items)) {
+      _.each(items, function (item) {
+        if (!item.deleted) {
+          activeOnly.push(item);
         }
       });
     }
