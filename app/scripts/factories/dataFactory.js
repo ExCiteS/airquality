@@ -4,11 +4,11 @@ AQ.factory('data', function () {
   var data = {};
 
   data.authentication = {};
-  data.points = null;
+  data.locations = null;
   data.projects = null;
 
   data.unsynced = {
-    points: []
+    locations: []
   };
 
   return data;

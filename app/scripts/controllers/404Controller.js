@@ -1,6 +1,13 @@
 'use strict';
 
-AQ.controller('404Controller', function (viewport, state) {
-  viewport.message = 'It looks like something went wrong. Shall we try again?';
+AQ.controller('404Controller', function ($window, state) {
+  $window.navigator.notification.alert(
+    'The content you\'re trying to access is not found.',
+    undefined,
+    'Not found',
+    'OK'
+  );
+
+  // Automatically redirect to the previous state
   state.redirect();
 });

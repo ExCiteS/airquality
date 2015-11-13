@@ -1,31 +1,33 @@
-<div ng-show="data.point">
-  <h3>{{ data.point.name }}</h3>
+<div ng-show="data.location">
+  <h3>{{ data.location.name }}</h3>
 
-  <div id="map" ng-hide="viewport.offline"></div>
+  <div id="map" ng-show="viewport.online"></div>
 
   <div class="row">
-    <div class="col-sm-5" ng-show="data.point.properties.height || data.point.properties.distance || data.point.properties.characteristics">
+    <div class="col-sm-5" ng-show="data.location.properties.height || data.location.properties.distance || data.location.properties.characteristics">
       <h4>Properties</h4>
 
-      <div ng-show="data.point.properties.height">
+      <div ng-show="data.location.properties.height">
         <label>Height from ground</label>
-        <p>{{ data.point.properties.height }}m</p>
+        <p>{{ data.location.properties.height }}m</p>
       </div>
 
-      <div ng-show="data.point.properties.distance">
+      <div ng-show="data.location.properties.distance">
         <label>Distance from road</label>
-        <p>{{ data.point.properties.distance }}m</p>
+        <p>{{ data.location.properties.distance }}m</p>
       </div>
 
-      <div ng-show="data.point.properties.characteristics">
+      <div ng-show="data.location.properties.characteristics">
         <label>Site characteristics</label>
-        <p ng-bind-html="data.point.properties.characteristics | newline"></p>
+        <p ng-bind-html="data.location.properties.characteristics | newline"></p>
       </div>
     </div>
 
-    <hr class="visible-xs" />
+    <div class="col-xs-12">
+      <hr class="visible-xs" />
+    </div>
 
-    <div class="col-sm-12" ng-class="{'col-sm-7': data.point.properties.height || data.point.properties.distance || data.point.properties.characteristics}">
+    <div class="col-sm-12" ng-class="{'col-sm-7': data.location.properties.height || data.location.properties.distance || data.location.properties.characteristics}">
       <h4>Start new measurement</h4>
 
       <p>Enter barcode displayed on the diffusion tube.</p>
@@ -54,7 +56,7 @@
       <p class="lead text-center" ng-hide="measurements.length">No measurements started so far.</p>
 
       <ul class="list-group">
-        <li class="list-group-item clearfix" ng-class="{'list-group-item-success': measurement.addResults}" ng-repeat="measurement in measurements = (data.point.measurements|active)">
+        <li class="list-group-item clearfix" ng-class="{'list-group-item-success': measurement.addResults}" ng-repeat="measurement in measurements = (data.location.measurements|active)">
           <h5 class="list-group-item-heading">Barcode: {{ measurement.barcode }}</h5>
           <h6 ng-show="measurement.submitted"><strong>{{ measurement.results }} µg/m³</strong></h6>
           <span class="text-warning" ng-show="measurement.id.indexOf('x') > -1 || measurement.updated">Measurement has not been synced yet</span>
@@ -111,7 +113,7 @@
   <hr />
 
   <div class="row">
-    <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+    <div class="col-sm-12">
       <div class="panel panel-danger">
         <div class="panel-body">
           <p>Deleting a location removes all current measurements too. However, it does not remove measurements that have been finished and submitted to projects.</p>

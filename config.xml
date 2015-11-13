@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<widget id="com.mfc.airquality" version="0.1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+  <name>Air Quality</name>
+  <description>Mini Cordova application for collecting Air Quality measurements.</description>
+  <author email="info@mappingforchange.org.uk" href="http://mappingforchange.org.uk">Mapping for Change</author>
+
+  <icon src="res/ios/icon.png" platform="ios" width="57" height="57" density="mdpi" />
+  <icon src="res/icons/default.png" />
+  <content src="index.html" />
+  <plugin name="cordova-plugin-whitelist" version="1" />
+  <access origin="*" />
+  <allow-intent href="http://*/*" />
+  <allow-intent href="https://*/*" />
+  <allow-intent href="tel:*" />
+  <allow-intent href="sms:*" />
+  <allow-intent href="mailto:*" />
+  <allow-intent href="geo:*" />
+
+  <platform name="android">
+    <allow-intent href="market:*" />
+    <preference name="Orientation" value="sensorPortrait" />
+    <icon src="res/icons/android/mdpi.png" density="mdpi" />
+    <icon src="res/icons/android/hdpi.png" density="hdpi" />
+    <icon src="res/icons/android/xhdpi.png" density="xhdpi" />
+    <icon src="res/icons/android/xxhdpi.png" density="xxhdpi" />
+    <icon src="res/icons/android/xxxhdpi.png" density="xxxhdpi" />
+  </platform>
+
+  <platform name="ios">
+    <allow-intent href="itms:*" />
+    <allow-intent href="itms-apps:*" />
+    <preference name="Orientation" value="sensorPortrait" />
+    <icon src="res/icons/ios/icon.png" width="57" height="57" />
+    <icon src="res/icons/ios/icon@2x.png" width="114" height="114" />
+    <icon src="res/icons/ios/icon-small.png" width="29" height="29" />
+    <icon src="res/icons/ios/icon-small@2x.png" width="58" height="58" />
+    <icon src="res/icons/ios/icon-40.png" width="40" height="40" />
+    <icon src="res/icons/ios/icon-40@2x.png" width="80" height="80" />
+    <icon src="res/icons/ios/icon-50.png" width="50" height="50" />
+    <icon src="res/icons/ios/icon-50@2x.png" width="100" height="100" />
+    <icon src="res/icons/ios/icon-60.png" width="60" height="60" />
+    <icon src="res/icons/ios/icon-60@2x.png" width="120" height="120" />
+    <icon src="res/icons/ios/icon-60@3x.png" width="180" height="180" />
+    <icon src="res/icons/ios/icon-72.png" width="72" height="72" />
+    <icon src="res/icons/ios/icon-72@2x.png" width="144" height="144" />
+    <icon src="res/icons/ios/icon-76.png" width="76" height="76" />
+    <icon src="res/icons/ios/icon-76@2x.png" width="152" height="152" />
+  </platform>
+</widget>

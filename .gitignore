@@ -1,6 +1,8 @@
 node_modules
 bower_components
-build
+platforms
+plugins
+www
 temp
 config.js
 .DS_Store

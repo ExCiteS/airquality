@@ -5,7 +5,10 @@
     <title ng-bind="viewport.title"></title>
     <meta charset="UTF-8" />
     <meta http-equiv="cleartype" content="on" />
+    <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; media-src *">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
 
     <link rel="stylesheet" href="stylesheets/vendor.css?v=@@version" />
     <link rel="stylesheet" href="stylesheets/app.css?v=@@version" />
@@ -15,24 +18,7 @@
     <div class="full-screen cloak" ng-show="!viewport.ready || viewport.calling">
       <div class="full-screen-container">
         <div class="full-screen-content">
-          <img src="images/loader.gif" />
-        </div>
-      </div>
-    </div>
-
-    <div class="full-screen message" ng-show="viewport.ready && viewport.message">
-      <div class="full-screen-container">
-        <div class="full-screen-content">
-          <div class="container">
-            <div class="row">
-              <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
-                <div class="well">
-                  <p class="lead text-center">{{ viewport.message }}</p>
-                  <p class="text-center"><button type="button" class="btn btn-default" ng-click="viewport.message = null">Close</button></p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <div class="loader"></div>
         </div>
       </div>
     </div>
@@ -41,14 +27,14 @@
       <div class="container">
         <div class="row navbar" ng-show="data.authentication">
           <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 clearfix">
-            <button type="button" class="btn btn-default pull-left" ng-hide="viewport.history.currentState == 'points'" ng-click="state.redirect('points')" ng-disabled="viewport.calling">&#8592; Back to locations</button>
-            <button type="button" class="btn btn-default pull-right" ng-click="state.redirect('logout')" ng-disabled="viewport.calling">Log out</button>
+            <button type="button" class="btn btn-default pull-left" ng-hide="viewport.history.currentState == 'locations'" ng-click="state.redirect('locations')" ng-disabled="viewport.calling">&#8592; Back to locations</button>
+            <button type="button" class="btn btn-default pull-right" ng-click="logout()" ng-disabled="viewport.calling">Log out</button>
           </div>
         </div>
 
         <div class="row">
           <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
-            <div role="alert" class="alert alert-warning" ng-show="viewport.offline">
+            <div role="alert" class="alert alert-warning" ng-hide="viewport.online">
               <p class="text-center">
                 <span ng-hide="data.authentication">It seems like you're offline. Unfortunately, the Air Quality app requires a registered user to be logged in before using it in offline mode.</span>
                 <span ng-show="data.authentication">It seems like you're offline. Don't worry, you can still use cashed data to add locations and start measurements.</span>
@@ -57,7 +43,7 @@
 
             <div role="alert" class="alert alert-info" ng-show="viewport.unsynced">
               <p class="text-center">You have unsynced data that has been stored locally. Please sync it manually, otherwise data might be lost.</p>
-              <p class="text-center" ng-hide="viewport.offline"><button type="button" class="btn btn-info" ng-click="sync()" ng-disabled="viewport.calling">Sync all data</button></p>
+              <p class="text-center" ng-show="viewport.online"><button type="button" class="btn btn-info" ng-click="sync()" ng-disabled="viewport.calling">Sync all data</button></p>
             </div>
 
             <div ui-view="content"></div>
@@ -66,8 +52,9 @@
       </div>
     </div>
 
-    <script src="scripts/vendor.js?v=@@version"></script>
-    <script src="scripts/templates.js?v=@@version"></script>
-    <script src="scripts/app.js?v=@@version"></script>
+    <script type="text/javascript" src="cordova.js?v=@@version"></script>
+    <script type="text/javascript" src="scripts/vendor.js?v=@@version"></script>
+    <script type="text/javascript" src="scripts/templates.js?v=@@version"></script>
+    <script type="text/javascript" src="scripts/app.js?v=@@version"></script>
   </body>
 </html>

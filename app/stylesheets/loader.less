@@ -1,0 +1,9 @@
+.loader {
+  .center-block();
+  .square(@loader-size);
+  border-width: @loader-border-width;
+  border-style: @loader-border-style;
+  border-color: @loader-border-color-1 @loader-border-color-2;
+  border-radius: 100%;
+  .animation(spin @loader-animation-duration linear infinite);
+}
