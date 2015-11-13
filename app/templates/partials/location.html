@@ -1,4 +1,4 @@
-<div ng-show="data.location">
+<div ng-show="data.location" ng-swipe-right="state.redirect('locations')">
   <h3>{{ data.location.name }}</h3>
 
   <div id="map" ng-show="viewport.online"></div>

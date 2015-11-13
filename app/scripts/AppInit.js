@@ -5,6 +5,7 @@
 var AQ = angular.module('AQ', [
   'templates',
   'ngSanitize',
+  'ngTouch',
   'ui.router',
   'angularMoment',
 ]);

@@ -1,40 +1,42 @@
-<h3>Add new location</h3>
+<div ng-swipe-right="state.redirect('locations')">
+  <h3>Add new location</h3>
 
-<div ng-show="viewport.online">
-  <div id="map"></div>
-  <p class="lead text-center">You can adjust location by moving the map.</p>
-</div>
-
-<form role="form" id="form-location" ng-submit="add()" novalidate="novalidate">
-  <div ng-form="formGroup.form">
-    <div ng-form="NameField" class="form-group" ng-class="{'has-error': location.error.api || (NameField.$dirty && NameField.$invalid)}">
-      <label for="form-location-name">Name of the location</label>
-      <span class="help-block text-center" ng-if="NameField.$dirty && NameField.$error.required">Please choose and enter name for this location in the field below</span>
-      <input type="text" id="form-location-name" class="form-control" ng-model="location.name" ng-disabled="viewport.calling" required />
-    </div>
-
-    <div ng-form="HeightField" class="form-group" ng-class="{'has-error': location.error.api || (HeightField.$dirty && HeightField.$invalid)}">
-      <label for="form-location-height">Height from ground (in meters)</label>
-      <span class="help-block text-center" ng-if="HeightField.$error.number">Height must be a valid number</span>
-      <span class="help-block text-center" ng-if="HeightField.$error.min">Height can only be 0 or greater</span>
-      <input type="number" min="0" id="form-location-height" class="form-control" ng-model="location.height" ng-disabled="viewport.calling" />
-    </div>
-
-    <div ng-form="DistanceField" class="form-group" ng-class="{'has-error': location.error.api || (DistanceField.$dirty && DistanceField.$invalid)}">
-      <label for="form-location-distance">Distance from road (in meters)</label>
-      <span class="help-block text-center" ng-if="DistanceField.$error.number">Distance must be a valid number</span>
-      <span class="help-block text-center" ng-if="DistanceField.$error.min">Distance can only be 0 or greater</span>
-      <input type="number" min="0" id="form-location-distance" class="form-control" ng-model="location.distance" ng-disabled="viewport.calling" />
-    </div>
-
-    <div class="form-group" ng-class="{'has-error': location.error.api}">
-      <label for="form-location-characteristics">Site characteristics</label>
-      <textarea id="form-location-characteristics" class="form-control" rows="4" ng-model="location.characteristics" ng-disabled="viewport.calling"></textarea>
-    </div>
-
-    <p class="text-center">
-      <button type="button" class="btn btn-default" ng-click="state.redirect('locations')" ng-disabled="viewport.calling">Cancel</button>
-      <button type="submit" class="btn btn-primary" ng-disabled="viewport.calling">Add location</button>
-    </p>
+  <div ng-show="viewport.online">
+    <div id="map"></div>
+    <p class="lead text-center">You can adjust location by moving the map.</p>
   </div>
-</form>
+
+  <form role="form" id="form-location" ng-submit="add()" novalidate="novalidate">
+    <div ng-form="formGroup.form">
+      <div ng-form="NameField" class="form-group" ng-class="{'has-error': location.error.api || (NameField.$dirty && NameField.$invalid)}">
+        <label for="form-location-name">Name of the location</label>
+        <span class="help-block text-center" ng-if="NameField.$dirty && NameField.$error.required">Please choose and enter name for this location in the field below</span>
+        <input type="text" id="form-location-name" class="form-control" ng-model="location.name" ng-disabled="viewport.calling" required />
+      </div>
+
+      <div ng-form="HeightField" class="form-group" ng-class="{'has-error': location.error.api || (HeightField.$dirty && HeightField.$invalid)}">
+        <label for="form-location-height">Height from ground (in meters)</label>
+        <span class="help-block text-center" ng-if="HeightField.$error.number">Height must be a valid number</span>
+        <span class="help-block text-center" ng-if="HeightField.$error.min">Height can only be 0 or greater</span>
+        <input type="number" min="0" id="form-location-height" class="form-control" ng-model="location.height" ng-disabled="viewport.calling" />
+      </div>
+
+      <div ng-form="DistanceField" class="form-group" ng-class="{'has-error': location.error.api || (DistanceField.$dirty && DistanceField.$invalid)}">
+        <label for="form-location-distance">Distance from road (in meters)</label>
+        <span class="help-block text-center" ng-if="DistanceField.$error.number">Distance must be a valid number</span>
+        <span class="help-block text-center" ng-if="DistanceField.$error.min">Distance can only be 0 or greater</span>
+        <input type="number" min="0" id="form-location-distance" class="form-control" ng-model="location.distance" ng-disabled="viewport.calling" />
+      </div>
+
+      <div class="form-group" ng-class="{'has-error': location.error.api}">
+        <label for="form-location-characteristics">Site characteristics</label>
+        <textarea id="form-location-characteristics" class="form-control" rows="4" ng-model="location.characteristics" ng-disabled="viewport.calling"></textarea>
+      </div>
+
+      <p class="text-center">
+        <button type="button" class="btn btn-default" ng-click="state.redirect('locations')" ng-disabled="viewport.calling">Cancel</button>
+        <button type="submit" class="btn btn-primary" ng-disabled="viewport.calling">Add location</button>
+      </p>
+    </div>
+  </form>
+</div>
