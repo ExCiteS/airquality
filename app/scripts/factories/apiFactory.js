@@ -163,7 +163,7 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, state, s
       function () {
         api.sync().finally(function () {
           oauth.refresh().finally(function () {
-            $http.get(url + '/airquality/points/').then(
+            $http.get(url + '/airquality/locations/').then(
               function (retrievedLocations) {
                 data.locations = retrievedLocations.data;
                 deferred.resolve(data.locations);
@@ -218,7 +218,7 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, state, s
           oauth.refresh().finally(function () {
             location.called = now;
 
-            $http.post(url + '/airquality/points/', location).then(
+            $http.post(url + '/airquality/locations/', location).then(
               function (addedLocation) {
                 addedLocation = addedLocation.data;
 
@@ -300,7 +300,7 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, state, s
       function () {
         api.sync().finally(function () {
           oauth.refresh().finally(function () {
-            $http.delete(url + '/airquality/points/' + locationId + '/').then(
+            $http.delete(url + '/airquality/locations/' + locationId + '/').then(
               function () {
                 _.remove(data.locations, function (currentLocation) {
                   return currentLocation.id == locationId;
@@ -386,7 +386,7 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, state, s
           oauth.refresh().finally(function () {
             measurement.called = now;
 
-            $http.post(url + '/airquality/points/' + locationId + '/measurements/', measurement).then(
+            $http.post(url + '/airquality/locations/' + locationId + '/measurements/', measurement).then(
               function (addedMeasurement) {
                 addedMeasurement = addedMeasurement.data;
 
@@ -493,7 +493,7 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, state, s
           oauth.refresh().finally(function () {
             measurement.called = now;
 
-            $http.patch(url + '/airquality/points/' + locationId + '/measurements/' + measurement.id + '/', measurement).then(
+            $http.patch(url + '/airquality/locations/' + locationId + '/measurements/' + measurement.id + '/', measurement).then(
               function (updatedMeasurement) {
                 updatedMeasurement = updatedMeasurement.data;
 
@@ -569,7 +569,7 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, state, s
       function () {
         api.sync().finally(function () {
           oauth.refresh().finally(function () {
-            $http.delete(url + '/airquality/points/' + locationId + '/measurements/' + measurementId + '/').then(
+            $http.delete(url + '/airquality/locations/' + locationId + '/measurements/' + measurementId + '/').then(
               function () {
                 _.remove(location.measurements, function (currentMeasurement) {
                   return currentMeasurement.id == measurementId;
