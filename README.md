@@ -1,6 +1,6 @@
 # Air Quality
 
-Air Quality is a mini [Cordova](https://cordova.apache.org) application for collecting measurements that is currently developed by [Mapping for Change](http://mappingforchange.org.uk), and is supporting the [GeoKey platform](http://geokey.org.uk) developed by [Extreme Citizen Science Research Group](http://ucl.ac.uk/excites) at University College London.
+Air Quality is a mini [Cordova](https://cordova.apache.org) application for collecting measurements that is currently developed by [Mapping for Change](http://mappingforchange.org.uk), and is supporting the [GeoKey platform](http://geokey.org.uk) developed by [Extreme Citizen Science](http://ucl.ac.uk/excites) at the University College London.
 
 ## Requirements
 
