@@ -65,25 +65,6 @@ module.exports = function (grunt) {
       }
     },
 
-    htmlmin: {
-      index: {
-        files: [{
-          expand: true,
-          flatten: true,
-          cwd: 'temp',
-          src: 'html/index.html',
-          dest: 'temp/html'
-        }]
-      },
-
-      options: {
-        conservativeCollapse: true,
-        collapseWhitespace: true,
-        removeComments: true,
-        removeOptionalTags: true
-      }
-    },
-
     less: {
       app: {
         files: {
@@ -100,16 +81,6 @@ module.exports = function (grunt) {
             'bower_components/bootstrap/dist/css/bootstrap.css'
           ]
         }
-      },
-
-      app: {
-        files: {
-          'temp/css/app.css': ['temp/css/app.css']
-        }
-      },
-
-      options: {
-        keepSpecialComments: 0
       }
     },
 
@@ -154,34 +125,8 @@ module.exports = function (grunt) {
       }
     },
 
-    uglify: {
-      vendor: {
-        files: {
-          'temp/js/vendor.js': ['temp/js/vendor.js']
-        }
-      },
-
-      app: {
-        files: {
-          'temp/js/app.js': ['temp/js/app.js']
-        }
-      }
-    },
-
-    ngAnnotate: {
-      app: {
-        files: [{
-          'temp/js/app.js': ['temp/js/app.js']
-        }]
-      },
-
-      options: {
-        singleQuotes: true
-      }
-    },
-
     replace: {
-      app: {
+      version: {
         files: [{
             src: ['app/templates/index.html'],
             dest: 'temp/html/index.html'
@@ -191,14 +136,14 @@ module.exports = function (grunt) {
             src: ['temp/js/app.js'],
             dest: 'temp/js/app.js'
           }
-        ]
-      },
+        ],
 
-      options: {
-        patterns: [{
-          match: 'version',
-          replacement: '<%= pkg.version %>'
-        }]
+        options: {
+          patterns: [{
+            match: 'version',
+            replacement: '<%= pkg.version %>'
+          }]
+        }
       }
     },
 
@@ -251,25 +196,7 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.registerTask('dev', [
-    'jshint',
-    'clean:temp',
-    'less',
-    'html2js',
-    'cssmin:vendor',
-    'imagemin',
-    'concat',
-    'replace',
-    'clean:www',
-    'copy:html',
-    'copy:css',
-    'copy:js',
-    'copy:images',
-    'clean:temp',
-    'watch'
-  ]);
-
-  grunt.registerTask('build', [
+  grunt.registerTask('default', [
     'jshint',
     'clean:temp',
     'less',
@@ -278,18 +205,13 @@ module.exports = function (grunt) {
     'imagemin',
     'concat',
     'replace',
-    'htmlmin',
-    'ngAnnotate',
-    'uglify',
     'clean:www',
-    'copy:html',
-    'copy:css',
-    'copy:js',
-    'copy:images',
+    'copy',
     'clean:temp'
   ]);
 
-  grunt.registerTask('default', function () {
-    grunt.log.writeln('Please use `grunt dev` or `grunt build` instead.');
-  });
+  grunt.registerTask('dev', [
+    'default',
+    'watch'
+  ]);
 };

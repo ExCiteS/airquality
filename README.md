@@ -30,7 +30,7 @@ Copy configuration file from the sample with `cp config.sample.js config.js`. Ed
 Build Angular application:
 
 ```console
-grunt build
+grunt
 ```
 
 Download all the required Cordova plugins:
@@ -69,7 +69,7 @@ When building Angular application, use:
 grunt dev
 ```
 
-All app files now will not be minified, also changes will be watched and applied when saving.
+Changes will be watched and applied when saving.
 
 When Air Quality application is compiled, test it on the emulator:
 

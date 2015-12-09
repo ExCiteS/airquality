@@ -11,13 +11,10 @@
     "grunt-contrib-clean": "*",
     "grunt-contrib-copy": "*",
     "grunt-contrib-less": "*",
-    "grunt-contrib-htmlmin": "*",
     "grunt-contrib-cssmin": "*",
     "grunt-contrib-imagemin": "*",
     "grunt-contrib-concat": "*",
-    "grunt-contrib-uglify": "*",
     "grunt-contrib-jshint": "*",
-    "grunt-ng-annotate": "*",
     "grunt-html2js": "*",
     "grunt-replace": "*",
     "load-grunt-tasks": "*"
