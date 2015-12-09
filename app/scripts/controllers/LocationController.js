@@ -93,7 +93,7 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
     $window.navigator.notification.confirm(
       'Are you sure you want to delete this location?',
       function (buttonIndex) {
-        if (buttonIndex === 2) {
+        if (buttonIndex === 1) {
           api.deleteLocation(locationId).then(
             function () {
               $window.navigator.notification.alert(
@@ -120,8 +120,8 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
         }
       },
       'Delete?', [
-        'No, leave it', // 1
-        'Yes, delete' // 2
+        'Yes, delete', // 1
+        'No, leave it' // 2
       ]
     );
   };
@@ -201,7 +201,7 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
     $window.navigator.notification.confirm(
       'Are you sure you want to finish this measurement?',
       function (buttonIndex) {
-        if (buttonIndex === 2) {
+        if (buttonIndex === 1) {
           measurement.finish = true;
 
           api.updateMeasurement(measurement).then(
@@ -235,8 +235,8 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
         }
       },
       'Finish?', [
-        'No, not yet', // 1
-        'Yes, finish' // 2
+        'Yes, finish', // 1
+        'No, not yet' // 2
       ]
     );
   };
@@ -347,7 +347,7 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
     $window.navigator.notification.confirm(
       'Are you sure you want to remove this measurement?',
       function (buttonIndex) {
-        if (buttonIndex === 2) {
+        if (buttonIndex === 1) {
           api.removeMeasurement(measurement.id).then(
             function () {
               $window.navigator.notification.alert(
@@ -379,8 +379,8 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
         }
       },
       'Remove?', [
-        'No, leave it', // 1
-        'Yes, remove' // 2
+        'Yes, remove', // 1
+        'No, leave it' // 2
       ]
     );
   };

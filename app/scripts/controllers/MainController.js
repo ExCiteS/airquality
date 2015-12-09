@@ -98,15 +98,15 @@ AQ.controller('MainController', function ($window, $scope, data, viewport, state
     $window.navigator.notification.confirm(
       message,
       function (buttonIndex) {
-        if (buttonIndex === 2) {
+        if (buttonIndex === 1) {
           oauth.revoke().finally(function () {
             state.redirect('index');
           });
         }
       },
       'Log out?', [
-        'Stay logged in', // 1
-        'Log me out' // 2
+        'Log me out', // 1
+        'Stay logged in' // 2
       ]
     );
   };
