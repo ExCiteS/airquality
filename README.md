@@ -44,6 +44,7 @@ cordova plugin add cordova-plugin-geolocation
 Also, add platforms (SDK must be installed for each platform):
 
 ```console
+cordova platform add browser
 cordova platform add ios
 cordova platform add android
 ```
@@ -57,6 +58,7 @@ cordova build
 Or individual platforms:
 
 ```console
+cordova build browser
 cordova build ios
 cordova build android
 ```
