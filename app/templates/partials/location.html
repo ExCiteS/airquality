@@ -23,8 +23,8 @@
       </div>
     </div>
 
-    <div class="col-xs-12">
-      <hr class="visible-xs" />
+    <div class="col-xs-12 visible-xs" ng-show=" data.location.properties.height || data.location.properties.distance || data.location.properties.characteristics">
+      <hr />
     </div>
 
     <div class="col-sm-12" ng-class="{'col-sm-7': data.location.properties.height || data.location.properties.distance || data.location.properties.characteristics}">
