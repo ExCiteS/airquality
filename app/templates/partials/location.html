@@ -58,7 +58,7 @@
       <ul class="list-group">
         <li class="list-group-item clearfix" ng-class="{'list-group-item-success': measurement.addResults}" ng-repeat="measurement in measurements = (data.location.measurements|active)">
           <h5 class="list-group-item-heading">Barcode: {{ measurement.barcode }}</h5>
-          <h6 ng-show="measurement.submitted"><strong>{{ measurement.results }} µg/m³</strong></h6>
+          <h6 ng-show="measurement.submitted"><strong>{{ measurement.properties.results }} µg/m³</strong></h6>
           <span class="text-warning" ng-show="measurement.id.indexOf('x') > -1 || measurement.updated">Measurement has not been synced yet</span>
 
           <span class="list-group-item-text help-block">Started <time datetime="{{ measurement.started }}" am-time-ago="measurement.started"></time></span>
@@ -88,6 +88,11 @@
               <select id="measurement-project" class="form-control" ng-model="measurement.project" ng-options="project.id as project.name for project in data.projects" ng-disabled="viewport.calling" required>
                 <option value=""></option>
               </select>
+            </div>
+
+            <div ng-form="AdditionalDetailsField" class="form-group" ng-class="{'has-error': measurement.error.api || (AdditionalDetailsField.$dirty && AdditionalDetailsField.$invalid)}">
+              <label for="measurement-project">Additional details</label>
+              <textarea id="measurement-additionaldetails" class="form-control" rows="4" ng-model="measurement.properties.additional_details" ng-disabled="viewport.calling"></textarea>
             </div>
           </div>
 
