@@ -2,5 +2,7 @@
 
 AQ.constant('config', {
   url: '',
-  client: ''
+  client: '',
+  opbeatOrgId: '',
+  opbeatAppId: ''
 });

@@ -19,6 +19,7 @@ var AQ = angular.module('AQ', [
   'templates',
   'ngSanitize',
   'ngTouch',
+  'ngOpbeat',
   'ui.router',
   'angularMoment',
 ]);
@@ -27,7 +28,7 @@ var AQ = angular.module('AQ', [
  * APP CONFIGURATION
  */
 
-AQ.config(function ($httpProvider, $urlRouterProvider, $stateProvider) {
+AQ.config(function (config, $httpProvider, $urlRouterProvider, $stateProvider, $opbeatProvider) {
   $httpProvider.defaults.headers.post['Content-Type'] = 'application/json';
   $urlRouterProvider.when('', '/').otherwise('/404');
 
@@ -117,6 +118,16 @@ AQ.config(function ($httpProvider, $urlRouterProvider, $stateProvider) {
         }
       }
     });
+
+  // Configure and install Opbeat
+  if (config.opbeatOrgId.length > 0 && config.opbeatAppId.length > 0) {
+    $opbeatProvider.config({
+      orgId: config.opbeatOrgId,
+      appId: config.opbeatAppId
+    });
+
+    $opbeatProvider.install();
+  }
 });
 
 /**
