@@ -206,6 +206,10 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
             'Please enter any additional details for this measurement.',
             function (results) {
               if (results.input1.length > 0) {
+                if (!_.isPlainObject(measurement.properties)) {
+                  measurement.properties = {};
+                }
+
                 measurement.properties.additional_details = results.input1;
               }
 
