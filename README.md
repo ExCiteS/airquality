@@ -41,7 +41,7 @@ cordova plugin add cordova-plugin-network-information
 cordova plugin add cordova-plugin-geolocation
 ```
 
-Also, add platforms (SDK must be installed for each platform):
+Also, add platforms (SDK must be installed for each phone platform):
 
 ```console
 cordova platform add browser
