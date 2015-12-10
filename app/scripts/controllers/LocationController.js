@@ -202,35 +202,45 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
       'Are you sure you want to finish this measurement?',
       function (buttonIndex) {
         if (buttonIndex === 1) {
-          measurement.finish = true;
+          $window.navigator.notification.prompt(
+            'Please enter any additional details for this measurement.',
+            function (results) {
+              if (results.input1.length > 0) {
+                measurement.properties.additional_details = results.input1;
+              }
 
-          api.updateMeasurement(measurement).then(
-            function () {
-              $window.navigator.notification.alert(
-                'The measurement has finished. You can add the results when they come in to submit the measurement to Community Maps.',
-                undefined,
-                'Success',
-                'OK'
+              measurement.finish = true;
+
+              api.updateMeasurement(measurement).then(
+                function () {
+                  $window.navigator.notification.alert(
+                    'The measurement has finished. You can add the results when they come in to submit the measurement to Community Maps.',
+                    undefined,
+                    'Success',
+                    'OK'
+                  );
+                },
+                function () {
+                  api.getLocations().finally(function () {
+                    var location = _.find(data.locations, function (currentLocation) {
+                      return currentLocation.id == locationId;
+                    });
+
+                    if (location) {
+                      data.location = location;
+                    }
+                  });
+
+                  $window.navigator.notification.alert(
+                    'An error occurred when trying to finish the measurement. Please try again.',
+                    undefined,
+                    'Error',
+                    'OK'
+                  );
+                }
               );
             },
-            function () {
-              api.getLocations().finally(function () {
-                var location = _.find(data.locations, function (currentLocation) {
-                  return currentLocation.id == locationId;
-                });
-
-                if (location) {
-                  data.location = location;
-                }
-              });
-
-              $window.navigator.notification.alert(
-                'An error occurred when trying to finish the measurement. Please try again.',
-                undefined,
-                'Error',
-                'OK'
-              );
-            }
+            'Additional details', ['Done']
           );
         }
       },
