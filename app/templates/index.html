@@ -46,6 +46,11 @@
               <p class="text-center" ng-show="viewport.online"><button type="button" class="btn btn-info" ng-click="sync()" ng-disabled="viewport.calling">Sync all data</button></p>
             </div>
 
+            <div role="alert" class="alert alert-info" ng-show="viewport.finished">
+              <p class="text-center">You have finished measurements waiting to be sent to the laboratory. You can get a CSV sheet of all detailed information directly to your email address.</p>
+              <p class="text-center" ng-show="viewport.online"><button type="button" class="btn btn-info" ng-click="sendSheet()" ng-disabled="viewport.calling">Send CSV via email</button></p>
+            </div>
+
             <div ui-view="content"></div>
           </div>
         </div>

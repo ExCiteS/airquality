@@ -139,6 +139,47 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, state, s
 
   /**
    * @ngdoc method
+   * @name AQ.factory:api#sendSheet
+   * @methodOf AQ.factory:api
+   *
+   * @description
+   * Sends a CSV sheet.
+   *
+   * @returns {Object} Promise.
+   */
+  api.sendSheet = function () {
+    var deferred = $q.defer();
+
+    viewport.calling = true;
+
+    api.online().then(
+      function () {
+        api.sync().finally(function () {
+          oauth.refresh().finally(function () {
+            $http.get(url + '/airquality/sheet/').then(
+              function () {
+                deferred.resolve();
+              },
+              function (error) {
+                deferred.reject(error);
+              }
+            ).finally(function () {
+              viewport.calling = false;
+            });
+          });
+        });
+      },
+      function () {
+        viewport.calling = false;
+        deferred.resolve();
+      }
+    );
+
+    return deferred.promise;
+  };
+
+  /**
+   * @ngdoc method
    * @name AQ.factory:api#getLocations
    * @methodOf AQ.factory:api
    *

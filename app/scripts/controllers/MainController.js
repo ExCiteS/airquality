@@ -32,6 +32,7 @@ AQ.controller('MainController', function ($window, $scope, data, viewport, state
     },
     function (data) {
       viewport.unsynced = false;
+      viewport.finished = false;
 
       if (data.locations) {
         data.unsynced.locations = [];
@@ -44,7 +45,9 @@ AQ.controller('MainController', function ($window, $scope, data, viewport, state
             data.unsynced.locations.push(location);
             // Make sure location is added to the list of unsynced locations only once
             locationAdded = true;
-          } else if (!_.isEmpty(location.measurements)) {
+          }
+
+          if (!_.isEmpty(location.measurements)) {
             _.each(location.measurements, function (measurement) {
               if ((_.isString(measurement.id) && measurement.id.indexOf('x') > -1) || measurement.deleted || measurement.updated) {
                 // Add the whole location to the list of unsynced locations even only measurements are unsynced (this is sorted out later)
@@ -53,6 +56,11 @@ AQ.controller('MainController', function ($window, $scope, data, viewport, state
                   data.unsynced.locations.push(location);
                   locationAdded = true;
                 }
+              }
+
+              // Inform viewport that there are finished measurements (and sheet can be sent)
+              if (measurement.finished) {
+                viewport.finished = true;
               }
             });
           }
@@ -77,6 +85,35 @@ AQ.controller('MainController', function ($window, $scope, data, viewport, state
    */
   $scope.sync = function () {
     api.sync();
+  };
+
+  /**
+   * @ngdoc method
+   * @name AQ.controller:MainController#sendSheet
+   * @methodOf AQ.controller:MainController
+   *
+   * @description
+   * Sends a CSV sheet.
+   */
+  $scope.sendSheet = function () {
+    api.sendSheet().then(
+      function () {
+        $window.navigator.notification.alert(
+          'The CSV sheet has been sent to your email address. You can always get another copy at any time.',
+          undefined,
+          'Success',
+          'OK'
+        );
+      },
+      function () {
+        $window.navigator.notification.alert(
+          'An error occurred when trying to send a CSV sheet. Please try again.',
+          undefined,
+          'Error',
+          'OK'
+        );
+      }
+    );
   };
 
   /**
