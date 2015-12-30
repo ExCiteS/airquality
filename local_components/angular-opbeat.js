@@ -1628,6 +1628,8 @@
   }, {}],
   9: [function (_dereq_, module, exports) {
     var Opbeat = _dereq_('./opbeat')
+    var Instrumentation = _dereq_('./instrumentation')
+
     var TraceBuffer = _dereq_('./instrumentation/traceBuffer')
     var transactionStore = _dereq_('./instrumentation/transactionStore')
 
@@ -1642,6 +1644,8 @@
       this.install = function install() {
         Opbeat.install()
       }
+
+      this.version = 'v1.2.2'
 
       this.$get = [
         function () {
@@ -1680,6 +1684,8 @@
         config: config
       }
 
+      var instrumentation = new Instrumentation()
+
       // Before controller intialize transcation
       var traceBuffer = new TraceBuffer('beforeControllerTransaction', transactionOptions)
 
@@ -1688,16 +1694,21 @@
         transactionStore.init($injector)
 
         var onRouteChange = function (e, current) {
-
-          logger.log('opbeat.decorator.controller.onRouteChange')
+          logger.log('opbeat.decorator.controller.onRouteChange', current)
 
           if (!config.get('isInstalled')) {
             logger.log('opbeat.instrumentation.onRouteChange.not.installed')
             return
           }
 
+          if (!config.get('performance.enable')) {
+            logger.log('- %c opbeat.instrumentation.disabled', 'color: #3360A3')
+            return
+          }
+
           var routeControllerName
           var routeController
+          var transactionName
 
           // Detect controller
           if (current.controller) {
@@ -1719,28 +1730,49 @@
             return
           }
 
-          var transaction = Opbeat.startTransaction('app.angular.controller.' + routeControllerName, 'transaction', transactionOptions)
+          if (current.$$route) { // ngRoute
+            transactionName = current.$$route.originalPath
+          } else if (current.url) { // UI Router
+            transactionName = current.name // Use state name over URL
+          }
+
+          if (!transactionName) {
+            logger.log('%c opbeat.decorator.controller.onRouteChange.error.transactionName.missing', 'background-color: #ffff00', current)
+            return
+          }
+
+          var transaction = instrumentation.startTransaction(transactionName, 'transaction', transactionOptions)
           transaction.metadata.controllerName = routeControllerName
 
           // Update transaction store
-          transactionStore.pushToUrl($location.absUrl(), transaction)
+          transactionStore.pushToUrl(window.location.href, transaction)
 
           // Update transaction reference in traceBuffer
           traceBuffer.setTransactionReference(transaction)
 
           // Lock traceBuffer, as we only want to migrate the initial traces to the first transaction
           traceBuffer.lock()
+
+          // Add finished traces to transaction and flush buffer
+          transaction.addEndedTraces(traceBuffer.traces)
+          traceBuffer.flush()
         }
 
-        $rootScope.$on('$routeChangeStart', onRouteChange) // ng-router
+        $rootScope.$on('$routeChangeSuccess', onRouteChange) // ng-router
         $rootScope.$on('$stateChangeSuccess', onRouteChange) // ui-router
 
         return function () {
           logger.log('opbeat.decorator.controller.ctor')
 
           var args = Array.prototype.slice.call(arguments)
+          var result = $delegate.apply(this, args)
 
-          var url = $injector.get('$location').absUrl()
+          if (!config.get('performance.enable')) {
+            logger.log('- %c opbeat.instrumentation.disabled', 'color: #3360A3')
+            return result
+          }
+
+          var url = window.location.href
           var transaction = transactionStore.getRecentByUrl(url)
 
           var controllerInfo = utils.getControllerInfoFromArgs(args)
@@ -1748,25 +1780,17 @@
           var controllerScope = controllerInfo.scope
           var isRouteController = controllerName && transaction && transaction.metadata.controllerName === controllerName
 
-          var result = $delegate.apply(this, args)
-
           var onViewFinished = function (argument) {
             logger.log('opbeat.angular.controller.$onViewFinished')
-
             transactionStore.getAllByUrl(url).forEach(function (trans) {
               transaction.end()
             })
             transactionStore.clearByUrl(url)
           }
 
-          var onScopeDestroyed = function () {
-            logger.log('opbeat.angular.controller.destroy')
-          }
-
           if (isRouteController && controllerScope) {
             logger.log('opbeat.angular.controller', controllerName)
-            controllerScope.$on('$destroy', onScopeDestroyed)
-            controllerScope.$on('$ionicView.enter', onViewFinished);
+            controllerScope.$on('$ionicView.enter', onViewFinished)
             controllerScope.$on('$viewContentLoaded', onViewFinished)
           }
 
@@ -1806,7 +1830,7 @@
       _dereq_('./instrumentation/angular/compile')($provide, traceBuffer)
       _dereq_('./instrumentation/angular/controller')($provide, traceBuffer)
       _dereq_('./instrumentation/angular/http')($provide, traceBuffer)
-      _dereq_('./instrumentation/angular/httpBackend')($provide, traceBuffer)
+        // require('./instrumentation/angular/httpBackend')($provide, traceBuffer)
       _dereq_('./instrumentation/angular/resource')($provide, traceBuffer)
       _dereq_('./instrumentation/angular/templateRequest')($provide, traceBuffer)
     }
@@ -1819,20 +1843,20 @@
     window.angular.module('angular-opbeat', ['ngOpbeat'])
 
   }, {
+    "./instrumentation": 22,
     "./instrumentation/angular/cacheFactory": 14,
     "./instrumentation/angular/compile": 15,
     "./instrumentation/angular/controller": 16,
     "./instrumentation/angular/directives": 17,
     "./instrumentation/angular/factories": 18,
     "./instrumentation/angular/http": 19,
-    "./instrumentation/angular/httpBackend": 20,
-    "./instrumentation/angular/resource": 21,
-    "./instrumentation/angular/templateRequest": 22,
-    "./instrumentation/traceBuffer": 25,
-    "./instrumentation/transactionStore": 28,
-    "./instrumentation/utils": 29,
-    "./lib/logger": 33,
-    "./opbeat": 37
+    "./instrumentation/angular/resource": 20,
+    "./instrumentation/angular/templateRequest": 21,
+    "./instrumentation/traceBuffer": 24,
+    "./instrumentation/transactionStore": 27,
+    "./instrumentation/utils": 28,
+    "./lib/logger": 32,
+    "./opbeat": 36
   }],
   10: [function (_dereq_, module, exports) {
     var Promise = _dereq_('es6-promise').Promise
@@ -1998,8 +2022,8 @@
     }
 
   }, {
-    "../lib/fileFetcher": 32,
-    "../lib/utils": 36,
+    "../lib/fileFetcher": 31,
+    "../lib/utils": 35,
     "es6-promise": 3
   }],
   11: [function (_dereq_, module, exports) {
@@ -2238,10 +2262,10 @@
     }
 
   }, {
-    "../lib/config": 31,
-    "../lib/logger": 33,
-    "../lib/transport": 35,
-    "../lib/utils": 36,
+    "../lib/config": 30,
+    "../lib/logger": 32,
+    "../lib/transport": 34,
+    "../lib/utils": 35,
     "./context": 10,
     "./stacktrace": 13,
     "es6-promise": 3
@@ -2392,7 +2416,7 @@
     }
 
   }, {
-    "../lib/utils": 36,
+    "../lib/utils": 35,
     "error-stack-normalizer": 1,
     "error-stack-parser": 2,
     "es6-promise": 3,
@@ -2404,26 +2428,27 @@
     module.exports = function ($provide, traceBuffer) {
       // $cacheFactory instrumentation (this happens before routeChange -> using traceBuffer)
       $provide.decorator('$cacheFactory', ['$delegate', '$injector', function ($delegate, $injector) {
-        return function () {
-          var args = Array.prototype.slice.call(arguments)
-          var cacheName = args[0] + 'Cache'
-          var result = $delegate.apply(this, args)
-          utils.instrumentObject(result, $injector, {
-            type: 'cache.' + cacheName,
-            prefix: cacheName,
-            traceBuffer: traceBuffer,
-            signatureFormatter: function (key, args) {
-              var text = ['$cacheFactory', key.toUpperCase(), args[0]]
-              return text.join(' ')
+        return utils.instrumentModule($delegate, $injector, {
+          traceBuffer: traceBuffer,
+          prefix: function (args) {
+            if (args.length) {
+              return args[0] + 'Cache'
+            } else {
+              return 'cacheFactory'
             }
-          })
-          return result
-        }
+          },
+          type: function () {
+            return 'cache.' + this.prefix
+          },
+          signatureFormatter: function (key, args, options) {
+            return ['$' + options.prefix, key.toUpperCase(), args[0]].join(' ')
+          }
+        })
       }])
     }
 
   }, {
-    "../utils": 29
+    "../utils": 28
   }],
   15: [function (_dereq_, module, exports) {
     var utils = _dereq_('../utils')
@@ -2434,13 +2459,14 @@
         return utils.instrumentModule($delegate, $injector, {
           type: 'template.$compile',
           prefix: '$compile',
+          instrumentConstructor: true,
           traceBuffer: traceBuffer
         })
       }])
     }
 
   }, {
-    "../utils": 29
+    "../utils": 28
   }],
   16: [function (_dereq_, module, exports) {
     var utils = _dereq_('../utils')
@@ -2455,6 +2481,8 @@
 
           if (controllerInfo.name) { // Only instrument controllers with a name
             return utils.instrumentModule($delegate, $injector, {
+              traceBuffer: traceBuffer,
+              instrumentConstructor: true,
               type: 'app.$controller',
               prefix: '$controller.' + controllerInfo.name
             }).apply(this, arguments)
@@ -2466,8 +2494,8 @@
     }
 
   }, {
-    "../transactionStore": 28,
-    "../utils": 29
+    "../transactionStore": 27,
+    "../utils": 28
   }],
   17: [function (_dereq_, module, exports) {
     var utils = _dereq_('../utils')
@@ -2502,7 +2530,7 @@
     }
 
   }, {
-    "../utils": 29
+    "../utils": 28
   }],
   18: [function (_dereq_, module, exports) {
     var utils = _dereq_('../utils')
@@ -2525,7 +2553,7 @@
     }
 
   }, {
-    "../utils": 29
+    "../utils": 28
   }],
   19: [function (_dereq_, module, exports) {
     var utils = _dereq_('../utils')
@@ -2537,15 +2565,16 @@
           type: 'ext.$http',
           prefix: '$http',
           traceBuffer: traceBuffer,
+          instrumentConstructor: true,
           signatureFormatter: function (key, args) {
-            var text = []
+            var text = ['$http']
             if (args.length) {
-              if (typeof args[0] === 'object') {
+              if (args[0] !== null && typeof args[0] === 'object') {
                 if (!args[0].method) {
                   args[0].method = 'get'
                 }
                 text = ['$http', args[0].method.toUpperCase(), args[0].url]
-              } else {
+              } else if (typeof args[0] === 'string') {
                 text = ['$http', args[0]]
               }
             }
@@ -2556,66 +2585,31 @@
     }
 
   }, {
-    "../utils": 29
+    "../utils": 28
   }],
   20: [function (_dereq_, module, exports) {
-    var utils = _dereq_('../utils')
-    var transactionStore = _dereq_('../transactionStore')
-
-    module.exports = function ($provide, traceBuffer) {
-      // $httpBackend instrumentation
-      $provide.decorator('$httpBackend', ['$delegate', '$injector', function ($delegate, $injector) {
-        return function () {
-          var args = Array.prototype.slice.call(arguments)
-          var transaction = transactionStore.getRecentByUrl($injector.get('$location').absUrl())
-
-          var result = utils.instrumentMethodWithCallback($delegate, '$httpBackend', transaction, 'ext.$httpBackend', {
-            prefix: '$httpBackend',
-            callbackIndex: 3,
-            traceBuffer: traceBuffer,
-            signatureFormatter: function (key, args) {
-              var text = ['$httpBackend', args[0].toUpperCase(), args[1]]
-              return text.join(' ')
-            }
-          }).apply(this, args)
-          return result
-        }
-      }])
-    }
-
-  }, {
-    "../transactionStore": 28,
-    "../utils": 29
-  }],
-  21: [function (_dereq_, module, exports) {
     var utils = _dereq_('../utils')
 
     module.exports = function ($provide, traceBuffer) {
       try {
         // ngResource instrumentation
         $provide.decorator('$resource', ['$delegate', '$injector', function ($delegate, $injector) {
-          return function () {
-            var args = Array.prototype.slice.call(arguments)
-            var result = $delegate.apply(this, args)
-            utils.instrumentObject(result, $injector, {
-              type: 'ext.$resource',
-              prefix: '$resource',
-              traceBuffer: traceBuffer,
-              signatureFormatter: function (key, args) {
-                var text = ['$resource', key.toUpperCase(), args[0]]
-                return text.join(' ')
-              }
-            })
-            return result
-          }
+          return utils.instrumentModule($delegate, $injector, {
+            traceBuffer: traceBuffer,
+            prefix: '$resource',
+            type: 'ext.$resource',
+            signatureFormatter: function (key, args) {
+              return ['$resource', key.toUpperCase(), args[0]].join(' ')
+            }
+          })
         }])
       } catch (e) {}
     }
 
   }, {
-    "../utils": 29
+    "../utils": 28
   }],
-  22: [function (_dereq_, module, exports) {
+  21: [function (_dereq_, module, exports) {
     var utils = _dereq_('../utils')
 
     module.exports = function ($provide, traceBuffer) {
@@ -2626,6 +2620,7 @@
             type: 'template.$templateRequest',
             prefix: '$templateRequest',
             traceBuffer: traceBuffer,
+            instrumentConstructor: true,
             signatureFormatter: function (key, args) {
               var text = ['$templateRequest', args[0]]
               return text.join(' ')
@@ -2636,9 +2631,9 @@
     }
 
   }, {
-    "../utils": 29
+    "../utils": 28
   }],
-  23: [function (_dereq_, module, exports) {
+  22: [function (_dereq_, module, exports) {
     var Transaction = _dereq_('./transaction')
     var request = _dereq_('../lib/transport')
     var logger = _dereq_('../lib/logger')
@@ -2834,11 +2829,11 @@
     module.exports = Instrumentation
 
   }, {
-    "../lib/logger": 33,
-    "../lib/transport": 35,
-    "./transaction": 27
+    "../lib/logger": 32,
+    "../lib/transport": 34,
+    "./transaction": 26
   }],
-  24: [function (_dereq_, module, exports) {
+  23: [function (_dereq_, module, exports) {
     var Promise = _dereq_('es6-promise').Promise
     var logger = _dereq_('../lib/logger')
     var frames = _dereq_('../exceptions/frames')
@@ -2850,6 +2845,8 @@
       this.type = type
       this.ended = false
       this._parent = null
+      this._diff = null
+      this._end = null
 
       // Start timers
       this._start = window.performance.now()
@@ -2877,9 +2874,17 @@
       logger.log('%c -- opbeat.instrumentation.trace.start', 'color: #9a6bcb', this.signature, this._start)
     }
 
+    Trace.prototype.calcDiff = function () {
+      if (!this._end || !this._start) {
+        return
+      }
+      this._diff = this._end - this._start
+    }
+
     Trace.prototype.end = function () {
       this._end = window.performance.now()
-      this._diff = this._end - this._start
+
+      this.calcDiff()
       this.ended = true
 
       logger.log('%c -- opbeat.instrumentation.trace.end', 'color: #9a6bcb', this.signature, this._end, this._diff)
@@ -2957,11 +2962,11 @@
 
   }, {
     "../exceptions/frames": 11,
-    "../lib/logger": 33,
-    "./traceCache": 26,
+    "../lib/logger": 32,
+    "./traceCache": 25,
     "es6-promise": 3
   }],
-  25: [function (_dereq_, module, exports) {
+  24: [function (_dereq_, module, exports) {
     var logger = _dereq_('../lib/logger')
     var Trace = _dereq_('./trace')
 
@@ -2995,7 +3000,6 @@
       if (index > -1) {
         this.activetraces.splice(index, 1)
       }
-      // TODO: Buffer should probably be flushed at somepoint to save memory
     }
 
     TraceBuffer.prototype.setTransactionReference = function (transaction) {
@@ -3016,8 +3020,11 @@
         trace.transaction = this.traceTransactionReference
         trace.setParent(this.traceTransactionReference._rootTrace)
       }.bind(this))
+    }
 
+    TraceBuffer.prototype.flush = function () {
       this.traces = []
+      this.activetraces = []
     }
 
     TraceBuffer.prototype.lock = function () {
@@ -3031,10 +3038,10 @@
     module.exports = TraceBuffer
 
   }, {
-    "../lib/logger": 33,
-    "./trace": 24
+    "../lib/logger": 32,
+    "./trace": 23
   }],
-  26: [function (_dereq_, module, exports) {
+  25: [function (_dereq_, module, exports) {
     var SimpleCache = _dereq_('simple-lru-cache')
 
     module.exports = new SimpleCache({
@@ -3044,9 +3051,10 @@
   }, {
     "simple-lru-cache": 5
   }],
-  27: [function (_dereq_, module, exports) {
+  26: [function (_dereq_, module, exports) {
     var logger = _dereq_('../lib/logger')
     var Trace = _dereq_('./trace')
+    var utils = _dereq_('../lib/utils')
 
     var Transaction = function (queue, name, type, options) {
       this.metadata = {}
@@ -3056,6 +3064,7 @@
       this._markDoneAfterLastTrace = false
       this._isDone = false
       this._options = options
+      this.uuid = utils.generateUuid()
 
       this.traces = []
       this._activeTraces = {}
@@ -3069,6 +3078,19 @@
       this._start = this._rootTrace._start
 
       this.duration = this._rootTrace.duration.bind(this._rootTrace)
+    }
+
+    Transaction.prototype.startTrace = function (signature, type) {
+      var trace = new Trace(this, signature, type, this._options)
+      if (this._rootTrace) {
+        trace.setParent(this._rootTrace)
+      }
+
+      this._activeTraces[trace.getFingerprint()] = trace
+
+      logger.log('- %c  opbeat.instrumentation.transaction.startTrace', 'color: #3360A3', trace.signature)
+
+      return trace
     }
 
     Transaction.prototype.end = function () {
@@ -3086,6 +3108,10 @@
       } else {
         this._markAsDone()
       }
+    }
+
+    Transaction.prototype.addEndedTraces = function (existingTraces) {
+      this.traces = this.traces.concat(existingTraces)
     }
 
     Transaction.prototype._markAsDone = function () {
@@ -3116,8 +3142,12 @@
       var trace = getEarliestTrace(this.traces)
 
       if (trace) {
-        this._start = trace._start
-        this._startStamp = trace._startStamp
+        this._rootTrace._start = trace._start
+        this._rootTrace._startStamp = trace._startStamp
+        this._rootTrace.calcDiff()
+
+        this._startStamp = this._rootTrace._startStamp
+        this._start = this._rootTrace._start
       }
     }
 
@@ -3133,20 +3163,10 @@
       }
     }
 
-    Transaction.prototype.startTrace = function (signature, type) {
-      var trace = new Trace(this, signature, type, this._options)
-      trace.setParent(this._rootTrace)
-
-      this._activeTraces[trace.getFingerprint()] = trace
-
-      logger.log('- %c  opbeat.instrumentation.transaction.startTrace', 'color: #3360A3', trace.signature)
-
-      return trace
-    }
-
     Transaction.prototype._onTraceEnd = function (trace) {
       this.traces.push(trace)
 
+      logger.log('-- %c  opbeat.instrumentation.transaction.traceCount', 'color: red', this.traces.length)
       logger.log('- %c  opbeat.instrumentation.transaction._endTrace', 'color: #3360A3', trace.signature)
 
       // Remove trace from _activeTraces
@@ -3172,7 +3192,6 @@
       return match
     }
 
-
     function getEarliestTrace(traces) {
       var earliestTrace = null
 
@@ -3191,10 +3210,11 @@
     module.exports = Transaction
 
   }, {
-    "../lib/logger": 33,
-    "./trace": 24
+    "../lib/logger": 32,
+    "../lib/utils": 35,
+    "./trace": 23
   }],
-  28: [function (_dereq_, module, exports) {
+  27: [function (_dereq_, module, exports) {
     var logger = _dereq_('../lib/logger')
 
     var TransactionStore = function () {
@@ -3248,10 +3268,11 @@
     module.exports = new TransactionStore()
 
   }, {
-    "../lib/logger": 33
+    "../lib/logger": 32
   }],
-  29: [function (_dereq_, module, exports) {
+  28: [function (_dereq_, module, exports) {
     var logger = _dereq_('../lib/logger')
+    var utils = _dereq_('../lib/utils')
     var config = _dereq_('../lib/config')
     var transactionStore = _dereq_('./transactionStore')
 
@@ -3260,9 +3281,8 @@
     var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg
 
     module.exports = {
-
       wrapMethod: function (_opbeatOriginalFunction, _opbeatBefore, _opbeatAfter, _opbeatContext) {
-        var namedArguments = extractNamedFunctionArgs(_opbeatOriginalFunction).join(',')
+        var namedArguments = _extractNamedFunctionArgs(_opbeatOriginalFunction).join(',')
         var context = {
           _opbeatOriginalFunction: _opbeatOriginalFunction,
           _opbeatBefore: _opbeatBefore,
@@ -3270,10 +3290,10 @@
           _opbeatContext: _opbeatContext
         }
 
-        return buildWrapperFunction(context, namedArguments)
+        return _buildWrapperFunction(context, namedArguments)
       },
 
-      instrumentMethodWithCallback: function (fn, fnName, transaction, type, options) {
+      instrumentMethodWithCallback: function (fn, fnName, type, options) {
         options = options || {}
         var nameParts = []
 
@@ -3282,7 +3302,16 @@
           return fn
         }
 
+        if (!config.get('performance.enable')) {
+          logger.log('- %c opbeat.instrumentation.instrumentMethodWithCallback.disabled', 'color: #3360A3')
+          return fn
+        }
+
         if (options.prefix) {
+          if (typeof options.prefix === 'function') {
+            var args = options.wrapper ? options.wrapper.args : []
+            options.prefix = options.prefix.call(this, args)
+          }
           nameParts.push(options.prefix)
         }
 
@@ -3290,32 +3319,31 @@
           nameParts.push(fnName)
         }
 
-        if (!transaction && options.traceBuffer && !options.traceBuffer.isLocked()) {
-          transaction = options.traceBuffer
-        }
-
         var name = nameParts.join('.')
         var ref = fn
         var context = {
           traceName: name,
           traceType: type,
-          options: options,
+          traceBuffer: options.traceBuffer,
+          transactionStore: transactionStore,
           fn: fn,
-          transaction: transaction
+          options: options
         }
 
         var wrappedMethod = this.wrapMethod(ref, function instrumentMethodWithCallbackBefore(context) {
           var args = Array.prototype.slice.call(arguments).slice(1)
           var callback = args[options.callbackIndex]
 
-          // Wrap callback
-          var wrappedCallback = this.wrapMethod(callback, function instrumentMethodWithCallbackBeforeCallback() {
-            instrumentMethodAfter.apply(this, [context])
-            return {}
-          }, null)
+          if (typeof callback === 'function') {
+            // Wrap callback
+            var wrappedCallback = this.wrapMethod(callback, function instrumentMethodWithCallbackBeforeCallback() {
+              instrumentMethodAfter.apply(this, [context])
+              return {}
+            }, null)
 
-          // Override callback with wrapped one
-          args[context.options.callbackIndex] = wrappedCallback
+            // Override callback with wrapped one
+            args[context.options.callbackIndex] = wrappedCallback
+          }
 
           // Call base
           return instrumentMethodBefore.apply(this, [context].concat(args))
@@ -3326,120 +3354,106 @@
         return wrappedMethod
       },
 
-      instrumentMethod: function (module, fn, transaction, type, options) {
+      instrumentMethod: function (fn, type, options) {
         options = options || {}
-        var ref
+
         var nameParts = []
 
         if (options.prefix) {
+          if (typeof options.prefix === 'function') {
+            var args = options.wrapper ? options.wrapper.args : []
+            options.prefix = options.prefix.call(this, args)
+          }
           nameParts.push(options.prefix)
         }
 
-        if (fn) {
-          nameParts.push(fn)
+        var fnName
+        if (typeof fn === 'function' && fn.name) {
+          fnName = fn.name
+        } else if (options.fnName) {
+          fnName = options.fnName
+        }
+
+        if (fnName) {
+          nameParts.push(fnName)
         }
 
         var name = nameParts.join('.')
 
-        if (!transaction && options.traceBuffer && !options.traceBuffer.isLocked()) {
-          transaction = options.traceBuffer
-        }
-
-        if (options.instrumentModule) {
-          ref = module
-        } else {
-          ref = module[fn]
-        }
-
         if (!config.get('isInstalled')) {
           logger.log('opbeat.instrumentation.instrumentMethod.not.installed')
-          return ref
+          return fn
+        }
+
+        if (!config.get('performance.enable')) {
+          logger.log('- %c opbeat.instrumentation.instrumentMethod.disabled', 'color: #3360A3')
+          return fn
+        }
+
+        var traceType
+        if (typeof type === 'function') {
+          traceType = type.call(options)
+        } else {
+          traceType = type
         }
 
         var context = {
           traceName: name,
-          traceType: type,
+          traceType: traceType,
+          traceBuffer: options.traceBuffer,
           options: options,
           fn: fn,
-          transaction: transaction
+          fnName: fnName,
+          transactionStore: transactionStore
         }
 
-        var wrappedMethod = this.wrapMethod(ref, instrumentMethodBefore, instrumentMethodAfter, context)
-        wrappedMethod.original = ref
+        var wrappedMethod = this.wrapMethod(fn, instrumentMethodBefore, instrumentMethodAfter, context)
+        wrappedMethod.original = fn
 
-        if (options.override) {
-          module[fn] = wrappedMethod
-        }
+        // Copy all properties over
+        _copyProperties(wrappedMethod.original, wrappedMethod)
 
         return wrappedMethod
       },
 
-      instrumentModule: function (module, $injector, options) {
-        options = options || {}
-        var that = this
+      instrumentModule: function ($delegate, $injector, options) {
+        var self = this
 
         if (!config.get('isInstalled')) {
           logger.log('opbeat.instrumentation.instrumentModule.not.installed')
-          return module
+          return $delegate
         }
 
-        var wrapper = function () {
-          var fn = module
+        if (!config.get('performance.enable')) {
+          logger.log('- %c opbeat.instrumentation.instrumentModule.disabled', 'color: #3360A3')
+          return $delegate
+        }
+
+        var opbeatInstrumentInstanceWrapperFunction = function () {
           var args = Array.prototype.slice.call(arguments)
-          var transaction = transactionStore.getRecentByUrl($injector.get('$location').absUrl())
 
-          if (!transaction && options.traceBuffer && !options.traceBuffer.isLocked()) {
-            transaction = options.traceBuffer
+          var wrapped = $delegate
+
+          // Instrument wrapped constructor
+          if (options.instrumentConstructor) {
+            wrapped = self.instrumentMethod($delegate, options.type, options)
           }
 
-          if (transaction) {
-            fn = that.instrumentMethod(module, '', transaction, options.type, {
-              prefix: options.prefix,
-              override: false,
-              instrumentModule: true,
-              signatureFormatter: options.signatureFormatter,
-              config: options.config
-            })
-          } else {
-            logger.log('%c instrumentModule.error.transaction.missing', 'background-color: #ffff00', module)
+          var result = wrapped.apply(this, args)
+
+          options.wrapper = {
+            args: args
           }
 
-          return fn.apply(module, args)
+          self.instrumentObject(result, $injector, options)
+          return result
         }
 
-        // Copy all properties over
-        for (var key in module) {
-          if (module.hasOwnProperty(key)) {
-            wrapper[key] = module[key]
-          }
-        }
+        // Copy all static properties over
+        _copyProperties($delegate, opbeatInstrumentInstanceWrapperFunction)
+        this.instrumentObject(opbeatInstrumentInstanceWrapperFunction, $injector, options)
 
-        // Instrument functions
-        this.getObjectFunctions(module).forEach(function (funcScope) {
-          wrapper[funcScope.property] = function () {
-            var fn = funcScope.ref
-            var args = Array.prototype.slice.call(arguments)
-            var transaction = transactionStore.getRecentByUrl($injector.get('$location').absUrl())
-
-            if (!transaction && options.traceBuffer && !options.traceBuffer.isLocked()) {
-              transaction = options.traceBuffer
-            }
-
-            if (transaction) {
-              fn = that.instrumentMethod(module, funcScope.property, transaction, options.type, {
-                prefix: options.prefix,
-                override: true,
-                signatureFormatter: options.signatureFormatter
-              })
-            } else {
-              logger.log('%c instrumentModule.error.transaction.missing', 'background-color: #ffff00', module)
-            }
-
-            return fn.apply(module, args)
-          }
-        })
-
-        return wrapper
+        return opbeatInstrumentInstanceWrapperFunction
       },
 
       instrumentObject: function (object, $injector, options) {
@@ -3450,31 +3464,17 @@
           return object
         }
 
-        var transaction
-        if (options.transaction) {
-          transaction = options.transaction
-        } else {
-          var url = $injector.get('$location').absUrl()
-          transaction = transactionStore.getRecentByUrl(url)
+        if (!config.get('performance.enable')) {
+          logger.log('- %c opbeat.instrumentation.instrumentObject.disabled', 'color: #3360A3')
+          return object
         }
 
-        if (!transaction && options.traceBuffer && !options.traceBuffer.isLocked()) {
-          transaction = options.traceBuffer
-        }
-
-        if (transaction) {
-          // Instrument static functions
-          this.getObjectFunctions(object).forEach(function (funcScope) {
-            this.instrumentMethod(object, funcScope.property, transaction, options.type, {
-              prefix: options.prefix,
-              override: true,
-              signatureFormatter: options.signatureFormatter,
-              config: options.config
-            })
-          }.bind(this))
-        } else {
-          logger.log('%c instrumentObject.error.transaction.missing', 'background-color: #ffff00', object)
-        }
+        // Instrument static functions
+        this.getObjectFunctions(object).forEach(function (funcScope) {
+          var subOptions = utils.mergeObject(options, {})
+          subOptions.fnName = funcScope.property
+          object[funcScope.property] = this.instrumentMethod(funcScope.ref, options.type, subOptions)
+        }.bind(this))
 
         return object
       },
@@ -3539,12 +3539,24 @@
     }
 
     function instrumentMethodBefore(context) {
-      var args = Array.prototype.slice.call(arguments).slice(1)
+      // Optimized copy of arguments (V8 https://github.com/GoogleChrome/devtools-docs/issues/53#issuecomment-51941358)
+      var args = new Array(arguments.length)
+      for (var i = 0, l = arguments.length; i < l; i++) {
+        args[i] = arguments[i]
+      }
+
+      args = args.slice(1)
+
       var name = context.traceName
-      var transaction = context.transaction
+      var transactionStore = context.transactionStore
+
+      var transaction = transactionStore.getRecentByUrl(window.location.href)
+      if (!transaction && context.traceBuffer && !context.traceBuffer.isLocked()) {
+        transaction = context.traceBuffer
+      }
 
       if (context.options.signatureFormatter) {
-        name = context.options.signatureFormatter.apply(this, [context.fn, args])
+        name = context.options.signatureFormatter.apply(this, [context.fnName, args, context.options])
       }
 
       if (transaction) {
@@ -3559,20 +3571,36 @@
       }
     }
 
+    function _copyProperties(source, target) {
+      for (var key in source) {
+        if (source.hasOwnProperty(key)) {
+          target[key] = source[key]
+        }
+      }
+    }
+
     function instrumentMethodAfter(context) {
       if (context.trace) {
         context.trace.end()
       }
     }
 
-    function extractNamedFunctionArgs(fn) {
+    function _extractNamedFunctionArgs(fn) {
       var fnText = fn.toString().replace(STRIP_COMMENTS, '')
       var argDecl = fnText.match(FN_ARGS)
-      return argDecl[1].split(FN_ARG_SPLIT)
+
+      if (argDecl && argDecl.length && argDecl.length === 2) {
+        return argDecl[1].split(FN_ARG_SPLIT)
+      }
+
+      return []
     }
 
-    function buildWrapperFunction(ctx, funcArguments) {
-      var funcBody = 'var args = Array.prototype.slice.call(arguments)\n' +
+    function _buildWrapperFunction(ctx, funcArguments) {
+      var funcBody = 'var args = new Array(arguments.length)\n' +
+        'for (var i = 0, l = arguments.length; i < l; i++) {\n' +
+        '  args[i] = arguments[i]\n' +
+        '}\n' +
         '// Before callback\n' +
         'if (typeof _opbeatBefore === "function") {\n' +
         'var beforeData = _opbeatBefore.apply(this, [_opbeatContext].concat(args))\n' +
@@ -3608,22 +3636,26 @@
     }
 
   }, {
-    "../lib/config": 31,
-    "../lib/logger": 33,
-    "./transactionStore": 28
+    "../lib/config": 30,
+    "../lib/logger": 32,
+    "../lib/utils": 35,
+    "./transactionStore": 27
   }],
-  30: [function (_dereq_, module, exports) {
+  29: [function (_dereq_, module, exports) {
+    var utils = _dereq_('./utils')
+
     function api(opbeat, queuedCommands) {
       this.q = []
 
       this.opbeat = opbeat
-      this.execute = this.execute.bind(this)
-      this.push = this.push.bind(this)
+      this.execute = utils.functionBind(this.execute, this)
+      this.push = utils.functionBind(this.push, this)
 
       if (queuedCommands) {
-        queuedCommands.forEach(function (cmd) {
-          this.push.apply(this, cmd)
-        }.bind(this))
+        for (var i = 0; i < queuedCommands.length; i++) {
+          var cmd = queuedCommands[i]
+          this.push(cmd)
+        }
       }
     }
 
@@ -3642,20 +3674,24 @@
 
     module.exports = api
 
-  }, {}],
-  31: [function (_dereq_, module, exports) {
+  }, {
+    "./utils": 35
+  }],
+  30: [function (_dereq_, module, exports) {
     var utils = _dereq_('./utils')
     var storage = _dereq_('./storage')
 
     function Config() {
       this.config = {}
       this.defaults = {
-        VERSION: 'v1.1.4',
+        VERSION: 'v1.2.2',
         apiHost: 'intake.opbeat.com',
+        isInstalled: false,
         orgId: null,
         appId: null,
         angularAppName: null,
         performance: {
+          enable: true,
           enableStackFrames: false
         },
         libraryPathPattern: '(node_modules|bower_components|webpack)',
@@ -3676,14 +3712,11 @@
 
     Config.prototype.init = function () {
       var scriptData = _getConfigFromScript()
-
-      if (Object.keys(scriptData).length) {
-        this.setConfig(scriptData)
-      }
+      this.setConfig(scriptData)
     }
 
     Config.prototype.get = function (key) {
-      return key.split('.').reduce(function (obj, i) {
+      return utils.arrayReduce(key.split('.'), function (obj, i) {
         return obj[i]
       }, this.config)
     }
@@ -3693,7 +3726,7 @@
       var max_level = levels.length - 1
       var target = this.config
 
-      levels.some(function (level, i) {
+      utils.arraySome(levels, function (level, i) {
         if (typeof level === 'undefined') {
           return true
         }
@@ -3714,11 +3747,11 @@
 
     Config.prototype.isValid = function () {
       var requiredKeys = ['appId', 'orgId']
-      var values = requiredKeys.map(function (key) {
+      var values = utils.arrayMap(requiredKeys, utils.functionBind(function (key) {
         return (this.config[key] === null) || (this.config[key] === undefined)
-      }.bind(this))
+      }, this))
 
-      return values.indexOf(true) === -1
+      return utils.arrayIndexOf(values, true) === -1
     }
 
     function _generateUUID() {
@@ -3751,7 +3784,7 @@
             var key = attr.nodeName.match(dataRegex)[1]
 
             // camelCase key
-            key = key.split('-').map(function (group, index) {
+            key = utils.arrayMap(key.split('-'), function (group, index) {
               return index > 0 ? group.charAt(0).toUpperCase() + group.substring(1) : group
             }).join('')
 
@@ -3766,10 +3799,10 @@
     module.exports = new Config()
 
   }, {
-    "./storage": 34,
-    "./utils": 36
+    "./storage": 33,
+    "./utils": 35
   }],
-  32: [function (_dereq_, module, exports) {
+  31: [function (_dereq_, module, exports) {
     var Promise = _dereq_('es6-promise').Promise
     var SimpleCache = _dereq_('simple-lru-cache')
     var transport = _dereq_('./transport')
@@ -3833,11 +3866,11 @@
     }
 
   }, {
-    "./transport": 35,
+    "./transport": 34,
     "es6-promise": 3,
     "simple-lru-cache": 5
   }],
-  33: [function (_dereq_, module, exports) {
+  32: [function (_dereq_, module, exports) {
     var config = _dereq_('./config')
 
     var logStack = []
@@ -3847,8 +3880,20 @@
         return logStack
       },
 
+      error: function (msg, data) {
+        return this.log('%c ' + msg, 'color: red', data)
+      },
+
+      warning: function (msg, data) {
+        return this.log('%c ' + msg, 'background-color: ffff00', data)
+      },
+
       log: function (message, data) {
-        var args = Array.prototype.slice.call(arguments)
+        // Optimized copy of arguments (V8 https://github.com/GoogleChrome/devtools-docs/issues/53#issuecomment-51941358)
+        var args = new Array(arguments.length)
+        for (var i = 0, l = arguments.length; i < l; i++) {
+          args[i] = arguments[i]
+        }
 
         var isDebugMode = config.get('debug') === true || config.get('debug') === 'true'
         var hasConsole = window.console
@@ -3859,15 +3904,19 @@
         })
 
         if (isDebugMode && hasConsole) {
-          window.console.log.apply(window.console, args)
+          if (typeof Function.prototype.bind === 'function') {
+            return window.console.log.apply(window.console, args)
+          } else {
+            return Function.prototype.apply.call(window.console.log, window.console, args)
+          }
         }
       }
     }
 
   }, {
-    "./config": 31
+    "./config": 30
   }],
-  34: [function (_dereq_, module, exports) {
+  33: [function (_dereq_, module, exports) {
     module.exports = {
       set: function (key, val) {
         window.localStorage.setItem(key, JSON.stringify(val))
@@ -3889,7 +3938,7 @@
     }
 
   }, {}],
-  35: [function (_dereq_, module, exports) {
+  34: [function (_dereq_, module, exports) {
     var logger = _dereq_('./logger')
     var config = _dereq_('./config')
     var Promise = _dereq_('es6-promise').Promise
@@ -3969,11 +4018,11 @@
     }
 
   }, {
-    "./config": 31,
-    "./logger": 33,
+    "./config": 30,
+    "./logger": 32,
     "es6-promise": 3
   }],
-  36: [function (_dereq_, module, exports) {
+  35: [function (_dereq_, module, exports) {
     module.exports = {
       getViewPortInfo: function getViewPort() {
         var e = document.documentElement
@@ -4000,6 +4049,139 @@
         }
 
         return o3
+      },
+
+      arrayReduce: function (arrayValue, callback, value) {
+        // Source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce
+        if (arrayValue == null) {
+          throw new TypeError('Array.prototype.reduce called on null or undefined')
+        }
+        if (typeof callback !== 'function') {
+          throw new TypeError(callback + ' is not a function')
+        }
+        var t = Object(arrayValue)
+        var len = t.length >>> 0
+        var k = 0
+
+        if (!value) {
+          while (k < len && !(k in t)) {
+            k++
+          }
+          if (k >= len) {
+            throw new TypeError('Reduce of empty array with no initial value')
+          }
+          value = t[k++]
+        }
+
+        for (; k < len; k++) {
+          if (k in t) {
+            value = callback(value, t[k], k, t)
+          }
+        }
+        return value
+      },
+
+      arraySome: function (value, callback, thisArg) {
+        // Source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
+        if (value == null) {
+          throw new TypeError('Array.prototype.some called on null or undefined')
+        }
+
+        if (typeof callback !== 'function') {
+          throw new TypeError()
+        }
+
+        var t = Object(value)
+        var len = t.length >>> 0
+
+        if (!thisArg) {
+          thisArg = void 0
+        }
+
+        for (var i = 0; i < len; i++) {
+          if (i in t && callback.call(thisArg, t[i], i, t)) {
+            return true
+          }
+        }
+        return false
+      },
+
+      arrayMap: function (arrayValue, callback, thisArg) {
+        // Source https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Map
+        var T, A, k
+
+        if (this == null) {
+          throw new TypeError(' this is null or not defined')
+        }
+        var O = Object(arrayValue)
+        var len = O.length >>> 0
+
+        if (typeof callback !== 'function') {
+          throw new TypeError(callback + ' is not a function')
+        }
+        if (arguments.length > 1) {
+          T = thisArg
+        }
+        A = new Array(len)
+        k = 0
+        while (k < len) {
+          var kValue, mappedValue
+          if (k in O) {
+            kValue = O[k]
+            mappedValue = callback.call(T, kValue, k, O)
+            A[k] = mappedValue
+          }
+          k++
+        }
+        return A
+      },
+
+      arrayIndexOf: function (arrayVal, searchElement, fromIndex) {
+        // Source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
+        var k
+        if (arrayVal == null) {
+          throw new TypeError('"arrayVal" is null or not defined')
+        }
+
+        var o = Object(arrayVal)
+        var len = o.length >>> 0
+
+        if (len === 0) {
+          return -1
+        }
+
+        var n = +fromIndex || 0
+
+        if (Math.abs(n) === Infinity) {
+          n = 0
+        }
+
+        if (n >= len) {
+          return -1
+        }
+
+        k = Math.max(n >= 0 ? n : len - Math.abs(n), 0)
+
+        while (k < len) {
+          if (k in o && o[k] === searchElement) {
+            return k
+          }
+          k++
+        }
+        return -1
+      },
+
+      functionBind: function (func, oThis) {
+        // Source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind
+        var aArgs = Array.prototype.slice.call(arguments, 2)
+        var FNOP = function () {}
+        var fBound = function () {
+          return func.apply(oThis, aArgs.concat(Array.prototype.slice.call(arguments)))
+        }
+
+        FNOP.prototype = func.prototype
+        fBound.prototype = new FNOP()
+        return fBound
       },
 
       getRandomInt: function (min, max) {
@@ -4034,34 +4216,28 @@
     }
 
   }, {}],
-  37: [function (_dereq_, module, exports) {
+  36: [function (_dereq_, module, exports) {
     var logger = _dereq_('./lib/logger')
     var utils = _dereq_('./lib/utils')
     var config = _dereq_('./lib/config')
-    var Instrumentation = _dereq_('./instrumentation')
     var Exceptions = _dereq_('./exceptions')
     var API = _dereq_('./lib/api')
 
     function Opbeat() {
-      this._instrumentation = new Instrumentation()
-      this._exceptions = new Exceptions()
       this._config = config
-      this._config.set('isInstalled', false)
-
-      config.init()
+      this._config.init()
 
       var queuedCommands = []
       if (window._opbeat) {
         queuedCommands = window._opbeat.q
       }
       this.api = new API(this, queuedCommands)
-
       window._opbeat = this.api.push
 
       this.install()
     }
 
-    Opbeat.prototype.VERSION = '%%GULP_INJECT_VERSION%%'
+    Opbeat.prototype.VERSION = 'v1.2.2'
 
     Opbeat.prototype.isPlatformSupport = function () {
       return typeof Array.prototype.forEach === 'function' &&
@@ -4096,23 +4272,24 @@
      */
 
     Opbeat.prototype.install = function () {
-      if (!this.isPlatformSupport()) {
-        logger.log('opbeat.install.platform.unsupported')
+      if (!config.isValid()) {
+        logger.warning('opbeat.install.config.invalid')
         return this
       }
 
-      if (!config.isValid()) {
-        logger.log('opbeat.install.config.invalid')
+      if (!this.isPlatformSupport()) {
+        logger.warning('opbeat.install.platform.unsupported')
         return this
       }
 
       if (this._config.get('isInstalled')) {
-        logger.log('opbeat.install.already.installed')
+        logger.warning('opbeat.install.already.installed')
         return this
       }
 
-      this._exceptions.install()
+      this._exceptions = new Exceptions()
 
+      this._exceptions.install()
       this._config.set('isInstalled', true)
 
       return this
@@ -4125,7 +4302,7 @@
      */
     Opbeat.prototype.uninstall = function () {
       this._exceptions.uninstall()
-      this.isInstalled = false
+      this._config.set('isInstalled', false)
 
       return this
     }
@@ -4138,13 +4315,14 @@
      * @return {Opbeat}
      */
     Opbeat.prototype.captureException = function (ex, options) {
-
       if (!this._config.get('isInstalled')) {
-        throw new Error("Can't capture exception. Opbeat isn't intialized")
+        return logger.error('Can\'t capture exception. Opbeat isn\'t intialized')
+        return this
       }
 
       if (!(ex instanceof Error)) {
-        throw new Error("Can't capture exception. Passed exception needs to be an instanceof Error")
+        logger.error('Can\'t capture exception. Passed exception needs to be an instanceof Error')
+        return this
       }
 
       // TraceKit.report will re-raise any exception passed to it,
@@ -4185,18 +4363,13 @@
       return this
     }
 
-    Opbeat.prototype.startTransaction = function (name, type, options) {
-      return this._instrumentation.startTransaction(name, type, options)
-    }
-
     module.exports = new Opbeat()
 
   }, {
     "./exceptions": 12,
-    "./instrumentation": 23,
-    "./lib/api": 30,
-    "./lib/config": 31,
-    "./lib/logger": 33,
-    "./lib/utils": 36
+    "./lib/api": 29,
+    "./lib/config": 30,
+    "./lib/logger": 32,
+    "./lib/utils": 35
   }]
 }, {}, [9]);
