@@ -1645,7 +1645,7 @@
         Opbeat.install()
       }
 
-      this.version = 'v1.2.2'
+      this.version = 'v1.2.3'
 
       this.$get = [
         function () {
@@ -3654,7 +3654,7 @@
       if (queuedCommands) {
         for (var i = 0; i < queuedCommands.length; i++) {
           var cmd = queuedCommands[i]
-          this.push(cmd)
+          this.push.apply(this, cmd)
         }
       }
     }
@@ -3684,7 +3684,7 @@
     function Config() {
       this.config = {}
       this.defaults = {
-        VERSION: 'v1.2.2',
+        VERSION: 'v1.2.3',
         apiHost: 'intake.opbeat.com',
         isInstalled: false,
         orgId: null,
@@ -4237,12 +4237,14 @@
       this.install()
     }
 
-    Opbeat.prototype.VERSION = 'v1.2.2'
+    Opbeat.prototype.VERSION = 'v1.2.3'
 
     Opbeat.prototype.isPlatformSupport = function () {
       return typeof Array.prototype.forEach === 'function' &&
         typeof JSON.stringify === 'function' &&
         typeof Function.bind === 'function' &&
+        window.performance &&
+        typeof window.performance.now === 'function' &&
         utils.isCORSSupported()
     }
 
