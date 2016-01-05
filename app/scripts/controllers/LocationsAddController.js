@@ -102,7 +102,7 @@ AQ.controller('LocationsAddController', function ($window, $scope, viewport, sta
       field.$setDirty();
     });
 
-    if (!$scope.formGroup.form.$error.required) {
+    if (!$scope.formGroup.form.$invalid) {
       var data = leaflet.marker.toGeoJSON();
 
       data.name = $scope.location.name;

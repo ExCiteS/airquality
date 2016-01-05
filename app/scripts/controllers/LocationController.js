@@ -141,7 +141,7 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
       field.$setDirty();
     });
 
-    if (!$scope.formGroup.form.$error.required) {
+    if (!$scope.formGroup.form.$invalid) {
       var data = {
         barcode: $scope.measurement.barcode.toString() // always a string, not a number
       };
@@ -309,7 +309,7 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
       field.$setDirty();
     });
 
-    if (!$scope.formGroup.measurements[measurement.id].form.$error.required) {
+    if (!$scope.formGroup.measurements[measurement.id].form.$invalid) {
       // Save last project used locally
       storage.put('LAST_PROJECT_USED', JSON.stringify(measurement.project));
 
