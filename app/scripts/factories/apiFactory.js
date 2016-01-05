@@ -12,7 +12,7 @@
  * @description
  * Factory provides API functionality.
  */
-AQ.factory('api', function ($window, $q, $http, config, data, viewport, state, storage, oauth) {
+AQ.factory('api', function ($window, $interval, $q, $http, config, data, viewport, state, storage, oauth) {
   var api = {};
   var url = config.url + '/api';
 
@@ -33,11 +33,18 @@ AQ.factory('api', function ($window, $q, $http, config, data, viewport, state, s
   api.online = function () {
     var deferred = $q.defer();
 
-    if (viewport.online) {
-      deferred.resolve();
-    } else {
-      deferred.reject();
-    }
+    var interval = $interval(function () {
+      if (viewport.online !== undefined) {
+        $interval.cancel(interval);
+
+        if (viewport.online) {
+          deferred.resolve();
+        } else {
+          deferred.reject();
+        }
+      }
+
+    }, 30);
 
     deferred.resolve();
     return deferred.promise;
