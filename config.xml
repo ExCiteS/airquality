@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<widget id="com.mfc.airquality" version="0.2.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.mfc.airquality" version="0.2.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>Air Quality</name>
   <description>Mini Cordova application for collecting Air Quality measurements.</description>
   <author email="info@mappingforchange.org.uk" href="http://mappingforchange.org.uk">Mapping for Change</author>
