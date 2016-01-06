@@ -65,7 +65,7 @@
           <span class="list-group-item-text help-block" ng-show="measurement.finished">Finished <time datetime="{{ measurement.finished }}" am-time-ago="measurement.finished"></time></span>
           <span class="list-group-item-text help-block" ng-show="measurement.submitted">Submitted <time datetime="{{ measurement.submitted }}" am-time-ago="measurement.submitted"></time></span>
           <span class="list-group-item-text help-block" ng-hide="measurement.finished">
-            <span ng-init="measurement.expires = (measurement.started | amAdd : '30' : 'days')"></span>
+            <span ng-init="measurement.expires = (measurement.started | amAdd : '31' : 'days')"></span>
             <span ng-show="(measurement.expires|amDifference : null : 'seconds') < 0">Should have finished</span>
             <span ng-show="(measurement.expires|amDifference : null : 'seconds') >= 0">Should finish</span>
             <time datetime="{{ measurement.expires }}" am-time-ago="measurement.expires"></time>
