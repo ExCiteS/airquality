@@ -52,16 +52,40 @@ cordova platform add android
 Build Air Quality application for all platforms:
 
 ```console
-cordova build
+cordova build --release
 ```
 
 Or individual platforms:
 
 ```console
-cordova build browser
-cordova build ios
-cordova build android
+cordova build --release browser
+cordova build --release ios
+cordova build --release android
 ```
+
+### Sign Android APK
+
+Copy the release key from Dropbox of Mapping for Change to your working directory.
+
+Sign the app:
+
+```console
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore airquality-key.keystore platforms/android/build/outputs/apk/android-release-unsigned.apk alias_name
+```
+
+Locate the zipalign tool (usually inside `/path/to/Android/sdk/build-tools/<version>/zipalign`) and run the following:
+
+```console
+zipalign -v 4 platforms/android/build/outputs/apk/android-release-unsigned.apk air-quality.apk
+```
+
+For example, on OS X with Android SDK version 23.0.2, the command should be:
+
+```console
+~/Library/Android/sdk/build-tools/23.0.2/zipalign -v 4 platforms/android/build/outputs/apk/android-release-unsigned.apk air-quality.apk
+```
+
+The finalised signed app can then be uploaded to [Google Play Store](https://play.google.com/apps/publish/).
 
 ## Develop Application
 
