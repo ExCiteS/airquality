@@ -187,6 +187,47 @@ AQ.factory('api', function ($window, $interval, $q, $http, config, data, viewpor
 
   /**
    * @ngdoc method
+   * @name AQ.factory:api#getUserInfo
+   * @methodOf AQ.factory:api
+   *
+   * @description
+   * Gets user info.
+   *
+   * @returns {Object} Promise with user info.
+   */
+  api.getUserInfo = function () {
+    var deferred = $q.defer();
+
+    viewport.calling = true;
+
+    api.online().then(
+      function () {
+        api.sync().finally(function () {
+          oauth.refresh().finally(function () {
+            $http.get(url + '/user/').then(
+              function (info) {
+                deferred.resolve(info);
+              },
+              function (error) {
+                deferred.reject(error);
+              }
+            ).finally(function () {
+              viewport.calling = false;
+            });
+          });
+        });
+      },
+      function () {
+        viewport.calling = false;
+        deferred.resolve({});
+      }
+    );
+
+    return deferred.promise;
+  };
+
+  /**
+   * @ngdoc method
    * @name AQ.factory:api#getLocations
    * @methodOf AQ.factory:api
    *
