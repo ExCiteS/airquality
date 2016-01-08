@@ -17,6 +17,7 @@
     "grunt-contrib-jshint": "*",
     "grunt-html2js": "*",
     "grunt-replace": "*",
-    "load-grunt-tasks": "*"
+    "load-grunt-tasks": "*",
+    "opbeat-js": "*"
   }
 }
