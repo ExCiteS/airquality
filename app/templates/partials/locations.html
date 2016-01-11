@@ -2,7 +2,10 @@
   <div ui-view="subcontent"></div>
 
   <div ng-hide="viewport.history.currentState == 'locations.add'">
-    <h3 class="clearfix">Locations <button type="button" class="btn btn-success pull-right" ng-click="state.redirect('locations.add')" ng-hide="viewport.history.currentState == 'locations.add'" ng-disabled="viewport.calling">Add new</button></h3>
+    <h3 class="clearfix">
+      <span>Locations</span>
+      <button type="button" class="btn btn-success pull-right" ng-click="state.redirect('locations.add')" ng-hide="viewport.history.currentState == 'locations.add'" ng-disabled="viewport.calling">Add new</button>
+    </h3>
 
     <p class="lead text-center">
       <span ng-hide="locations.length">No locations added so far. Please add a location where you want to start your measurements. All locations are private and accessible only by the account holder.</span>
