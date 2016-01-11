@@ -120,7 +120,7 @@ AQ.config(function (config, $httpProvider, $urlRouterProvider, $stateProvider, $
     });
 
   // Configure and install Opbeat
-  if (config.opbeatOrgId.length > 0 && config.opbeatAppId.length > 0) {
+  if (config.opbeatOrgId && config.opbeatOrgId.length > 0 && config.opbeatAppId && config.opbeatAppId.length > 0) {
     $opbeatProvider.config({
       orgId: config.opbeatOrgId,
       appId: config.opbeatAppId
