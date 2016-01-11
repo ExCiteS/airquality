@@ -189,6 +189,90 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
 
   /**
    * @ngdoc method
+   * @name AQ.controller:LocationController#edit
+   * @methodOf AQ.controller:LocationController
+   *
+   * @description
+   * Edits measurement.
+   */
+  $scope.edit = function (measurement) {
+    if (!_.isPlainObject(measurement) || !measurement.barcode) {
+      $window.navigator.notification.alert(
+        'An error occurred when trying to edit the measurement. Please try again.',
+        undefined,
+        'Error',
+        'OK'
+      );
+    } else {
+      $window.navigator.notification.prompt(
+        'Please enter a new barcode (6 numbers) of this measurement.',
+        function (barcode) {
+          barcode = parseInt(barcode.input1);
+
+          if (_.isNaN(barcode)) {
+            $window.navigator.notification.alert(
+              'Barcode must be a valid number.',
+              undefined,
+              'Error',
+              'OK'
+            );
+
+            return;
+          } else {
+            barcode = barcode.toString();
+
+            if (_.size(barcode) < 6) {
+              barcode = new Array(6 - _.size(barcode) + 1).join('0') + barcode;
+            } else if (_.size(barcode) > 6) {
+              $window.navigator.notification.alert(
+                'Barcode must consist of no more than 6 numbers.',
+                undefined,
+                'Error',
+                'OK'
+              );
+
+              return;
+            }
+          }
+
+          measurement.barcode = barcode;
+
+          api.updateMeasurement(measurement).then(
+            function () {
+              $window.navigator.notification.alert(
+                'The measurement has been updated.',
+                undefined,
+                'Success',
+                'OK'
+              );
+            },
+            function () {
+              api.getLocations().finally(function () {
+                var location = _.find(data.locations, function (currentLocation) {
+                  return currentLocation.id == locationId;
+                });
+
+                if (location) {
+                  data.location = location;
+                }
+              });
+
+              $window.navigator.notification.alert(
+                'An error occurred when trying to edit the measurement. Please try again.',
+                undefined,
+                'Error',
+                'OK'
+              );
+            }
+          );
+        },
+        'New barcode', ['Done'], measurement.barcode
+      );
+    }
+  };
+
+  /**
+   * @ngdoc method
    * @name AQ.controller:LocationController#finish
    * @methodOf AQ.controller:LocationController
    *

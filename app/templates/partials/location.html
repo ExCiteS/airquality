@@ -57,19 +57,24 @@
 
       <ul class="list-group">
         <li class="list-group-item clearfix" ng-class="{'list-group-item-success': measurement.addResults}" ng-repeat="measurement in measurements = (data.location.measurements|active)">
-          <h5 class="list-group-item-heading">Barcode: {{ measurement.barcode }}</h5>
-          <h6 ng-show="measurement.submitted"><strong>{{ measurement.properties.results }} µg/m³</strong></h6>
-          <span class="text-warning" ng-show="measurement.id.indexOf('x') > -1 || measurement.updated">Measurement has not been synced yet</span>
+          <div class="measurement" ng-click="edit(measurement)">
+            <h5 class="list-group-item-heading">
+              <span>Barcode: <strong>{{ measurement.barcode }}</strong></span>
+              <span>(<i class="edit">click to edit</i>)</span>
+            </h5>
+            <h6 ng-show="measurement.submitted"><strong>{{ measurement.properties.results }} µg/m³</strong></h6>
+            <span class="text-warning" ng-show="measurement.id.indexOf('x') > -1 || measurement.updated">Measurement has not been synced yet</span>
 
-          <span class="list-group-item-text help-block">Started <time datetime="{{ measurement.started }}" am-time-ago="measurement.started"></time></span>
-          <span class="list-group-item-text help-block" ng-show="measurement.finished">Finished <time datetime="{{ measurement.finished }}" am-time-ago="measurement.finished"></time></span>
-          <span class="list-group-item-text help-block" ng-show="measurement.submitted">Submitted <time datetime="{{ measurement.submitted }}" am-time-ago="measurement.submitted"></time></span>
-          <span class="list-group-item-text help-block" ng-hide="measurement.finished">
-            <span ng-init="measurement.expires = (measurement.started | amAdd : '30' : 'days')"></span>
-            <span ng-show="(measurement.expires|amDifference : null : 'seconds') < 0">Should have finished</span>
-            <span ng-show="(measurement.expires|amDifference : null : 'seconds') >= 0">Should finish</span>
-            <time datetime="{{ measurement.expires }}" am-time-ago="measurement.expires"></time>
-          </span>
+            <span class="list-group-item-text help-block">Started <time datetime="{{ measurement.started }}" am-time-ago="measurement.started"></time></span>
+            <span class="list-group-item-text help-block" ng-show="measurement.finished">Finished <time datetime="{{ measurement.finished }}" am-time-ago="measurement.finished"></time></span>
+            <span class="list-group-item-text help-block" ng-show="measurement.submitted">Submitted <time datetime="{{ measurement.submitted }}" am-time-ago="measurement.submitted"></time></span>
+            <span class="list-group-item-text help-block" ng-hide="measurement.finished">
+              <span ng-init="measurement.expires = (measurement.started | amAdd : '30' : 'days')"></span>
+              <span ng-show="(measurement.expires|amDifference : null : 'seconds') < 0">Should have finished</span>
+              <span ng-show="(measurement.expires|amDifference : null : 'seconds') >= 0">Should finish</span>
+              <time datetime="{{ measurement.expires }}" am-time-ago="measurement.expires"></time>
+            </span>
+          </div>
 
           <div ng-form="formGroup.measurements[measurement.id].form" ng-show="measurement.addResults">
             <hr />
