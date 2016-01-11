@@ -206,65 +206,67 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
     } else {
       $window.navigator.notification.prompt(
         'Please enter a new barcode (6 numbers) of this measurement.',
-        function (barcode) {
-          barcode = parseInt(barcode.input1);
+        function (results) {
+          if (results.buttonIndex === 1) {
+            var barcode = parseInt(results.input1);
 
-          if (_.isNaN(barcode)) {
-            $window.navigator.notification.alert(
-              'Barcode must be a valid number.',
-              undefined,
-              'Error',
-              'OK'
-            );
-
-            return;
-          } else {
-            barcode = barcode.toString();
-
-            if (_.size(barcode) < 6) {
-              barcode = new Array(6 - _.size(barcode) + 1).join('0') + barcode;
-            } else if (_.size(barcode) > 6) {
+            if (_.isNaN(barcode)) {
               $window.navigator.notification.alert(
-                'Barcode must consist of no more than 6 numbers.',
+                'Barcode must be a valid number.',
                 undefined,
                 'Error',
                 'OK'
               );
 
               return;
+            } else {
+              barcode = barcode.toString();
+
+              if (_.size(barcode) < 6) {
+                barcode = new Array(6 - _.size(barcode) + 1).join('0') + barcode;
+              } else if (_.size(barcode) > 6) {
+                $window.navigator.notification.alert(
+                  'Barcode must consist of no more than 6 numbers.',
+                  undefined,
+                  'Error',
+                  'OK'
+                );
+
+                return;
+              }
             }
-          }
 
-          measurement.barcode = barcode;
+            measurement.barcode = barcode;
 
-          api.updateMeasurement(measurement).then(
-            function () {
-              $window.navigator.notification.alert(
-                'The measurement has been updated.',
-                undefined,
-                'Success',
-                'OK'
-              );
-            },
-            function () {
-              api.getLocations().finally(function () {
-                var location = _.find(data.locations, function (currentLocation) {
-                  return currentLocation.id == locationId;
+            api.updateMeasurement(measurement).then(
+              function () {
+                $window.navigator.notification.alert(
+                  'The measurement has been updated.',
+                  undefined,
+                  'Success',
+                  'OK'
+                );
+              },
+              function () {
+                api.getLocations().finally(function () {
+                  var location = _.find(data.locations, function (currentLocation) {
+                    return currentLocation.id == locationId;
+                  });
+
+                  if (location) {
+                    data.location = location;
+                  }
                 });
 
-                if (location) {
-                  data.location = location;
-                }
-              });
-
-              $window.navigator.notification.alert(
-                'An error occurred when trying to edit the measurement. Please try again.',
-                undefined,
-                'Error',
-                'OK'
-              );
-            }
-          );
+                $window.navigator.notification.alert(
+                  'An error occurred when trying to edit the measurement. Please try again.',
+                  undefined,
+                  'Error',
+                  'OK'
+                );
+              }
+            );
+          }
         },
         'New barcode', ['Done'], measurement.barcode
       );
@@ -289,44 +291,46 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
           $window.navigator.notification.prompt(
             'Please enter any additional details for this measurement.',
             function (results) {
-              if (results.input1.length > 0) {
-                if (!_.isPlainObject(measurement.properties)) {
-                  measurement.properties = {};
+              if (results.buttonIndex === 1) {
+                if (results.input1.length > 0) {
+                  if (!_.isPlainObject(measurement.properties)) {
+                    measurement.properties = {};
+                  }
+
+                  measurement.properties.additional_details = results.input1;
                 }
 
-                measurement.properties.additional_details = results.input1;
-              }
+                measurement.finish = true;
 
-              measurement.finish = true;
+                api.updateMeasurement(measurement).then(
+                  function () {
+                    $window.navigator.notification.alert(
+                      'The measurement has finished. You can add the results when they come in to submit the measurement to Community Maps.',
+                      undefined,
+                      'Success',
+                      'OK'
+                    );
+                  },
+                  function () {
+                    api.getLocations().finally(function () {
+                      var location = _.find(data.locations, function (currentLocation) {
+                        return currentLocation.id == locationId;
+                      });
 
-              api.updateMeasurement(measurement).then(
-                function () {
-                  $window.navigator.notification.alert(
-                    'The measurement has finished. You can add the results when they come in to submit the measurement to Community Maps.',
-                    undefined,
-                    'Success',
-                    'OK'
-                  );
-                },
-                function () {
-                  api.getLocations().finally(function () {
-                    var location = _.find(data.locations, function (currentLocation) {
-                      return currentLocation.id == locationId;
+                      if (location) {
+                        data.location = location;
+                      }
                     });
 
-                    if (location) {
-                      data.location = location;
-                    }
-                  });
-
-                  $window.navigator.notification.alert(
-                    'An error occurred when trying to finish the measurement. Please try again.',
-                    undefined,
-                    'Error',
-                    'OK'
-                  );
-                }
-              );
+                    $window.navigator.notification.alert(
+                      'An error occurred when trying to finish the measurement. Please try again.',
+                      undefined,
+                      'Error',
+                      'OK'
+                    );
+                  }
+                );
+              }
             },
             'Additional details', ['Done']
           );
