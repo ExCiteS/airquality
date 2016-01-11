@@ -205,7 +205,7 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
       );
     } else {
       $window.navigator.notification.prompt(
-        'Please enter a new barcode (6 numbers) of this measurement.',
+        'Edit the barcode (6 numbers) of this measurement.',
         function (results) {
           if (results.buttonIndex === 1) {
             var barcode = parseInt(results.input1);
