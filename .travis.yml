@@ -1,0 +1,19 @@
+language: node_js
+
+node_js:
+  - '0.10'
+
+before_script:
+  - 'export DISPLAY=:99.0'
+  - 'sh -e /etc/init.d/xvfb start'
+  - 'npm install -g bower grunt-cli karma-cli'
+  - 'bower install'
+  - 'npm install'
+
+after_script:
+  - 'cp config.sample.js config.js'
+  - 'grunt'
+  - 'npm test'
+
+after_success:
+  - 'coveralls'
