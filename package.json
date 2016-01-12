@@ -18,6 +18,14 @@
     "grunt-html2js": "*",
     "grunt-replace": "*",
     "load-grunt-tasks": "*",
-    "opbeat-js": "*"
+    "opbeat-js": "*",
+    "karma-jasmine": "*",
+    "karma-phantomjs-launcher": "*",
+    "karma-coverage": "*",
+    "es5-shim": "4.4.1",
+    "angular-mocks": "1.4.8"
+  },
+  "scripts": {
+    "test": "karma start karma.config.js"
   }
 }

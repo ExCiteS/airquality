@@ -117,3 +117,25 @@ cordova run android --target=<device>
 ```
 
 Run `adb devices` to see all available Android devices.
+
+## Run Unit Tests
+
+All tests are written in [Jasmine](https://github.com/pivotal/jasmine).
+
+Install Karma's Command Line Interface globally:
+
+```console
+sudo npm install -g karma-cli
+```
+
+Follow official documentation to [install PhantomJS](http://phantomjs.org/download.html).
+
+Navigate to project's directory, build Angular application, then run:
+
+```console
+npm test
+```
+
+You can pass custom arguments by adding `--` between the command and arguments, for example, `npm test -- --no-single-run` will continue running tests after a change is being made to the files (either app or tests).
+
+Coverage report is generated inside the `coverage` directory.
