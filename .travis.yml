@@ -10,22 +10,26 @@ env:
   - BROWSER=Opera
 
 before_install:
+  - sudo sh -c 'echo "deb http://deb.opera.com/opera/ stable non-free" >> /etc/apt/sources.list.d/opera.list'
+  - sudo sh -c 'wget -O - http://deb.opera.com/archive.key | apt-key add -'
+  - sudo apt-get update
+  - sudo apt-get upgrade
   - sudo apt-get install -y opera
 
 before_script:
-  - 'export CHROME_BIN=chromium-browser'
-  - 'export DISPLAY=:99.0'
-  - 'sh -e /etc/init.d/xvfb start'
-  - 'npm install -g npm@latest'
-  - 'npm install -g bower grunt-cli karma-cli'
-  - 'bower install --force-latest'
-  - 'npm install'
-  - 'npm cache clean'
+  - export CHROME_BIN=chromium-browser
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - npm install -g npm@latest
+  - npm install -g bower grunt-cli karma-cli
+  - bower install --force-latest
+  - npm install
+  - npm cache clean
 
 script:
-  - 'cp config.sample.js config.js'
-  - 'grunt'
-  - 'npm test -- --browsers $BROWSER'
+  - cp config.sample.js config.js
+  - grunt
+  - npm test -- --browsers $BROWSER
 
 after_success:
-  - 'grunt coveralls'
+  - grunt coveralls
