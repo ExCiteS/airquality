@@ -5,7 +5,7 @@ node_js:
 
 env:
   - BROWSER=PhantomJS
-  - BROWSER=Chrome
+  - BROWSER=ChromeTravisCI
   - BROWSER=Firefox
 
 before_script:

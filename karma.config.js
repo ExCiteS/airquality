@@ -15,6 +15,13 @@ module.exports = function (karma) {
       'karma-coverage'
     ],
 
+    customLaunchers: {
+      ChromeTravisCI: {
+        base: 'Chrome',
+        flags: ['--no-sandbox']
+      }
+    },
+
     preprocessors: {
       'app/scripts/{,*/}*.js': ['coverage']
     },
