@@ -12,7 +12,7 @@
     "grunt-contrib-copy": "*",
     "grunt-contrib-less": "*",
     "grunt-contrib-cssmin": "*",
-    "grunt-contrib-imagemin": "*",
+    "grunt-contrib-imagemin": "0.9.1",
     "grunt-contrib-concat": "*",
     "grunt-contrib-jshint": "*",
     "grunt-html2js": "*",
