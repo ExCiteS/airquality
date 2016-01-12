@@ -10,6 +10,8 @@ module.exports = function (karma) {
     plugins: [
       'karma-jasmine',
       'karma-phantomjs-launcher',
+      'karma-chrome-launcher',
+      'karma-firefox-launcher',
       'karma-coverage'
     ],
 

@@ -22,6 +22,8 @@
     "opbeat-js": "*",
     "karma-jasmine": "*",
     "karma-phantomjs-launcher": "*",
+    "karma-chrome-launcher": "*",
+    "karma-firefox-launcher": "*",
     "karma-coverage": "*",
     "es5-shim": "4.4.1",
     "angular-mocks": "1.4.8"
