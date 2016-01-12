@@ -12,7 +12,7 @@
     "grunt-contrib-copy": "*",
     "grunt-contrib-less": "*",
     "grunt-contrib-cssmin": "*",
-    "grunt-contrib-imagemin": "0.9.1",
+    "grunt-contrib-imagemin": "*",
     "grunt-contrib-concat": "*",
     "grunt-contrib-jshint": "*",
     "grunt-html2js": "*",
@@ -26,7 +26,8 @@
     "karma-firefox-launcher": "*",
     "karma-coverage": "*",
     "es5-shim": "4.4.1",
-    "angular-mocks": "1.4.8"
+    "angular-mocks": "1.4.8",
+    "vinyl-fs": "2.2.1"
   },
   "scripts": {
     "test": "karma start karma.config.js"
