@@ -17,12 +17,12 @@
     "grunt-contrib-jshint": "*",
     "grunt-html2js": "*",
     "grunt-replace": "*",
+    "grunt-coveralls": "*",
     "load-grunt-tasks": "*",
     "opbeat-js": "*",
     "karma-jasmine": "*",
     "karma-phantomjs-launcher": "*",
     "karma-coverage": "*",
-    "karma-coveralls": "*",
     "es5-shim": "4.4.1",
     "angular-mocks": "1.4.8"
   },

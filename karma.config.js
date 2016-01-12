@@ -31,11 +31,12 @@ module.exports = function (karma) {
       '/images/': 'www/images/'
     },
 
-    reporters: ['progress', 'coverage', 'coveralls'],
+    reporters: ['progress', 'coverage'],
 
     coverageReporter: {
-      type: 'lcov',
-      dir: 'coverage/'
+      type: 'lcovonly',
+      dir: 'coverage/',
+      subdir: 'results/'
     },
 
     autoWatch: true,

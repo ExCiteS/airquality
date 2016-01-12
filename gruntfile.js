@@ -193,6 +193,16 @@ module.exports = function (grunt) {
       options: {
         spawn: false
       }
+    },
+
+    coveralls: {
+      app: {
+        src: 'coverage/results/lcov.info'
+      },
+
+      options: {
+        force: true
+      }
     }
   });
 
