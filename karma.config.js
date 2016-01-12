@@ -12,6 +12,7 @@ module.exports = function (karma) {
       'karma-phantomjs-launcher',
       'karma-chrome-launcher',
       'karma-firefox-launcher',
+      'karma-opera-launcher',
       'karma-coverage'
     ],
 

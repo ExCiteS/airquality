@@ -7,6 +7,7 @@ env:
   - BROWSER=PhantomJS
   - BROWSER=ChromeTravisCI
   - BROWSER=Firefox
+  - BROWSER=Opera
 
 before_script:
   - 'export CHROME_BIN=chromium-browser'
