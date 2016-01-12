@@ -6,6 +6,7 @@ node_js:
 before_script:
   - 'export DISPLAY=:99.0'
   - 'sh -e /etc/init.d/xvfb start'
+  - 'npm install -g npm@latest'
   - 'npm install -g bower grunt-cli karma-cli'
   - 'bower install'
   - 'npm install'
