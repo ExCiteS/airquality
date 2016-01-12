@@ -11,9 +11,11 @@ before_script:
   - 'bower install --force-latest'
   - 'npm install'
 
-after_script:
+script:
   - 'cp config.sample.js config.js'
   - 'grunt'
+
+after_script:
   - 'npm test'
 
 after_success:
