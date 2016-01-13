@@ -194,6 +194,8 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
    *
    * @description
    * Edits measurement.
+   *
+   * @param {Object} measurement Measurement to be edited.
    */
   $scope.edit = function (measurement) {
     if (!_.isPlainObject(measurement) || !measurement.barcode) {
