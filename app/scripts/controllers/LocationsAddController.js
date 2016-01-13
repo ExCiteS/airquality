@@ -112,6 +112,10 @@ AQ.controller('LocationsAddController', function ($window, $scope, viewport, sta
         data.name = data.name.substring(0, 97) + '...';
       }
 
+      if (!_.isPlainObject(dagta.properties)) {
+        data.properties = {};
+      }
+
       if ($scope.location.height) {
         data.properties.height = $scope.location.height;
       }
