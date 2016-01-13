@@ -12,6 +12,8 @@
  * Controller for the LocationEdit state.
  */
 AQ.controller('LocationEditController', function ($window, $scope, data, state, api, leaflet) {
+  var originalPosition;
+
   $scope.formGroup = {};
   $scope.location = {
     error: {}
@@ -38,9 +40,24 @@ AQ.controller('LocationEditController', function ($window, $scope, data, state, 
           $scope.location.distance = location.properties.distance;
           $scope.location.characteristics = location.properties.characteristics;
         }
+
+        originalPosition = leaflet.marker.getLatLng();
       }
     }
   );
+
+  /**
+   * @ngdoc event
+   * @name AQ.controller:LocationEditController#$stateChangeStart
+   * @eventOf AQ.controller:LocationEditController
+   *
+   * @description
+   * Resets marker to original position (or updated position), when navigating away from the state.
+   */
+  $scope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
+    leaflet.marker.setLatLng(originalPosition);
+    leaflet.map.panTo(originalPosition);
+  });
 
   /**
    * @ngdoc method
@@ -93,6 +110,7 @@ AQ.controller('LocationEditController', function ($window, $scope, data, state, 
 
       api.updateLocation(updatedLocation).then(
         function (location) {
+          originalPosition = leaflet.marker.getLatLng();
           state.goToLocation(location.id);
 
           $window.navigator.notification.alert(
