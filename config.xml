@@ -2,7 +2,7 @@
 
 <widget id="com.mfc.airquality" version="0.3.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>Air Quality</name>
-  <description>Cordova application for collecting Air Quality measurements to GeoKey.</description>
+  <description>Hybrid application for collecting Air Quality measurements to GeoKey.</description>
   <author email="info@mappingforchange.org.uk" href="http://mappingforchange.org.uk">Mapping for Change</author>
 
   <icon src="res/ios/icon.png" platform="ios" width="57" height="57" density="mdpi" />
