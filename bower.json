@@ -3,9 +3,9 @@
   "private": true,
   "dependencies": {
     "bootstrap": "3.3.5",
-    "lodash": "3.10.1",
+    "lodash": "4.0.0",
     "leaflet": "0.7.5",
-    "moment": "2.11.0",
+    "moment": "2.11.1",
     "angular": "1.4.8",
     "angular-sanitize": "1.4.8",
     "angular-touch": "1.4.8",
