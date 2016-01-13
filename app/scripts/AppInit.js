@@ -117,6 +117,15 @@ AQ.config(function (config, $httpProvider, $urlRouterProvider, $stateProvider, $
           templateUrl: 'partials/location.html'
         }
       }
+    })
+    .state('location.edit', {
+      url: '/edit',
+      views: {
+        subcontent: {
+          controller: 'LocationEditController',
+          templateUrl: 'partials/location-edit.html'
+        }
+      }
     });
 
   // Configure and install Opbeat

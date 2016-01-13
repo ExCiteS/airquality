@@ -56,6 +56,26 @@ AQ.factory('state', function ($window, $state, data, viewport) {
 
   /**
    * @ngdoc method
+   * @name AQ.factory:state#editLocation
+   * @methodOf AQ.factory:state
+   *
+   * @description
+   * Goes to Location Edit state.
+   *
+   * @param {Number} id Location ID.
+   */
+  state.editLocation = function (id) {
+    if (_.isUndefined(id)) {
+      throw new Error('Location ID not specified');
+    }
+
+    state.redirect('location.edit', {
+      locationId: id
+    });
+  };
+
+  /**
+   * @ngdoc method
    * @name AQ.factory:state#goToExternalPage
    * @methodOf AQ.factory:state
    *

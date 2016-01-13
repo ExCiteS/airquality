@@ -129,6 +129,10 @@ AQ.factory('api', function ($window, $interval, $q, $http, config, data, viewpor
                   resolve(locationIndex, totalLocations);
                 }
               );
+            } else if (location.updated) {
+              api.updateLocation(location).finally(function () {
+                syncMeasurements(location, locationIndex, totalLocations);
+              });
             } else {
               syncMeasurements(location, locationIndex, totalLocations);
             }
@@ -352,6 +356,72 @@ AQ.factory('api', function ($window, $interval, $q, $http, config, data, viewpor
           data.locations.push(location);
         }
 
+        viewport.calling = false;
+        deferred.resolve(location);
+      }
+    );
+
+    return deferred.promise;
+  };
+
+  /**
+   * @ngdoc method
+   * @name AQ.factory:api#updateLocation
+   * @methodOf AQ.factory:api
+   *
+   * @description
+   * Updates a location.
+   *
+   * @param {Object} location Current location to be updated.
+   * @returns {Object} Promise with measurement.
+   */
+  api.updateLocation = function (location) {
+    var deferred = $q.defer();
+
+    if (_.isUndefined(location)) {
+      throw new Error('Location not specified');
+    } else if (!_.isPlainObject(location)) {
+      throw new Error('Location must be plain object');
+    }
+
+    var now = new Date();
+    now = now.toISOString();
+
+    viewport.calling = true;
+
+    api.online().then(
+      function () {
+        api.sync().finally(function () {
+          oauth.refresh().finally(function () {
+            location.called = now;
+
+            $http.patch(url + '/airquality/locations/' + location.id + '/', location).then(
+              function (updatedLocation) {
+                updatedLocation = updatedLocation.data;
+
+                _.remove(data.locations, function (currentLocation) {
+                  return currentLocation.id == location.id;
+                });
+
+                if (!_.isEmpty(updatedLocation) && updatedLocation.id) {
+                  data.locations.push(updatedLocation);
+                  data.location = updatedLocation;
+                  deferred.resolve(updatedLocation);
+                } else {
+                  deferred.resolve();
+                }
+              },
+              function (error) {
+                deferred.reject(error);
+              }
+            ).finally(function () {
+              viewport.calling = false;
+            });
+          });
+        });
+      },
+      function () {
+        location.updated = true;
         viewport.calling = false;
         deferred.resolve(location);
       }
