@@ -6,11 +6,12 @@
  * @requires factories/AQ.factory:data
  * @requires factories/AQ.factory:state
  * @requires factories/AQ.factory:api
+ * @requires factories/AQ.factory:leaflet
  *
  * @description
  * Controller for the LocationEdit state.
  */
-AQ.controller('LocationEditController', function ($window, $scope, data, state, api) {
+AQ.controller('LocationEditController', function ($window, $scope, data, state, api, leaflet) {
   $scope.formGroup = {};
   $scope.location = {
     error: {}
@@ -58,8 +59,10 @@ AQ.controller('LocationEditController', function ($window, $scope, data, state, 
 
     if (!$scope.formGroup.form.$invalid) {
       var updatedLocation = _.cloneDeep(data.location);
+      var marker = leaflet.marker.toGeoJSON();
 
       updatedLocation.name = $scope.location.name;
+      updatedLocation.geometry = marker.geometry;
 
       // Limit name to 100 characters
       if (_.size(updatedLocation.name) > 100) {

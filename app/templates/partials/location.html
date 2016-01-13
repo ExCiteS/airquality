@@ -1,6 +1,6 @@
 <div ng-show="data.location">
   <h3 class="clearfix">
-    <span ng-hide="viewport.history.currentState == 'location.edit'">{{ data.location.name }}</span>
+    <span ng-show="viewport.history.currentState == 'location'">{{ data.location.name }}</span>
     <span ng-show="viewport.history.currentState == 'location.edit'">Edit location</span>
     <button type="button" class="btn btn-primary pull-right" ng-class="{'invisible': viewport.history.currentState == 'location.edit'}" ng-click="state.editLocation(data.location.id)" ng-disabled="viewport.calling">Edit location</button>
   </h3>
