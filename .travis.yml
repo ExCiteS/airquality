@@ -16,6 +16,7 @@ before_script:
   - npm install -g bower grunt-cli karma-cli
   - bower install --force-latest
   - npm install
+  - npm install vinyl-fs@2.2.1
   - npm cache clean
 
 script:
