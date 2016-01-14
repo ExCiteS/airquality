@@ -70,6 +70,15 @@ cordova build --release android
 
 ### Sign Android APK
 
+Use the following configuration to build the app:
+
+```
+url: https://geokey.communitymaps.org.uk
+client: mQ6cjAKpuPIviTNt3As3cA6FvnL8fnLDjBloATmp
+Opbeat organisation ID: 6c28b6535d9748f3960321c06f629ae3
+Opbeat app ID: cbc8e657d9
+```
+
 Copy the release key from Dropbox of Mapping for Change's Team Folder to your working directory.
 
 Sign the app:
