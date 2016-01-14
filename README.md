@@ -1,7 +1,6 @@
 [![Travis CI Build Status](https://img.shields.io/travis/ExCiteS/airquality/master.svg)](https://travis-ci.org/ExCiteS/airquality)
 [![Coveralls Test Coverage](https://img.shields.io/coveralls/ExCiteS/airquality/master.svg)](https://coveralls.io/r/ExCiteS/airquality)
-
-[![Get it on Google Play](http://steverichey.github.io/google-play-badge-svg/img/en_get.svg)](https://play.google.com/store/apps/details?id=com.mfc.airquality)
+[![Get it on Google Play](https://img.shields.io/badge/Google%20Play-GET-ff69b3.svg)](https://play.google.com/store/apps/details?id=com.mfc.airquality)
 
 # Air Quality
 
