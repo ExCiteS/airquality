@@ -70,7 +70,7 @@ cordova build --release android
 
 ### Sign Android APK
 
-Copy the release key from Dropbox of Mapping for Change to your working directory.
+Copy the release key from Dropbox of Mapping for Change's Team Folder to your working directory.
 
 Sign the app:
 
