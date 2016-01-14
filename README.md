@@ -1,6 +1,8 @@
 [![Travis CI Build Status](https://img.shields.io/travis/ExCiteS/airquality/master.svg)](https://travis-ci.org/ExCiteS/airquality)
 [![Coveralls Test Coverage](https://img.shields.io/coveralls/ExCiteS/airquality/master.svg)](https://coveralls.io/r/ExCiteS/airquality)
 
+[![Get it on Google Play](http://steverichey.github.io/google-play-badge-svg/img/en_get.svg)](https://play.google.com/store/apps/details?id=com.mfc.airquality)
+
 # Air Quality
 
 Air Quality is a hybrid [Cordova](https://cordova.apache.org) application for collecting measurements that is currently developed by [Mapping for Change](http://mappingforchange.org.uk), and is supporting the [GeoKey platform](http://geokey.org.uk) developed by [Extreme Citizen Science](http://ucl.ac.uk/excites) at the University College London.
