@@ -34,6 +34,17 @@ AQ.factory('data', function () {
 
   /**
    * @ngdoc property
+   * @name AQ.factory:data#location
+   * @propertyOf AQ.factory:data
+   * @type {Object}
+   *
+   * @description
+   * Single location.
+   */
+  data.location = null;
+
+  /**
+   * @ngdoc property
    * @name AQ.factory:data#projects
    * @propertyOf AQ.factory:data
    * @type {Object}
