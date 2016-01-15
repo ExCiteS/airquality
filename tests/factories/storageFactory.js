@@ -10,13 +10,25 @@ describe('Factory: storage', function () {
     spyOn(localStorage, 'getItem').and.callFake(function (key) {
       return store[key];
     });
+    Object.defineProperty(localStorage, 'getItem', {
+      configurable: true,
+      writable: true
+    });
 
     spyOn(localStorage, 'setItem').and.callFake(function (key, value) {
       store[key] = value;
     });
+    Object.defineProperty(localStorage, 'setItem', {
+      configurable: true,
+      writable: true
+    });
 
     spyOn(localStorage, 'removeItem').and.callFake(function (key) {
       delete store[key];
+    });
+    Object.defineProperty(localStorage, 'removeItem', {
+      configurable: true,
+      writable: true
     });
   });
 
