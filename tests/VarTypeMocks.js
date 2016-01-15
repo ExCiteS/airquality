@@ -28,3 +28,18 @@ var excludingArrayMock = [
   /.*/, {},
   'UK'
 ];
+
+/**
+ * EXCLUDES PLAIN OBJECT
+ */
+
+var excludingPlainObjectMock = [
+  null,
+  true,
+  false, -7,
+  0,
+  Math.random(),
+  new Date(),
+  /.*/, [],
+  'UK'
+];
