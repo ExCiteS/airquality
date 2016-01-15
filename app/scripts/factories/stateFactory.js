@@ -60,7 +60,7 @@ AQ.factory('state', function ($window, $state, data, viewport) {
    * @methodOf AQ.factory:state
    *
    * @description
-   * Goes to Location Edit state.
+   * Goes to LocationEdit state.
    *
    * @param {Number} id Location ID.
    */
