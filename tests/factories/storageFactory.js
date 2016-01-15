@@ -1,8 +1,8 @@
 describe('Factory: storage', function () {
+  'use strict';
+
   // Do not run tests on Firefox until it is clear why localStorage does not want to work
   if (navigator.userAgent.indexOf('Firefox') == -1) {
-    'use strict';
-
     var storageFactory;
     var store = {};
 
