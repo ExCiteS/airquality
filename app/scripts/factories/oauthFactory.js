@@ -262,8 +262,9 @@ AQ.factory('oauth', function ($q, $http, config, data, viewport, state, storage,
       storage.remove('PROJECTS');
       storage.remove('LAST_PROJECT_USED');
 
-      delete data.authentication;
-      delete data.locations;
+      data.authentication = {};
+      data.locations = null;
+      data.location = null;
 
       delete $http.defaults.headers.common.Authorization;
 

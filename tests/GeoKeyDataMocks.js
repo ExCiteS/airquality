@@ -6,5 +6,6 @@
 
 var authenticationMock = {
   access_token: 'xxxxxxxxxx',
-  expires_at: 3600
+  refresh_token: 'xxxxxxxxxx',
+  expires_in: 3600
 };
