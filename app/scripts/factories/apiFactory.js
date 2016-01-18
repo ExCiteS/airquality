@@ -163,28 +163,20 @@ AQ.factory('api', function ($window, $interval, $q, $http, config, data, viewpor
 
     viewport.calling = true;
 
-    api.online().then(
-      function () {
-        api.sync().finally(function () {
-          oauth.refresh().finally(function () {
-            $http.get(url + '/airquality/sheet/').then(
-              function () {
-                deferred.resolve();
-              },
-              function (error) {
-                deferred.reject(error);
-              }
-            ).finally(function () {
-              viewport.calling = false;
-            });
-          });
+    api.sync().finally(function () {
+      oauth.refresh().finally(function () {
+        $http.get(url + '/airquality/sheet/').then(
+          function () {
+            deferred.resolve();
+          },
+          function (error) {
+            deferred.reject(error);
+          }
+        ).finally(function () {
+          viewport.calling = false;
         });
-      },
-      function () {
-        viewport.calling = false;
-        deferred.resolve();
-      }
-    );
+      });
+    });
 
     return deferred.promise;
   };
