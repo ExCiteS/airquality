@@ -674,6 +674,146 @@ describe('Factory: api', function () {
     });
   });
 
+  describe('Public method: deleteLocation', function () {
+    beforeEach(function () {
+      var deferred = q.defer();
+
+      spyOn(apiFactory, 'sync').and.callFake(function () {
+        deferred.resolve();
+        return deferred.promise;
+      });
+      spyOn(oauthFactory, 'refresh').and.callFake(function () {
+        deferred.resolve();
+        return deferred.promise;
+      });
+
+      dataFactory.location = _.cloneDeep(locationMock);
+      dataFactory.locations = [_.cloneDeep(dataFactory.location)];
+    });
+
+    it('should throw an error when location ID is not specified', function () {
+      expect(function () {
+        apiFactory.deleteLocation();
+      }).toThrow(new Error('Location ID not specified'));
+    });
+
+    it('should resolve when offline and location is still local', function () {
+      var deferred = q.defer();
+
+      dataFactory.location.id = 'x' + dataFactory.location.id;
+      dataFactory.locations = [_.cloneDeep(dataFactory.location)];
+      dataFactory.unsynced.locations = [_.cloneDeep(dataFactory.location)];
+
+      spyOn(apiFactory, 'online').and.callFake(function () {
+        deferred.reject();
+        return deferred.promise;
+      });
+
+      callbacks.successCallback = function () {
+        expect(callbacks.successCallback).toHaveBeenCalled();
+      };
+      callbacks.errorCallback = function () {
+        expect(callbacks.errorCallback).not.toHaveBeenCalled();
+      };
+
+      spyOn(callbacks, 'successCallback').and.callThrough();
+      spyOn(callbacks, 'errorCallback').and.callThrough();
+
+      apiFactory.deleteLocation(dataFactory.location.id)
+        .then(callbacks.successCallback)
+        .catch(callbacks.errorCallback);
+
+      rootScope.$digest();
+
+      expect(dataFactory.locations.length).toEqual(0);
+    });
+
+    it('should resolve when offline and location is not local', function () {
+      var deferred = q.defer();
+
+      spyOn(apiFactory, 'online').and.callFake(function () {
+        deferred.reject();
+        return deferred.promise;
+      });
+
+      callbacks.successCallback = function () {
+        expect(callbacks.successCallback).toHaveBeenCalled();
+      };
+      callbacks.errorCallback = function () {
+        expect(callbacks.errorCallback).not.toHaveBeenCalled();
+      };
+
+      spyOn(callbacks, 'successCallback').and.callThrough();
+      spyOn(callbacks, 'errorCallback').and.callThrough();
+
+      apiFactory.deleteLocation(dataFactory.location.id)
+        .then(callbacks.successCallback)
+        .catch(callbacks.errorCallback);
+
+      rootScope.$digest();
+
+      expect(dataFactory.locations.length).toEqual(1);
+      expect(dataFactory.locations[0].deleted).toEqual(true);
+    });
+
+    it('should reject on error', function () {
+      var deferred = q.defer();
+
+      spyOn(apiFactory, 'online').and.callFake(function () {
+        deferred.resolve();
+        return deferred.promise;
+      });
+
+      callbacks.successCallback = function () {
+        expect(callbacks.successCallback).not.toHaveBeenCalled();
+      };
+      callbacks.errorCallback = function () {
+        expect(callbacks.errorCallback).toHaveBeenCalled();
+      };
+
+      spyOn(callbacks, 'successCallback').and.callThrough();
+      spyOn(callbacks, 'errorCallback').and.callThrough();
+
+      apiFactory.deleteLocation(dataFactory.location.id)
+        .then(callbacks.successCallback)
+        .catch(callbacks.errorCallback);
+
+      httpBackend.when('DELETE', /\.*airquality\/locations\/1.*/).respond(500);
+      httpBackend.flush();
+
+      expect(dataFactory.locations.length).toEqual(1);
+      expect(dataFactory.locations[0].deleted).toBeUndefined();
+    });
+
+    it('should resolve on success', function () {
+      var deferred = q.defer();
+
+      spyOn(apiFactory, 'online').and.callFake(function () {
+        deferred.resolve();
+        return deferred.promise;
+      });
+
+      callbacks.successCallback = function () {
+        expect(callbacks.successCallback).toHaveBeenCalled();
+      };
+      callbacks.errorCallback = function () {
+        expect(callbacks.errorCallback).not.toHaveBeenCalled();
+      };
+
+      spyOn(callbacks, 'successCallback').and.callThrough();
+      spyOn(callbacks, 'errorCallback').and.callThrough();
+
+      apiFactory.deleteLocation(dataFactory.location.id)
+        .then(callbacks.successCallback)
+        .catch(callbacks.errorCallback);
+
+      httpBackend.when('DELETE', /\.*airquality\/locations\/1.*/).respond(201);
+      httpBackend.flush();
+
+      expect(dataFactory.locations.length).toEqual(0);
+    });
+  });
+
   // Exclude Firefox
   if (navigator.userAgent.indexOf('Firefox') == -1) {
     describe('Public method: getProjects', function () {
