@@ -10,6 +10,9 @@ environment:
 
 build: off
 
+matrix:
+  fast_finish: true
+
 install:
   - choco install firefox
   - choco install googlechrome
