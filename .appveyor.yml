@@ -23,3 +23,5 @@ test_script:
   - cp config.sample.js config.js
   - grunt
   - npm test
+
+build: off
