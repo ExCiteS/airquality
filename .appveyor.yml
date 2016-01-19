@@ -4,9 +4,9 @@ skip_tags: true
 
 environment:
   matrix:
-    - BROWSER: 'IE'
-    - BROWSER: 'Firefox'
-    - BROWSER: 'Chrome'
+    - BROWSER: IE
+    - BROWSER: Firefox
+    - BROWSER: Chrome
 
 build: off
 test: off
