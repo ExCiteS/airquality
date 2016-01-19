@@ -17,11 +17,11 @@ install:
   - choco install firefox
   - choco install googlechrome
   - ps: Install-Product node '0.12'
-  - set PATH=%APPDATA%\npm;%PATH%
   - node --version
-  - npm install -g npm@latest
+  - set PATH=%APPDATA%\npm;%PATH%
+  - npm update -g npm
   - npm --version
-  - npm install -g bower karma grunt-cli karma-cli
+  - npm install -g bower grunt-cli karma-cli
   - bower install --force-latest
   - npm install
 
