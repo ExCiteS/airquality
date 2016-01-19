@@ -20,6 +20,7 @@
     "grunt-coveralls": "*",
     "load-grunt-tasks": "*",
     "opbeat-js": "*",
+    "karma": "*",
     "karma-jasmine": "*",
     "karma-phantomjs-launcher": "*",
     "karma-chrome-launcher": "*",
