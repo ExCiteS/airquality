@@ -3,9 +3,9 @@ version: '{build}'
 skip_tags: true
 
 environment:
-  BROWSER: IE
-  BROWSER: Firefox
-  BROWSER: Chrome
+  - BROWSER: IE
+  - BROWSER: Firefox
+  - BROWSER: Chrome
 
 build: off
 
