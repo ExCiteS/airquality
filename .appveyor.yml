@@ -6,9 +6,9 @@ environment:
   IE: IE
 
   matrix:
-    - BROWSER: IE
-    - BROWSER: Firefox
-    - BROWSER: Chrome
+    - BROWSER: 'IE'
+    - BROWSER: 'Firefox'
+    - BROWSER: 'Chrome'
 
 build: off
 test: off
@@ -34,4 +34,4 @@ install:
 test_script:
   - cp config.sample.js config.js
   - grunt
-  - npm test -- --browsers IE
+  - npm test -- --browsers $env:BROWSER
