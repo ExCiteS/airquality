@@ -20,6 +20,7 @@ install:
   - choco install googlechrome
   - ps: Install-Product node '0.12'
   - node --version
+  - set PATH=%APPDATA%\npm;%PATH%
   - npm install -g npm@latest
   - npm --version
   - npm install -g bower grunt-cli karma-cli
