@@ -17,6 +17,7 @@ install:
   - node --version
   - npm install -g npm@latest
   - npm --version
+  - set PATH=%APPDATA%\npm;%PATH%
   - npm install -g bower grunt-cli
   - bower install --force-latest
   - npm install
