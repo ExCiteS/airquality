@@ -46,7 +46,6 @@ AQ.factory('api', function ($window, $interval, $q, $http, config, data, viewpor
 
     }, 30);
 
-    deferred.resolve();
     return deferred.promise;
   };
 
