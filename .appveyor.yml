@@ -3,14 +3,16 @@ version: '{build}'
 skip_tags: true
 
 environment:
-  nodejs_version: '0.12'
+  BROWSER: IE
+  BROWSER: Firefox
+  BROWSER: Chrome
 
 build: off
 
 install:
   - choco install firefox
   - choco install googlechrome
-  - ps: Install-Product node $env:nodejs_version
+  - ps: Install-Product node '0.12'
   - node --version
   - npm install -g npm@latest
   - npm --version
@@ -22,4 +24,4 @@ install:
 test_script:
   - cp config.sample.js config.js
   - grunt
-  - npm test -- --browsers IE,Firefox,Chrome
+  - npm test -- --browsers $env:BROWSER
