@@ -18,7 +18,6 @@ install:
   - npm install -g bower grunt-cli karma-cli
   - bower install --force-latest
   - npm install
-  - npm cache clean
 
 test_script:
   - cp config.sample.js config.js
