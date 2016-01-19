@@ -22,6 +22,8 @@ install:
   - node --version
   - npm install -g npm@latest
   - npm --version
+  - set PATH=%CD%\node_modules\.bin;%PATH%
+  - set NODE_PATH=%CD%\node_modules;%NODE_PATH%
   - npm install -g bower grunt-cli karma-cli
   - bower install --force-latest
   - npm install
