@@ -5,8 +5,7 @@ skip_tags: true
 environment:
   nodejs_version: '0.12'
 
-build:
-  verbosity: minimal
+build: off
 
 install:
   - choco install firefox
@@ -23,5 +22,3 @@ test_script:
   - cp config.sample.js config.js
   - grunt
   - npm test
-
-build: off
