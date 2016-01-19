@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @ngdoc service
  * @name AQ.factory:leaflet
@@ -8,6 +6,8 @@
  * Initializes and stores Leaflet map.
  */
 AQ.factory('leaflet', function () {
+  'use strict';
+
   var leaflet = {};
 
   /**

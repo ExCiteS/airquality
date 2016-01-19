@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @ngdoc service
  * @name AQ.factory:data
@@ -8,6 +6,8 @@
  * Factory stores retrieved data.
  */
 AQ.factory('data', function () {
+  'use strict';
+
   var data = {};
 
   /**

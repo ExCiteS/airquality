@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @ngdoc service
  * @name AQ.factory:viewport
@@ -8,6 +6,8 @@
  * Factory stores viewport settings.
  */
 AQ.factory('viewport', function () {
+  'use strict';
+
   var viewport = {};
 
   /**

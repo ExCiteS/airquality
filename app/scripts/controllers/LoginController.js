@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @ngdoc function
  * @name AQ.controller:LoginController
@@ -13,6 +11,8 @@
  * Controller for the Login state.
  */
 AQ.controller('LoginController', function ($window, $scope, viewport, state, storage, oauth, helpers) {
+  'use strict';
+
   state.setTitle('Log in');
   $scope.authentication = {};
 

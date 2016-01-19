@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @ngdoc service
  * @name AQ.factory:api
@@ -13,6 +11,8 @@
  * Factory provides API functionality.
  */
 AQ.factory('api', function ($window, $interval, $q, $http, config, data, viewport, state, storage, oauth) {
+  'use strict';
+
   var api = {};
   var url = config.url + '/api';
 

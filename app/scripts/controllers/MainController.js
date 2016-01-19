@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @ngdoc function
  * @name AQ.controller:MainController
@@ -14,6 +12,8 @@
  * Main controller of the app.
  */
 AQ.controller('MainController', function ($opbeat, $window, $scope, data, viewport, state, storage, oauth, api) {
+  'use strict';
+
   $scope.data = data;
   $scope.viewport = viewport;
   $scope.state = state;

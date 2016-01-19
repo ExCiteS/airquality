@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @ngdoc function
  * @name AQ.controller:LocationController
@@ -14,6 +12,8 @@
  * Controller for the Location state.
  */
 AQ.controller('LocationController', function ($window, $timeout, $stateParams, $scope, data, viewport, state, storage, api, leaflet) {
+  'use strict';
+
   var locationId = $stateParams.locationId;
 
   state.setTitle('Location');

@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @ngdoc function
  * @name AQ.controller:404Controller
@@ -9,6 +7,8 @@
  * Controller for the 404 state.
  */
 AQ.controller('404Controller', function ($window, state) {
+  'use strict';
+
   $window.navigator.notification.alert(
     'The content you\'re trying to access is not found.',
     undefined,

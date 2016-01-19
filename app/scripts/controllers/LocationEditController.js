@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @ngdoc function
  * @name AQ.controller:LocationEditController
@@ -12,6 +10,8 @@
  * Controller for the LocationEdit state.
  */
 AQ.controller('LocationEditController', function ($window, $scope, data, state, api, leaflet) {
+  'use strict';
+
   var originalPosition;
 
   $scope.formGroup = {};

@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @ngdoc service
  * @name AQ.factory:storage
@@ -8,6 +6,8 @@
  * Stores, retrieves and removes items, using localStorage
  */
 AQ.factory('storage', function ($window) {
+  'use strict';
+
   var storage = {};
 
   /**

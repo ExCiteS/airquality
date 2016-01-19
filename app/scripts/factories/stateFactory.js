@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @ngdoc service
  * @name AQ.factory:state
@@ -10,6 +8,8 @@
  * Provides state functionality.
  */
 AQ.factory('state', function ($window, $state, data, viewport) {
+  'use strict';
+
   var state = {};
 
   /**

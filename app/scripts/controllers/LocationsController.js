@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @ngdoc function
  * @name AQ.controller:LocationsController
@@ -11,6 +9,8 @@
  * Controller for the Locations state.
  */
 AQ.controller('LocationsController', function (data, state, api) {
+  'use strict';
+
   state.setTitle('Locations');
 
   if (_.isEmpty(data.locations)) {

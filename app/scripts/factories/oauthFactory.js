@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @ngdoc service
  * @name AQ.factory:oauth
@@ -13,6 +11,8 @@
  * Factory provides OAuth functionality.
  */
 AQ.factory('oauth', function ($q, $http, config, data, viewport, state, storage, helpers) {
+  'use strict';
+
   var oauth = {};
   var url = config.url + '/oauth2/';
 

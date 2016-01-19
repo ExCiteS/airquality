@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @ngdoc service
  * @name AQ.factory:helpers
@@ -8,6 +6,8 @@
  * Provides various help methods.
  */
 AQ.factory('helpers', function () {
+  'use strict';
+
   var helpers = {};
 
   /**

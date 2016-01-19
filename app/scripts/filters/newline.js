@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @ngdoc filter
  * @name AQ.filter:newline
@@ -12,6 +10,8 @@
  * @returns {String} Converted text.
  */
 AQ.filter('newline', function () {
+  'use strict';
+
   return function (input) {
     if (_.isString(input)) {
       input = input.replace(/\n/g, '<br />');

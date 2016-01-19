@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @ngdoc function
  * @name AQ.controller:RegisterController
@@ -13,6 +11,8 @@
  * Controller for the Register state.
  */
 AQ.controller('RegisterController', function ($window, $scope, data, viewport, state, oauth, helpers) {
+  'use strict';
+
   state.setTitle('Register');
 
   // Redirect to Index state when user is already authenticated

@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @ngdoc filter
  * @name AQ.filter:active
@@ -12,6 +10,8 @@
  * @returns {Array} List without deleted items.
  */
 AQ.filter('active', function () {
+  'use strict';
+
   return function (items) {
     var activeOnly = [];
 

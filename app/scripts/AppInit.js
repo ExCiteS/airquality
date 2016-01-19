@@ -9,8 +9,6 @@
  * Copyright © 2015-2016 Mapping for Change
  **********************************************************/
 
-'use strict';
-
 /**
  * MAIN MODULE WITH INCLUDES
  */
@@ -29,6 +27,8 @@ var AQ = angular.module('AQ', [
  */
 
 AQ.config(function (config, $httpProvider, $urlRouterProvider, $stateProvider, $opbeatProvider) {
+  'use strict';
+
   $httpProvider.defaults.headers.post['Content-Type'] = 'application/json';
   $urlRouterProvider.when('', '/').otherwise('/404');
 
@@ -144,6 +144,8 @@ AQ.config(function (config, $httpProvider, $urlRouterProvider, $stateProvider, $
  */
 
 AQ.run(function ($window, $rootScope, config, viewport, data, state, oauth) {
+  'use strict';
+
   oauth.authorize();
 
   // Always redirect to Login state when user is not authenticated (unless it is a state for logging in or registering)

@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @ngdoc function
  * @name AQ.controller:LocationsAddController
@@ -12,6 +10,8 @@
  * Controller for the LocationsAdd state.
  */
 AQ.controller('LocationsAddController', function ($window, $scope, viewport, state, api, leaflet) {
+  'use strict';
+
   $scope.formGroup = {};
   $scope.location = {
     error: {}
