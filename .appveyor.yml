@@ -34,4 +34,4 @@ install:
 test_script:
   - cp config.sample.js config.js
   - grunt
-  - npm test -- --browsers $env:IE
+  - npm test -- --browsers IE
