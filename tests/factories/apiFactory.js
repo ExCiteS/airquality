@@ -551,6 +551,129 @@ describe('Factory: api', function () {
     });
   });
 
+  describe('Public method: updateLocation', function () {
+    var location;
+
+    beforeEach(function () {
+      var deferred = q.defer();
+
+      spyOn(apiFactory, 'sync').and.callFake(function () {
+        deferred.resolve();
+        return deferred.promise;
+      });
+      spyOn(oauthFactory, 'refresh').and.callFake(function () {
+        deferred.resolve();
+        return deferred.promise;
+      });
+
+      location = _.cloneDeep(locationMock);
+      location.name = 'Updated location';
+
+      dataFactory.location = _.cloneDeep(location);
+      dataFactory.locations = [location];
+    });
+
+    it('should throw an error when location is not specified', function () {
+      expect(function () {
+        apiFactory.updateLocation();
+      }).toThrow(new Error('Location not specified'));
+    });
+
+    it('should throw an error when location is not plain object', function () {
+      _.each(excludingPlainObjectMock, function (location) {
+        expect(function () {
+          apiFactory.updateLocation(location);
+        }).toThrow(new Error('Location must be plain object'));
+      });
+    });
+
+    it('should resolve when offline', function () {
+      var deferred = q.defer();
+
+      spyOn(apiFactory, 'online').and.callFake(function () {
+        deferred.reject();
+        return deferred.promise;
+      });
+
+      callbacks.successCallback = function () {
+        expect(callbacks.successCallback).toHaveBeenCalled();
+      };
+      callbacks.errorCallback = function () {
+        expect(callbacks.errorCallback).not.toHaveBeenCalled();
+      };
+
+      spyOn(callbacks, 'successCallback').and.callThrough();
+      spyOn(callbacks, 'errorCallback').and.callThrough();
+
+      apiFactory.updateLocation(location)
+        .then(callbacks.successCallback)
+        .catch(callbacks.errorCallback);
+
+      rootScope.$digest();
+
+      expect(dataFactory.locations.length).toEqual(1);
+      expect(dataFactory.locations[0].updated).toEqual(true);
+    });
+
+    it('should reject on error', function () {
+      var deferred = q.defer();
+
+      spyOn(apiFactory, 'online').and.callFake(function () {
+        deferred.resolve();
+        return deferred.promise;
+      });
+
+      callbacks.successCallback = function () {
+        expect(callbacks.successCallback).not.toHaveBeenCalled();
+      };
+      callbacks.errorCallback = function () {
+        expect(callbacks.errorCallback).toHaveBeenCalled();
+      };
+
+      spyOn(callbacks, 'successCallback').and.callThrough();
+      spyOn(callbacks, 'errorCallback').and.callThrough();
+
+      apiFactory.updateLocation(location)
+        .then(callbacks.successCallback)
+        .catch(callbacks.errorCallback);
+
+      httpBackend.when('PATCH', /\.*airquality\/locations\/1.*/).respond(500);
+      httpBackend.flush();
+
+      expect(dataFactory.locations.length).toEqual(1);
+      expect(dataFactory.locations[0].updated).toBeUndefined();
+    });
+
+    it('should resolve on success', function () {
+      var deferred = q.defer();
+
+      spyOn(apiFactory, 'online').and.callFake(function () {
+        deferred.resolve();
+        return deferred.promise;
+      });
+
+      callbacks.successCallback = function () {
+        expect(callbacks.successCallback).toHaveBeenCalled();
+      };
+      callbacks.errorCallback = function () {
+        expect(callbacks.errorCallback).not.toHaveBeenCalled();
+      };
+
+      spyOn(callbacks, 'successCallback').and.callThrough();
+      spyOn(callbacks, 'errorCallback').and.callThrough();
+
+      apiFactory.addLocation(location)
+        .then(callbacks.successCallback)
+        .catch(callbacks.errorCallback);
+
+      httpBackend.when('POST', /\.*airquality\/locations.*/).respond(200, location);
+      httpBackend.flush();
+
+      expect(dataFactory.locations.length).toEqual(1);
+      expect(dataFactory.locations[0].updated).toBeUndefined();
+    });
+  });
+
   // Exclude Firefox
   if (navigator.userAgent.indexOf('Firefox') == -1) {
     describe('Public method: getProjects', function () {
