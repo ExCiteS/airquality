@@ -3,8 +3,6 @@ version: '{build}'
 skip_tags: true
 
 environment:
-  IE: IE
-
   matrix:
     - BROWSER: 'IE'
     - BROWSER: 'Firefox'
@@ -34,4 +32,4 @@ install:
 test_script:
   - cp config.sample.js config.js
   - grunt
-  - npm test -- --browsers $env:BROWSER
+  - npm test -- --browsers %BROWSER%
