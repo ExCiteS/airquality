@@ -1,8 +1,8 @@
-describe('Factory: storage', function () {
-  'use strict';
+// Exclude Firefox
+if (navigator.userAgent.indexOf('Firefox') == -1) {
+  describe('Factory: storage', function () {
+    'use strict';
 
-  // Do not run tests on Firefox until it is clear why localStorage does not want to work
-  if (navigator.userAgent.indexOf('Firefox') == -1) {
     var storageFactory;
     var store = {};
 
@@ -12,11 +12,9 @@ describe('Factory: storage', function () {
       spyOn(localStorage, 'getItem').and.callFake(function (key) {
         return store[key];
       });
-
       spyOn(localStorage, 'setItem').and.callFake(function (key, value) {
         store[key] = value;
       });
-
       spyOn(localStorage, 'removeItem').and.callFake(function (key) {
         delete store[key];
       });
@@ -73,5 +71,5 @@ describe('Factory: storage', function () {
         expect(store.test).toBeUndefined();
       });
     });
-  }
-});
+  });
+}

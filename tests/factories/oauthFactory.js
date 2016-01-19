@@ -1,226 +1,227 @@
 describe('Factory: oauth', function () {
   'use strict';
 
-  // Do not run tests on Firefox until it is clear why localStorage does not want to work
-  if (navigator.userAgent.indexOf('Firefox') == -1) {
-    var q, httpBackend;
-    var oauthFactory, dataFactory, stateFactory;
-    var store = {},
-      callbacks;
+  var q, httpBackend;
+  var oauthFactory, dataFactory, stateFactory;
+  var store = {},
+    callbacks;
 
-    beforeEach(function () {
-      module('AQ');
+  beforeEach(function () {
+    module('AQ');
 
+    // Exclude Firefox
+    if (navigator.userAgent.indexOf('Firefox') == -1) {
       spyOn(localStorage, 'getItem').and.callFake(function (key) {
         return store[key];
       });
-
       spyOn(localStorage, 'setItem').and.callFake(function (key, value) {
         store[key] = value;
       });
-
       spyOn(localStorage, 'removeItem').and.callFake(function (key) {
         delete store[key];
       });
+    }
 
-      callbacks = function () {};
+    callbacks = function () {};
+  });
+
+  beforeEach(inject(function ($q, $httpBackend, oauth, data, state) {
+    q = $q;
+    httpBackend = $httpBackend;
+    oauthFactory = oauth;
+    dataFactory = data;
+    stateFactory = state;
+  }));
+
+  afterEach(function () {
+    store = {};
+  });
+
+  describe('Public method: register', function () {
+    it('should throw an error when email is not specified', function () {
+      expect(function () {
+        oauthFactory.register(undefined, 'Test User', 'password123', 'password123');
+      }).toThrow(new Error('Email not specified'));
     });
 
-    beforeEach(inject(function ($q, $httpBackend, oauth, data, state) {
-      q = $q;
-      httpBackend = $httpBackend;
-      oauthFactory = oauth;
-      dataFactory = data;
-      stateFactory = state;
-    }));
-
-    afterEach(function () {
-      store = {};
-    });
-
-    describe('Public method: register', function () {
-      it('should throw an error when email is not specified', function () {
+    it('should throw an error when email is not a string', function () {
+      _.each(excludingStringMock, function (email) {
         expect(function () {
-          oauthFactory.register(undefined, 'Test User', 'password123', 'password123');
-        }).toThrow(new Error('Email not specified'));
-      });
-
-      it('should throw an error when email is not a string', function () {
-        _.each(excludingStringMock, function (email) {
-          expect(function () {
-            oauthFactory.register(email, 'Test User', 'password123', 'password123');
-          }).toThrow(new Error('Email must be a string'));
-        });
-      });
-
-      it('should throw an error when display name is not specified', function () {
-        expect(function () {
-          oauthFactory.register('test@email.com', undefined, 'password123', 'password123');
-        }).toThrow(new Error('Display name not specified'));
-      });
-
-      it('should throw an error when display name is not a string', function () {
-        _.each(excludingStringMock, function (displayName) {
-          expect(function () {
-            oauthFactory.register('test@email.com', displayName, 'password123', 'password123');
-          }).toThrow(new Error('Display name must be a string'));
-        });
-      });
-
-      it('should throw an error when password 1 is not specified', function () {
-        expect(function () {
-          oauthFactory.register('test@email.com', 'Test User', undefined, 'password123');
-        }).toThrow(new Error('Password 1 not specified'));
-      });
-
-      it('should throw an error when password 1 is not a string', function () {
-        _.each(excludingStringMock, function (password1) {
-          expect(function () {
-            oauthFactory.register('test@email.com', 'Test User', password1, 'password123');
-          }).toThrow(new Error('Password 1 must be a string'));
-        });
-      });
-
-      it('should throw an error when password 2 is not specified', function () {
-        expect(function () {
-          oauthFactory.register('test@email.com', 'Test User', 'password123', undefined);
-        }).toThrow(new Error('Password 2 not specified'));
-      });
-
-      it('should throw an error when password 2 is not a string', function () {
-        _.each(excludingStringMock, function (password2) {
-          expect(function () {
-            oauthFactory.register('test@email.com', 'Test User', 'password123', password2);
-          }).toThrow(new Error('Password 2 must be a string'));
-        });
-      });
-
-      it('should throw an error when passwords do not match', function () {
-        expect(function () {
-          oauthFactory.register('test@email.com', 'Test User', 'password123', 'password321');
-        }).toThrow(new Error('Passwords do not match'));
-      });
-
-      it('should reject on error', function () {
-        callbacks.successCallback = function () {
-          expect(callbacks.successCallback).not.toHaveBeenCalled();
-        };
-        callbacks.errorCallback = function () {
-          expect(callbacks.errorCallback).toHaveBeenCalled();
-        };
-
-        spyOn(callbacks, 'successCallback').and.callThrough();
-        spyOn(callbacks, 'errorCallback').and.callThrough();
-
-        oauthFactory.register('test@email.com', 'Test User', 'password123', 'password123')
-          .then(callbacks.successCallback)
-          .catch(callbacks.errorCallback);
-
-        httpBackend.when('POST', /\.*user.*/).respond(400);
-        httpBackend.flush();
-      });
-
-      it('should resolve on success', function () {
-        callbacks.successCallback = function () {
-          expect(callbacks.successCallback).toHaveBeenCalled();
-        };
-        callbacks.errorCallback = function () {
-          expect(callbacks.errorCallback).not.toHaveBeenCalled();
-        };
-
-        spyOn(callbacks, 'successCallback').and.callThrough();
-        spyOn(callbacks, 'errorCallback').and.callThrough();
-
-        oauthFactory.register('test@email.com', 'Test User', 'password123', 'password123')
-          .then(callbacks.successCallback)
-          .catch(callbacks.errorCallback);
-
-        httpBackend.when('POST', /\.*user.*/).respond(201, {});
-        httpBackend.flush();
+          oauthFactory.register(email, 'Test User', 'password123', 'password123');
+        }).toThrow(new Error('Email must be a string'));
       });
     });
 
-    describe('Public method: authenticate', function () {
-      beforeEach(function () {
-        var deferred = q.defer();
+    it('should throw an error when display name is not specified', function () {
+      expect(function () {
+        oauthFactory.register('test@email.com', undefined, 'password123', 'password123');
+      }).toThrow(new Error('Display name not specified'));
+    });
 
-        spyOn(oauthFactory, 'authorize').and.callFake(function () {
-          deferred.resolve();
-          return deferred.promise;
-        });
-      });
-
-      it('should throw an error when email is not specified', function () {
+    it('should throw an error when display name is not a string', function () {
+      _.each(excludingStringMock, function (displayName) {
         expect(function () {
-          oauthFactory.authenticate(undefined, 'password123');
-        }).toThrow(new Error('Email not specified'));
-      });
-
-      it('should throw an error when email is not a string', function () {
-        _.each(excludingStringMock, function (email) {
-          expect(function () {
-            oauthFactory.authenticate(email, 'password123');
-          }).toThrow(new Error('Email must be a string'));
-        });
-      });
-
-      it('should throw an error when password is not specified', function () {
-        expect(function () {
-          oauthFactory.authenticate('test@email.com', undefined);
-        }).toThrow(new Error('Password not specified'));
-      });
-
-      it('should throw an error when password is not a string', function () {
-        _.each(excludingStringMock, function (password) {
-          expect(function () {
-            oauthFactory.authenticate('test@email.com', password);
-          }).toThrow(new Error('Password must be a string'));
-        });
-      });
-
-      it('should reject on error', function () {
-        callbacks.successCallback = function () {
-          expect(callbacks.successCallback).not.toHaveBeenCalled();
-        };
-        callbacks.errorCallback = function () {
-          expect(callbacks.errorCallback).toHaveBeenCalled();
-        };
-
-        spyOn(callbacks, 'successCallback').and.callThrough();
-        spyOn(callbacks, 'errorCallback').and.callThrough();
-
-        oauthFactory.authenticate('test@email.com', 'password123')
-          .then(callbacks.successCallback)
-          .catch(callbacks.errorCallback);
-
-        httpBackend.when('POST', /\.*oauth2\/token.*/).respond(400);
-        httpBackend.flush();
-
-        expect(oauthFactory.authorize).not.toHaveBeenCalled();
-      });
-
-      it('should resolve on success', function () {
-        callbacks.successCallback = function () {
-          expect(callbacks.successCallback).toHaveBeenCalled();
-        };
-        callbacks.errorCallback = function () {
-          expect(callbacks.errorCallback).not.toHaveBeenCalled();
-        };
-
-        spyOn(callbacks, 'successCallback').and.callThrough();
-        spyOn(callbacks, 'errorCallback').and.callThrough();
-
-        oauthFactory.authenticate('test@email.com', 'password123')
-          .then(callbacks.successCallback)
-          .catch(callbacks.errorCallback);
-
-        httpBackend.when('POST', /\.*oauth2\/token.*/).respond(201, authenticationMock);
-        httpBackend.flush();
-
-        expect(oauthFactory.authorize).toHaveBeenCalled();
+          oauthFactory.register('test@email.com', displayName, 'password123', 'password123');
+        }).toThrow(new Error('Display name must be a string'));
       });
     });
 
+    it('should throw an error when password 1 is not specified', function () {
+      expect(function () {
+        oauthFactory.register('test@email.com', 'Test User', undefined, 'password123');
+      }).toThrow(new Error('Password 1 not specified'));
+    });
+
+    it('should throw an error when password 1 is not a string', function () {
+      _.each(excludingStringMock, function (password1) {
+        expect(function () {
+          oauthFactory.register('test@email.com', 'Test User', password1, 'password123');
+        }).toThrow(new Error('Password 1 must be a string'));
+      });
+    });
+
+    it('should throw an error when password 2 is not specified', function () {
+      expect(function () {
+        oauthFactory.register('test@email.com', 'Test User', 'password123', undefined);
+      }).toThrow(new Error('Password 2 not specified'));
+    });
+
+    it('should throw an error when password 2 is not a string', function () {
+      _.each(excludingStringMock, function (password2) {
+        expect(function () {
+          oauthFactory.register('test@email.com', 'Test User', 'password123', password2);
+        }).toThrow(new Error('Password 2 must be a string'));
+      });
+    });
+
+    it('should throw an error when passwords do not match', function () {
+      expect(function () {
+        oauthFactory.register('test@email.com', 'Test User', 'password123', 'password321');
+      }).toThrow(new Error('Passwords do not match'));
+    });
+
+    it('should reject on error', function () {
+      callbacks.successCallback = function () {
+        expect(callbacks.successCallback).not.toHaveBeenCalled();
+      };
+      callbacks.errorCallback = function () {
+        expect(callbacks.errorCallback).toHaveBeenCalled();
+      };
+
+      spyOn(callbacks, 'successCallback').and.callThrough();
+      spyOn(callbacks, 'errorCallback').and.callThrough();
+
+      oauthFactory.register('test@email.com', 'Test User', 'password123', 'password123')
+        .then(callbacks.successCallback)
+        .catch(callbacks.errorCallback);
+
+      httpBackend.when('POST', /\.*user.*/).respond(400);
+      httpBackend.flush();
+    });
+
+    it('should resolve on success', function () {
+      callbacks.successCallback = function () {
+        expect(callbacks.successCallback).toHaveBeenCalled();
+      };
+      callbacks.errorCallback = function () {
+        expect(callbacks.errorCallback).not.toHaveBeenCalled();
+      };
+
+      spyOn(callbacks, 'successCallback').and.callThrough();
+      spyOn(callbacks, 'errorCallback').and.callThrough();
+
+      oauthFactory.register('test@email.com', 'Test User', 'password123', 'password123')
+        .then(callbacks.successCallback)
+        .catch(callbacks.errorCallback);
+
+      httpBackend.when('POST', /\.*user.*/).respond(201, {});
+      httpBackend.flush();
+    });
+  });
+
+  describe('Public method: authenticate', function () {
+    beforeEach(function () {
+      var deferred = q.defer();
+
+      spyOn(oauthFactory, 'authorize').and.callFake(function () {
+        deferred.resolve();
+        return deferred.promise;
+      });
+    });
+
+    it('should throw an error when email is not specified', function () {
+      expect(function () {
+        oauthFactory.authenticate(undefined, 'password123');
+      }).toThrow(new Error('Email not specified'));
+    });
+
+    it('should throw an error when email is not a string', function () {
+      _.each(excludingStringMock, function (email) {
+        expect(function () {
+          oauthFactory.authenticate(email, 'password123');
+        }).toThrow(new Error('Email must be a string'));
+      });
+    });
+
+    it('should throw an error when password is not specified', function () {
+      expect(function () {
+        oauthFactory.authenticate('test@email.com', undefined);
+      }).toThrow(new Error('Password not specified'));
+    });
+
+    it('should throw an error when password is not a string', function () {
+      _.each(excludingStringMock, function (password) {
+        expect(function () {
+          oauthFactory.authenticate('test@email.com', password);
+        }).toThrow(new Error('Password must be a string'));
+      });
+    });
+
+    it('should reject on error', function () {
+      callbacks.successCallback = function () {
+        expect(callbacks.successCallback).not.toHaveBeenCalled();
+      };
+      callbacks.errorCallback = function () {
+        expect(callbacks.errorCallback).toHaveBeenCalled();
+      };
+
+      spyOn(callbacks, 'successCallback').and.callThrough();
+      spyOn(callbacks, 'errorCallback').and.callThrough();
+
+      oauthFactory.authenticate('test@email.com', 'password123')
+        .then(callbacks.successCallback)
+        .catch(callbacks.errorCallback);
+
+      httpBackend.when('POST', /\.*oauth2\/token.*/).respond(400);
+      httpBackend.flush();
+
+      expect(oauthFactory.authorize).not.toHaveBeenCalled();
+    });
+
+    it('should resolve on success', function () {
+      callbacks.successCallback = function () {
+        expect(callbacks.successCallback).toHaveBeenCalled();
+      };
+      callbacks.errorCallback = function () {
+        expect(callbacks.errorCallback).not.toHaveBeenCalled();
+      };
+
+      spyOn(callbacks, 'successCallback').and.callThrough();
+      spyOn(callbacks, 'errorCallback').and.callThrough();
+
+      oauthFactory.authenticate('test@email.com', 'password123')
+        .then(callbacks.successCallback)
+        .catch(callbacks.errorCallback);
+
+      httpBackend.when('POST', /\.*oauth2\/token.*/).respond(201, authenticationMock);
+      httpBackend.flush();
+
+      expect(oauthFactory.authorize).toHaveBeenCalled();
+    });
+  });
+
+  // Exclude Firefox
+  if (navigator.userAgent.indexOf('Firefox') == -1) {
     describe('Public method: revoke', function () {
       beforeEach(function () {
         var deferred = q.defer();

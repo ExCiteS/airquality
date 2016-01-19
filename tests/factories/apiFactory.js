@@ -14,11 +14,9 @@ describe('Factory: api', function () {
       spyOn(localStorage, 'getItem').and.callFake(function (key) {
         return store[key];
       });
-
       spyOn(localStorage, 'setItem').and.callFake(function (key, value) {
         store[key] = value;
       });
-
       spyOn(localStorage, 'removeItem').and.callFake(function (key) {
         delete store[key];
       });
