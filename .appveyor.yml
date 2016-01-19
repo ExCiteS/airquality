@@ -21,4 +21,4 @@ install:
 test_script:
   - cp config.sample.js config.js
   - grunt
-  - npm test
+  - npm test -- --browsers IE,Firefox,Chrome
