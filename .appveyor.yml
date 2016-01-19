@@ -28,4 +28,4 @@ install:
 test_script:
   - cp config.sample.js config.js
   - grunt
-  - node_modules/karma/bin/karma start karma.config.js --browsers $env:BROWSER
+  - npm test -- --browsers $env:BROWSER
