@@ -20,7 +20,6 @@ install:
   - choco install googlechrome
   - ps: Install-Product node '0.12'
   - node --version
-  - set PATH=%APPDATA%\npm;%PATH%
   - set PATH=node_modules\.bin;%PATH%
   - npm install -g npm@latest
   - npm --version
