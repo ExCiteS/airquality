@@ -16,12 +16,11 @@ install:
   - node --version
   - npm install -g npm@latest
   - npm --version
-  - ps: $env:path = $env:appdata + '\npm;' + $env:path
-  - npm install -g bower grunt-cli karma-cli
+  - npm install -g bower grunt-cli
   - bower install --force-latest
   - npm install
 
 test_script:
   - cp config.sample.js config.js
   - grunt
-  - npm test -- --browsers $env:BROWSER
+  - node_modules/karma/bin/karma start karma.config.js --browsers $env:BROWSER
