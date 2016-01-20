@@ -43,7 +43,7 @@ module.exports = function (karma) {
     reporters: ['progress', 'coverage'],
 
     coverageReporter: {
-      type: 'lcovonly',
+      type: 'lcov',
       dir: 'coverage/',
       subdir: 'results/'
     },
