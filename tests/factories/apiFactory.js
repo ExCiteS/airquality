@@ -1,7 +1,7 @@
 describe('Factory: api', function () {
   'use strict';
 
-  var q, httpBackend, rootScope;
+  var q, httpBackend, rootScope, interval;
   var apiFactory, dataFactory, viewportFactory, oauthFactory;
   var store = {},
     callbacks;
@@ -25,10 +25,11 @@ describe('Factory: api', function () {
     callbacks = function () {};
   });
 
-  beforeEach(inject(function ($q, $httpBackend, $rootScope, api, data, viewport, oauth) {
+  beforeEach(inject(function ($q, $httpBackend, $rootScope, $interval, api, data, viewport, oauth) {
     q = $q;
     httpBackend = $httpBackend;
     rootScope = $rootScope;
+    interval = $interval;
     apiFactory = api;
     dataFactory = data;
     viewportFactory = viewport;
@@ -56,6 +57,8 @@ describe('Factory: api', function () {
       apiFactory.online()
         .then(callbacks.successCallback)
         .catch(callbacks.errorCallback);
+
+      interval.flush(30);
     });
 
     it('should resolve when online', function () {
@@ -74,6 +77,29 @@ describe('Factory: api', function () {
       apiFactory.online()
         .then(callbacks.successCallback)
         .catch(callbacks.errorCallback);
+
+      interval.flush(30);
+    });
+
+    it('should wait for viewport to annouce online status', function () {
+      callbacks.successCallback = function () {
+        expect(callbacks.successCallback).toHaveBeenCalled();
+      };
+      callbacks.errorCallback = function () {
+        expect(callbacks.errorCallback).not.toHaveBeenCalled();
+      };
+
+      spyOn(callbacks, 'successCallback').and.callThrough();
+      spyOn(callbacks, 'errorCallback').and.callThrough();
+
+      apiFactory.online()
+        .then(callbacks.successCallback)
+        .catch(callbacks.errorCallback);
+
+      viewportFactory.online = undefined;
+      interval.flush(30);
+      viewportFactory.online = true;
+      interval.flush(30);
     });
   });
 
