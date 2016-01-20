@@ -690,11 +690,11 @@ describe('Factory: api', function () {
       spyOn(callbacks, 'successCallback').and.callThrough();
       spyOn(callbacks, 'errorCallback').and.callThrough();
 
-      apiFactory.addLocation(location)
+      apiFactory.updateLocation(location)
         .then(callbacks.successCallback)
         .catch(callbacks.errorCallback);
 
-      httpBackend.when('POST', /\.*airquality\/locations.*/).respond(200, location);
+      httpBackend.when('PATCH', /\.*airquality\/locations\/1.*/).respond(200, location);
       httpBackend.flush();
 
       expect(dataFactory.locations.length).toEqual(1);
@@ -1047,6 +1047,39 @@ describe('Factory: api', function () {
       expect(dataFactory.locations[0].measurements.length).toEqual(1);
       expect(dataFactory.locations[0].measurements[0].id).toEqual(1);
     });
+
+    it('should resolve on success when starting measurement from local one and submitting straigh away', function () {
+      var deferred = q.defer();
+
+      measurement.id = 'x1';
+      measurement.finished = '2016-01-21T08:14:02.247Z';
+      measurement.project = 3;
+      dataFactory.locations[0].measurements.push(measurement);
+
+      spyOn(apiFactory, 'online').and.callFake(function () {
+        deferred.resolve();
+        return deferred.promise;
+      });
+
+      callbacks.successCallback = function () {
+        expect(callbacks.successCallback).toHaveBeenCalled();
+      };
+      callbacks.errorCallback = function () {
+        expect(callbacks.errorCallback).not.toHaveBeenCalled();
+      };
+
+      spyOn(callbacks, 'successCallback').and.callThrough();
+      spyOn(callbacks, 'errorCallback').and.callThrough();
+
+      apiFactory.startMeasurement(measurement)
+        .then(callbacks.successCallback)
+        .catch(callbacks.errorCallback);
+
+      httpBackend.when('POST', /\.*airquality\/locations\/1\/measurements.*/).respond(201);
+      httpBackend.flush();
+
+      expect(dataFactory.locations[0].measurements.length).toEqual(0);
+    });
   });
 
 describe('Public method: updateMeasurement', function () {
@@ -1227,6 +1260,37 @@ describe('Public method: updateMeasurement', function () {
     it('should resolve on success when finishing', function () {
       var deferred = q.defer();
 
+      measurement.finish = true;
+
+      spyOn(apiFactory, 'online').and.callFake(function () {
+        deferred.resolve();
+        return deferred.promise;
+      });
+
+      callbacks.successCallback = function () {
+        expect(callbacks.successCallback).toHaveBeenCalled();
+      };
+      callbacks.errorCallback = function () {
+        expect(callbacks.errorCallback).not.toHaveBeenCalled();
+      };
+
+      spyOn(callbacks, 'successCallback').and.callThrough();
+      spyOn(callbacks, 'errorCallback').and.callThrough();
+
+      apiFactory.updateMeasurement(measurement)
+        .then(callbacks.successCallback)
+        .catch(callbacks.errorCallback);
+
+      httpBackend.when('PATCH', /\.*airquality\/locations\/1\/measurements\/1.*/).respond(201);
+      httpBackend.flush();
+
+      expect(dataFactory.locations[0].measurements.length).toEqual(0);
+    });
+
+    it('should resolve on success when submitting', function () {
+      var deferred = q.defer();
+
+      measurement.finished = '2016-01-21T08:14:02.247Z';
       measurement.submit = true;
 
       spyOn(apiFactory, 'online').and.callFake(function () {
