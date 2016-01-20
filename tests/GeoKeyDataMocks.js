@@ -9,6 +9,21 @@ var authenticationMock = {
 };
 
 /**
+ * MEASUREMENT
+ */
+
+var measurementMock = {
+  id: 1,
+  barcode: '145023',
+  started: '2015-12-23T09:12:02.247Z',
+  finished: null,
+  properties: {
+    results: null,
+    additional_details: null
+  }
+};
+
+/**
  * LOCATION
  */
 
