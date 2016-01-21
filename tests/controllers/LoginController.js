@@ -34,7 +34,7 @@ describe('Controller: Login', function () {
   it('should not call a redirection authenticated', function () {
     dataFactory.authentication = {};
 
-    controller('RegisterController', {
+    controller('LoginController', {
       $scope: scope
     });
 
@@ -45,11 +45,19 @@ describe('Controller: Login', function () {
   it('should call a redirection when authenticated', function () {
     dataFactory.authentication = _.cloneDeep(authenticationMock);
 
-    controller('RegisterController', {
+    controller('LoginController', {
       $scope: scope
     });
 
     scope.$digest();
     expect(stateFactory.redirect).toHaveBeenCalledWith('index');
+  });
+
+  it('should have personal scope variables set', function () {
+    controller('LoginController', {
+      $scope: scope
+    });
+
+    expect(_.isPlainObject(scope.authentication)).toEqual(true);
   });
 });

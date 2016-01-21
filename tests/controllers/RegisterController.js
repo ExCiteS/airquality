@@ -52,4 +52,12 @@ describe('Controller: Register', function () {
     scope.$digest();
     expect(stateFactory.redirect).toHaveBeenCalledWith('index');
   });
+
+  it('should have personal scope variables set', function () {
+    controller('RegisterController', {
+      $scope: scope
+    });
+
+    expect(_.isPlainObject(scope.registration)).toEqual(true);
+  });
 });
