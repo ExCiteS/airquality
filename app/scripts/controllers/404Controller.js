@@ -10,7 +10,7 @@ AQ.controller('404Controller', function ($window, state) {
   'use strict';
 
   $window.navigator.notification.alert(
-    'The content you\'re trying to access is not found.',
+    'The content you\'re trying to access could not be found.',
     undefined,
     'Not found',
     'OK'
