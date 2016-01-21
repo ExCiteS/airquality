@@ -9,6 +9,6 @@
 AQ.controller('IndexController', function (state) {
   'use strict';
 
-  // Automatically redirect to Locations state
+  // Automatically redirect to the Locations state
   state.redirect('locations');
 });

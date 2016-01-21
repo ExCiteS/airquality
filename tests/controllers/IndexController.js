@@ -20,8 +20,7 @@ describe('Controller: Index', function () {
     });
   }));
 
-  it('should try to redirect to Locations state', function () {
-    scope.$digest();
+  it('should redirect to the Locations state', function () {
     expect(stateFactory.redirect).toHaveBeenCalledWith('locations');
   });
 });
