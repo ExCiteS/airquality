@@ -2,8 +2,8 @@
  * @ngdoc function
  * @name AQ.controller:LocationController
  * @requires factories/AQ.factory:data
- * @requires factories/AQ.factory:viewport
  * @requires factories/AQ.factory:state
+ * @requires factories/AQ.factory:viewport
  * @requires factories/AQ.factory:storage
  * @requires factories/AQ.factory:api
  * @requires factories/AQ.factory:leaflet
@@ -11,7 +11,7 @@
  * @description
  * Controller for the Location state.
  */
-AQ.controller('LocationController', function ($window, $timeout, $stateParams, $scope, data, viewport, state, storage, api, leaflet) {
+AQ.controller('LocationController', function ($window, $timeout, $stateParams, $scope, data, state, viewport, storage, api, leaflet) {
   'use strict';
 
   var locationId = $stateParams.locationId;
@@ -43,8 +43,9 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
     if (location && !location.deleted) {
       var center, panning;
 
-      leaflet.init(location);
       data.location = location;
+
+      leaflet.init(location);
 
       leaflet.map.on('movestart', function () {
         if (!panning) {
@@ -73,8 +74,9 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
         measurement.addResults = false;
       });
     } else {
+      // Inform when location could not be found
       $window.navigator.notification.alert(
-        'The location you\'re trying to access is not found. Please choose an existing location from the list.',
+        'The location you\'re trying to access could not be found. Please choose an existing location from the list.',
         undefined,
         'Not found',
         'OK'
