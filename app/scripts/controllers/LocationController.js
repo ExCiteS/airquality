@@ -17,6 +17,7 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
   var locationId = $stateParams.locationId;
 
   state.setTitle('Location');
+
   $scope.formGroup = {
     measurements: {}
   };

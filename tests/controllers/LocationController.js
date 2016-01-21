@@ -1,56 +1,49 @@
-describe('Controller: Locations', function () {
+describe('Controller: Location', function () {
   'use strict';
 
-  var scope;
+  var q, scope;
   var controller;
   var dataFactory, stateFactory, apiFactory;
 
   beforeEach(module('AQ'));
 
-  beforeEach(inject(function ($rootScope, $controller, data, state, api) {
+  beforeEach(inject(function ($q, $rootScope, $controller, data, state, api) {
+    q = $q;
     scope = $rootScope.$new();
     dataFactory = data;
     stateFactory = state;
     apiFactory = api;
 
+    var deferred = q.defer();
+
     spyOn(stateFactory, 'setTitle').and.callFake(function () {
       return;
     });
     spyOn(apiFactory, 'getLocations').and.callFake(function () {
-      return;
+      deferred.resolve();
+      return deferred.promise;
     });
 
     controller = $controller;
   }));
 
   it('should set title', function () {
-    controller('LocationsController', {
+    controller('LocationController', {
       $scope: scope
     });
 
     scope.$digest();
-    expect(stateFactory.setTitle).toHaveBeenCalledWith('Locations');
+    expect(stateFactory.setTitle).toHaveBeenCalledWith('Location');
   });
 
   it('should get locations when they are not set yet', function () {
     dataFactory.locations = null;
 
-    controller('LocationsController', {
+    controller('LocationController', {
       $scope: scope
     });
 
     scope.$digest();
     expect(apiFactory.getLocations).toHaveBeenCalled();
-  });
-
-  it('should not get locations when they are already set', function () {
-    dataFactory.locations = _.cloneDeep(locationsMock);
-
-    controller('LocationsController', {
-      $scope: scope
-    });
-
-    scope.$digest();
-    expect(apiFactory.getLocations).not.toHaveBeenCalled();
   });
 });

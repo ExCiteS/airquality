@@ -1,19 +1,25 @@
 /**
  * @ngdoc function
  * @name AQ.controller:LoginController
+ * @requires factories/AQ.factory:data
  * @requires factories/AQ.factory:viewport
  * @requires factories/AQ.factory:state
- * @requires factories/AQ.factory:storage
  * @requires factories/AQ.factory:oauth
  * @requires factories/AQ.factory:helpers
  *
  * @description
  * Controller for the Login state.
  */
-AQ.controller('LoginController', function ($window, $scope, viewport, state, storage, oauth, helpers) {
+AQ.controller('LoginController', function ($window, $scope, data, viewport, state, oauth, helpers) {
   'use strict';
 
   state.setTitle('Log in');
+
+  // Redirect to Index state when user is already authenticated
+  if (!_.isEmpty(data.authentication)) {
+    state.redirect('index');
+  }
+
   $scope.authentication = {};
 
   /**
