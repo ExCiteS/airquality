@@ -106,7 +106,7 @@ module.exports = function (grunt) {
           'bower_components/angular-touch/angular-touch.js',
           'bower_components/angular-moment/angular-moment.js',
           'bower_components/angular-ui-router/release/angular-ui-router.js',
-          'node_modules/opbeat-js/dist/angular-opbeat.min.js'
+          'node_modules/opbeat-js/dist/angular-opbeat.js'
         ],
         dest: 'temp/js/vendor.js'
       },
