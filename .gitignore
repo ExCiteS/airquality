@@ -10,4 +10,5 @@ config.js
 .Trashes
 report.xml
 *.log
-airquality-key.keystore
+*.apk
+*.keystore
