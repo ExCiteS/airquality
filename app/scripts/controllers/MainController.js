@@ -81,7 +81,7 @@ AQ.controller('MainController', function ($opbeat, $window, $scope, data, viewpo
         storage.put('PROJECTS', JSON.stringify(data.projects));
       }
 
-      if (data.authentication) {
+      if (!_.isEmpty(data.authentication)) {
         if (!_.isPlainObject(data.authentication.info)) {
           api.getUserInfo().then(function (info) {
             var authentication;
