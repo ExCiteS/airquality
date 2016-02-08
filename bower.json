@@ -2,14 +2,14 @@
   "name": "airquality",
   "private": true,
   "dependencies": {
-    "bootstrap": "3.3.5",
-    "lodash": "4.0.0",
-    "leaflet": "0.7.5",
-    "moment": "2.11.1",
-    "angular": "1.4.8",
-    "angular-sanitize": "1.4.8",
-    "angular-touch": "1.4.8",
+    "bootstrap": "3.3.6",
+    "lodash": "4.3.0",
+    "leaflet": "0.7.7",
+    "moment": "2.11.2",
+    "angular": "1.5.0",
+    "angular-sanitize": "1.5.0",
+    "angular-touch": "1.5.0",
     "angular-moment": "0.10.3",
-    "angular-ui-router": "0.2.15"
+    "angular-ui-router": "0.2.18"
   }
 }
