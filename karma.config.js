@@ -30,7 +30,6 @@ module.exports = function (karma) {
       'www/scripts/vendor.js',
       'www/scripts/templates.js',
       'node_modules/angular-mocks/angular-mocks.js',
-      'node_modules/es5-shim/es5-shim.js',
       'app/scripts/**/*.js',
       'config.js',
       'tests/{,*/}*.js'

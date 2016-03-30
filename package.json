@@ -26,7 +26,6 @@
     "karma-chrome-launcher": "*",
     "karma-firefox-launcher": "*",
     "karma-coverage": "*",
-    "es5-shim": "4.5.2",
     "angular-mocks": "1.5.0"
   },
   "scripts": {
