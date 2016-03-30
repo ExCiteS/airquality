@@ -4,15 +4,15 @@
 
 # Air Quality
 
-Air Quality is a hybrid [Cordova](https://cordova.apache.org) application for collecting measurements that is currently developed by [Mapping for Change](http://mappingforchange.org.uk), and is supporting the [GeoKey platform](http://geokey.org.uk) developed by [Extreme Citizen Science](http://ucl.ac.uk/excites) at the University College London.
+Air Quality is a hybrid [Cordova](https://cordova.apache.org) application for collecting measurements that is currently developed by [Mapping for Change](http://mappingforchange.org.uk), and is supporting the [GeoKey platform](http://geokey.org.uk) developed by [Extreme Citizen Science](http://ucl.ac.uk/excites) research group at University College London.
 
 ## Requirements
 
-Air Quality requires the [geokey-airquality](https://github.com/ExCiteS/geokey-airquality) (v0.3.0+) extension to be installed alongside GeoKey.
+Air Quality requires the [geokey-airquality](https://github.com/ExCiteS/geokey-airquality) extension to be installed alongside GeoKey.
 
 ## Build Application
 
-Follow official documentation to [install Node.js](https://github.com/joyent/node/wiki/installation). You may need to install [Git](http://git-scm.com/downloads) and [Ruby](http://ruby-lang.org/en/installation) too.
+Follow official documentation to [install Node.js](https://nodejs.org/en/download). You may need to install [Git](http://git-scm.com/downloads) and [Ruby](http://ruby-lang.org/en/installation) too.
 
 Install Bower, Grunt's Command Line Interface and Cordova globally:
 
