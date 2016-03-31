@@ -39,7 +39,7 @@ module.exports = function (karma) {
       '/images/': 'www/images/'
     },
 
-    reporters: ['progress', 'coverage'],
+    reporters: ['dots', 'coverage'],
 
     coverageReporter: {
       type: 'lcov',
