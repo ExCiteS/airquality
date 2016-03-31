@@ -3,7 +3,7 @@
   "private": true,
   "dependencies": {
     "bootstrap": "3.3.6",
-    "lodash": "4.6.1",
+    "lodash": "4.7.0",
     "leaflet": "0.7.7",
     "moment": "2.12.0",
     "angular": "1.5.3",
