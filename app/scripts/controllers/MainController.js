@@ -128,7 +128,7 @@ AQ.controller('MainController', function ($opbeat, $window, $scope, data, viewpo
     api.sendSheet().then(
       function () {
         $window.navigator.notification.alert(
-          'The CSV sheet has been sent to your email address. You can always get another copy at any time.',
+          'The CSV sheet has been sent to your email address. If you won\'t receive it in a few moments, please check your Spam or Junk directory.',
           undefined,
           'Success',
           'OK'
