@@ -4,7 +4,7 @@ node_js:
   - '0.12'
 
 addons:
-  - firefox: 'latest'
+  - firefox: '45.0'
 
 env:
   - BROWSER=PhantomJS
