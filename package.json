@@ -6,7 +6,7 @@
     "node": ">=0.12.0"
   },
   "devDependencies": {
-    "grunt": "*",
+    "grunt": "0.4.5",
     "grunt-contrib-watch": "*",
     "grunt-contrib-clean": "*",
     "grunt-contrib-copy": "*",
