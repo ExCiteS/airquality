@@ -28,7 +28,7 @@
     "karma-chrome-launcher": "*",
     "karma-firefox-launcher": "*",
     "karma-coverage": "*",
-    "angular-mocks": "1.5.3"
+    "angular-mocks": "1.5.5"
   },
   "scripts": {
     "test": "karma start karma.config.js"
