@@ -71,7 +71,7 @@ cordova build --release android
 
 Get the release key from Mapping for Change (including instructions), copy it to your working directory.
 
-Sign the app:
+Sign the app (you will need to enter the build passphrase):
 
 ```console
 jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore airquality-key.keystore platforms/android/build/outputs/apk/android-release-unsigned.apk alias_name
