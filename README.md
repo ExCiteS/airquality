@@ -113,7 +113,6 @@ iOS requires ios-sim to be installed globally:
 sudo npm install -g ios-sim
 ```
 
-Or connected device:
 To test the app on the actual Android device, use:
 
 ```console
