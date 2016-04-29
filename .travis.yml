@@ -20,7 +20,7 @@ before_script:
   - npm install -g bower karma-cli grunt-cli
   - bower install --force-latest
   - npm install
-  - npm install phantomjs-prebuilt
+  - npm install phantomjs-prebuilt jasmine-core
   - npm cache clean
 
 script:
