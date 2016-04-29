@@ -48,7 +48,7 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
       leaflet.init(location);
 
       leaflet.map.on('movestart', function () {
-        if (!panning) {
+        if (!panning && viewport.history.currentState != 'location.edit') {
           center = leaflet.map.getCenter();
         } else {
           panning = false;
