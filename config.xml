@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<widget id="com.mfc.airquality" version="0.3.7" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.mfc.airquality" version="0.3.8" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>Air Quality</name>
   <description>Hybrid application for collecting Air Quality measurements to GeoKey.</description>
   <author email="info@mappingforchange.org.uk" href="http://mappingforchange.org.uk">Mapping for Change</author>
