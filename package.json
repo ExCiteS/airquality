@@ -31,7 +31,7 @@
     "karma-firefox-launcher": "*",
     "karma-coverage": "*",
     "phantomjs-prebuilt": "*",
-    "angular-mocks": "1.5.5"
+    "angular-mocks": "1.5.6"
   },
   "scripts": {
     "test": "karma start karma.config.js"
