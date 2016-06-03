@@ -8,7 +8,7 @@ Air Quality is a hybrid [Cordova](https://cordova.apache.org) application for co
 
 ## Requirements
 
-Air Quality requires the [geokey-airquality](https://github.com/ExCiteS/geokey-airquality) extension to be installed alongside [GeoKey](https://github.com/ExCiteS/geokey) .
+Air Quality requires the [geokey-airquality](https://github.com/ExCiteS/geokey-airquality) extension to be installed alongside [GeoKey](https://github.com/ExCiteS/geokey).
 
 ## Build Application
 
