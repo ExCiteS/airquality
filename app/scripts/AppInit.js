@@ -134,8 +134,6 @@ AQ.config(function (config, $httpProvider, $urlRouterProvider, $stateProvider, $
       orgId: config.opbeatOrgId,
       appId: config.opbeatAppId
     });
-
-    $opbeatProvider.install();
   }
 });
 
