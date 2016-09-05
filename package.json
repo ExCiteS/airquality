@@ -23,7 +23,7 @@
     "grunt-replace": "*",
     "grunt-coveralls": "*",
     "load-grunt-tasks": "*",
-    "jasmine-core": "*",
+    "jasmine-core": "2.4.1",
     "karma": "*",
     "karma-jasmine": "*",
     "karma-phantomjs-launcher": "*",
