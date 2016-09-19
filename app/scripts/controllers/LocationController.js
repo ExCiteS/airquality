@@ -372,11 +372,17 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
       } else {
         // Set project automatically to the last one used
         var lastProjectUsed = storage.get('LAST_PROJECT_USED');
+        // Set setting for "made by students" from previous action
+        var lastMadeByStudents = storage.get('LAST_MADE_BY_STUDENTS_PROPERTY');
 
         if (lastProjectUsed) {
           measurement.project = JSON.parse(lastProjectUsed);
         } else {
           delete measurement.project;
+        }
+
+        if (!measurement.made_by_students && lastMadeByStudents) {
+          measurement.properties.made_by_students = JSON.parse(lastMadeByStudents);
         }
 
         measurement.error = {};
@@ -407,6 +413,8 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
     if (!$scope.formGroup.measurements[measurement.id].form.$invalid) {
       // Save last project used locally
       storage.put('LAST_PROJECT_USED', JSON.stringify(measurement.project));
+      // Save last setting for "made by students"
+      storage.put('LAST_MADE_BY_STUDENTS_PROPERTY', JSON.stringify(measurement.properties.made_by_students));
 
       measurement.submit = true;
       measurement.addResults = false;

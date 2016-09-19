@@ -107,6 +107,13 @@
                 <label for="measurement-project">Additional details</label>
                 <textarea id="measurement-additionaldetails" class="form-control" rows="4" ng-model="measurement.properties.additional_details" ng-disabled="viewport.calling"></textarea>
               </div>
+
+              <div class="checkbox-inline" ng-form="MadeByStudentsField" class="form-group" ng-class="{'has-error': measurement.error.api}">
+                <label>
+                  <input type="checkbox" value="true" data-ng-model="measurement.properties.made_by_students" />
+                  <span>Diffusion tube made by students</span>
+                </label>
+              </div>
             </div>
 
             <hr ng-show="measurement.addResults || !measurement.submitted" />
