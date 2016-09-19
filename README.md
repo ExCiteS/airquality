@@ -91,6 +91,8 @@ For example, on OS X with Android SDK version 23.0.2, the command should be:
 
 The finalised signed app can then be uploaded to [Google Play Store](https://play.google.com/apps/publish/).
 
+Please note, Cordova previously was adding additional "8" at the end of generated Android version code. This has changed in the later updates. Following the default settings, Google Play store will not allow to upload any *new* versions of the app, as they will all be threated as lower versions. A workaround was added, where Android version code *must be* explicitly set in the XML configuration file.
+
 ## Develop Application
 
 When building Angular application, use:
