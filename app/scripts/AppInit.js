@@ -26,8 +26,10 @@ var AQ = angular.module('AQ', [
  * APP CONFIGURATION
  */
 
-AQ.config(function (config, $httpProvider, $urlRouterProvider, $stateProvider, $opbeatProvider) {
+AQ.config(function (config, $qProvider, $httpProvider, $urlRouterProvider, $stateProvider, $opbeatProvider) {
   'use strict';
+
+  $qProvider.errorOnUnhandledRejections(false);
 
   $httpProvider.defaults.headers.post['Content-Type'] = 'application/json';
   $urlRouterProvider.when('', '/').otherwise('/404');
