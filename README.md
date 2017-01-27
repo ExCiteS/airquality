@@ -83,10 +83,10 @@ Locate the zipalign tool (usually inside `/path/to/Android/sdk/build-tools/<vers
 zipalign -v 4 platforms/android/build/outputs/apk/android-release-unsigned.apk air-quality.apk
 ```
 
-For example, on OS X with Android SDK version 23.0.2, the command should be:
+For example, on OS X with Android SDK version 25.0.2, the command should be:
 
 ```console
-~/Library/Android/sdk/build-tools/23.0.2/zipalign -v 4 platforms/android/build/outputs/apk/android-release-unsigned.apk air-quality.apk
+~/Library/Android/sdk/build-tools/25.0.2/zipalign -v 4 platforms/android/build/outputs/apk/android-release-unsigned.apk air-quality.apk
 ```
 
 The finalised signed app can then be uploaded to [Google Play Store](https://play.google.com/apps/publish/).
