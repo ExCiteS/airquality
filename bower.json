@@ -6,9 +6,9 @@
     "lodash": "4.17.4",
     "leaflet": "0.7.7",
     "moment": "2.17.1",
-    "angular": "1.6.1",
-    "angular-sanitize": "1.6.1",
-    "angular-touch": "1.6.1",
+    "angular": "1.6.2",
+    "angular-sanitize": "1.6.2",
+    "angular-touch": "1.6.2",
     "angular-moment": "1.0.1",
     "angular-ui-router": "0.4.2"
   }
