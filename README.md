@@ -184,7 +184,7 @@ To run on an actual Android device, use:
 yarn cordova run android --target=<device>
 ```
 
-Run `adb devices` to see all available Android devices.
+Run `~/Library/Android/sdk/platform-tools/adb` to see all available Android devices.
 
 ## Run Unit Tests
 
