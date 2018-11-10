@@ -381,7 +381,7 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
           delete measurement.project;
         }
 
-        if (!measurement.made_by_students && lastMadeByStudents) {
+        if (!measurement.properties.made_by_students && lastMadeByStudents) {
           measurement.properties.made_by_students = JSON.parse(lastMadeByStudents);
         }
 
@@ -414,7 +414,11 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
       // Save last project used locally
       storage.put('LAST_PROJECT_USED', JSON.stringify(measurement.project));
       // Save last setting for "made by students"
-      storage.put('LAST_MADE_BY_STUDENTS_PROPERTY', JSON.stringify(measurement.properties.made_by_students));
+      if (measurement.properties.made_by_students) {
+        storage.put('LAST_MADE_BY_STUDENTS_PROPERTY', measurement.properties.made_by_students);
+      } else {
+        storage.remove('LAST_MADE_BY_STUDENTS_PROPERTY');
+      }
 
       measurement.submit = true;
       measurement.addResults = false;

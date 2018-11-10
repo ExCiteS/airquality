@@ -261,6 +261,7 @@ AQ.factory('oauth', function ($q, $http, config, data, viewport, state, storage,
       storage.remove('LOCATIONS');
       storage.remove('PROJECTS');
       storage.remove('LAST_PROJECT_USED');
+      storage.remove('LAST_MADE_BY_STUDENTS_PROPERTY');
 
       data.authentication = {};
       data.locations = null;
