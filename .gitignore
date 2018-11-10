@@ -12,3 +12,6 @@ report.xml
 *.log
 *.apk
 *.keystore
+*.sublime-project
+*.sublime-workspace
+.idea
