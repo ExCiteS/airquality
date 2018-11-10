@@ -11,20 +11,12 @@
  * @description
  * Main controller of the app.
  */
-AQ.controller('MainController', function ($opbeat, $window, $scope, data, viewport, state, storage, oauth, api) {
+AQ.controller('MainController', function ($window, $scope, data, viewport, state, storage, oauth, api) {
   'use strict';
 
   $scope.data = data;
   $scope.viewport = viewport;
   $scope.state = state;
-
-  function setOpbeatUser() {
-    $opbeat.setUserContext({
-      id: data.authentication.info.id,
-      email: data.authentication.info.email,
-      displayName: data.authentication.info.display_name
-    });
-  }
 
   /**
    * @ngdoc event
@@ -81,25 +73,17 @@ AQ.controller('MainController', function ($opbeat, $window, $scope, data, viewpo
         storage.put('PROJECTS', JSON.stringify(data.projects));
       }
 
-      if (!_.isEmpty(data.authentication)) {
-        if (!_.isPlainObject(data.authentication.info)) {
-          api.getUserInfo().then(function (info) {
-            var authentication;
+      if (!_.isEmpty(data.authentication) && !_.isPlainObject(data.authentication.info)) {
+        api.getUserInfo().then(function (info) {
+          var authentication;
 
-            if (_.isPlainObject(info.data)) {
-              authentication = data.authentication;
-              authentication.info = info.data;
-              storage.put('AUTHENTICATION', JSON.stringify(authentication));
-              data.authentication = authentication;
-
-              setOpbeatUser();
-            }
-          });
-        } else {
-          setOpbeatUser();
-        }
-      } else {
-        $opbeat.setUserContext({});
+          if (_.isPlainObject(info.data)) {
+            authentication = data.authentication;
+            authentication.info = info.data;
+            storage.put('AUTHENTICATION', JSON.stringify(authentication));
+            data.authentication = authentication;
+          }
+        });
       }
     }, true
   );

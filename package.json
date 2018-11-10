@@ -6,9 +6,6 @@
   "engines": {
     "node": ">=0.12.0"
   },
-  "dependencies": {
-    "opbeat-angular": "3.14.0"
-  },
   "devDependencies": {
     "grunt": "*",
     "grunt-contrib-watch": "*",

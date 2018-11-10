@@ -17,7 +17,6 @@ var AQ = angular.module('AQ', [
   'templates',
   'ngSanitize',
   'ngTouch',
-  'ngOpbeat',
   'ui.router',
   'angularMoment',
 ]);
@@ -26,7 +25,7 @@ var AQ = angular.module('AQ', [
  * APP CONFIGURATION
  */
 
-AQ.config(function (config, $qProvider, $httpProvider, $urlRouterProvider, $stateProvider, $opbeatProvider) {
+AQ.config(function (config, $qProvider, $httpProvider, $urlRouterProvider, $stateProvider) {
   'use strict';
 
   $qProvider.errorOnUnhandledRejections(false);
@@ -129,14 +128,6 @@ AQ.config(function (config, $qProvider, $httpProvider, $urlRouterProvider, $stat
         }
       }
     });
-
-  // Configure and install Opbeat
-  if (config.opbeatOrgId && config.opbeatOrgId.length > 0 && config.opbeatAppId && config.opbeatAppId.length > 0) {
-    $opbeatProvider.config({
-      orgId: config.opbeatOrgId,
-      appId: config.opbeatAppId
-    });
-  }
 });
 
 /**
