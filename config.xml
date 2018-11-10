@@ -3,10 +3,12 @@
     <name>Air Quality</name>
     <description>Hybrid application for collecting Air Quality measurements to GeoKey.</description>
     <author email="info@mappingforchange.org.uk" href="http://mappingforchange.org.uk">Mapping for Change</author>
-    <icon density="mdpi" height="57" platform="ios" src="res/ios/icon.png" width="57" />
     <icon src="res/icons/default.png" />
     <content src="index.html" />
-    <plugin name="cordova-plugin-whitelist" version="1" />
+    <plugin name="cordova-plugin-dialogs" spec="^2.0.1" />
+    <plugin name="cordova-plugin-geolocation" spec="^4.0.1" />
+    <plugin name="cordova-plugin-network-information" spec="^2.0.1" />
+    <plugin name="cordova-plugin-whitelist" version="^1.3.3" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -23,29 +25,6 @@
         <icon density="xxhdpi" src="res/icons/android/xxhdpi.png" />
         <icon density="xxxhdpi" src="res/icons/android/xxxhdpi.png" />
     </platform>
-    <platform name="ios">
-        <allow-intent href="itms:*" />
-        <allow-intent href="itms-apps:*" />
-        <preference name="Orientation" value="sensorPortrait" />
-        <icon height="57" src="res/icons/ios/icon.png" width="57" />
-        <icon height="114" src="res/icons/ios/icon@2x.png" width="114" />
-        <icon height="29" src="res/icons/ios/icon-small.png" width="29" />
-        <icon height="58" src="res/icons/ios/icon-small@2x.png" width="58" />
-        <icon height="40" src="res/icons/ios/icon-40.png" width="40" />
-        <icon height="80" src="res/icons/ios/icon-40@2x.png" width="80" />
-        <icon height="50" src="res/icons/ios/icon-50.png" width="50" />
-        <icon height="100" src="res/icons/ios/icon-50@2x.png" width="100" />
-        <icon height="60" src="res/icons/ios/icon-60.png" width="60" />
-        <icon height="120" src="res/icons/ios/icon-60@2x.png" width="120" />
-        <icon height="180" src="res/icons/ios/icon-60@3x.png" width="180" />
-        <icon height="72" src="res/icons/ios/icon-72.png" width="72" />
-        <icon height="144" src="res/icons/ios/icon-72@2x.png" width="144" />
-        <icon height="76" src="res/icons/ios/icon-76.png" width="76" />
-        <icon height="152" src="res/icons/ios/icon-76@2x.png" width="152" />
-    </platform>
-    <plugin name="cordova-plugin-dialogs" spec="^2.0.1" />
-    <plugin name="cordova-plugin-network-information" spec="^2.0.1" />
-    <plugin name="cordova-plugin-geolocation" spec="^4.0.1" />
-    <engine name="browser" spec="^5.0.4" />
-    <engine name="android" spec="^7.1.2" />
+    <engine name="browser" spec="~5.0.4" />
+    <engine name="android" spec="~7.1.2" />
 </widget>
