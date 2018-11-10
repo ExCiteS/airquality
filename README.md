@@ -11,6 +11,8 @@ Air Quality is a hybrid [Cordova](https://cordova.apache.org) application for co
 - Homebrew installed
 - Node installed
 - Yarn installed
+- Java Development Kit (JDK)
+- Android Studio
 
 Air Quality requires the [geokey-airquality](https://github.com/ExCiteS/geokey-airquality) extension to be installed alongside [GeoKey](https://github.com/ExCiteS/geokey).
 
@@ -56,6 +58,22 @@ brew install yarn --without-node
 
 Flag `--without-node` tells Yarn not to install Node alongside (since you should already have it on a system).
 
+### Java Development Kit (JDK) Installation
+
+Install [Java Development Kit (JDK) 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html). Cordova also requires [Gradle to be installed](https://gradle.org/install/) too (e.g. using Homebrew).
+
+If by running `java -version` you see anything else than "1.8" or you get other Java errors, try to set the path to required version by including `export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)` in your `~/.bash_profile` (don't forget to reload with `source ~/.bash_profile`).
+
+### Android Studio Installation
+
+Install [Android Studio](https://developer.android.com/studio/index.html), then run the SDK Manager and install:
+
+- SDK Platform for API 27
+- latest Android SDK Platform-tools
+- latest Android SDK Build-tools
+
+Check the requirements to make sure the system is up and ready by running `yarn cordova requirements android`.
+
 ## Build Application
 
 Navigate to project's directory and install required dependencies:
@@ -84,8 +102,6 @@ Download all the required Cordova platforms:
 yarn cordova platform add browser
 yarn cordova platform add android
 ```
-
-You will need an SDK installed locally in order to build and sign an Android app. Check the requirements to make sure the system is up and ready by running `yarn cordova requirements android`.
 
 Build Air Quality application for all platforms:
 
