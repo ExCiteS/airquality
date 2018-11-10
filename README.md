@@ -142,13 +142,27 @@ Don't forget to build Air Quality application:
 yarn cordova build
 ```
 
-When Air Quality application is compiled, test it on the emulator:
+When Air Quality application is compiled, you can run each of the platform:
+
+### Run "Browser" Platform
+
+Start a local server:
+
+```console
+yarn start
+```
+
+Now you can access Air Quality using the `http://localhost:4060` URL from any browser on your local machine.
+
+### Run "Android" Platform
+
+To run on an emulator:
 
 ```console
 yarn cordova emulate <platform>
 ```
 
-To test the app on an actual Android device, use:
+To run on an actual Android device, use:
 
 ```console
 yarn cordova run android --target=<device>
