@@ -6,7 +6,7 @@
  * Developed by:
  * Julius Osokinas (j.osokinas@mappingforchange.org.uk)
  *
- * Copyright © 2015-2016 Mapping for Change
+ * Copyright © 2015-2018 Mapping for Change
  **********************************************************/
 
 /**
