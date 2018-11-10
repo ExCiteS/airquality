@@ -136,6 +136,12 @@ yarn grunt dev
 
 Changes will be watched and applied when saving, all Cordova platforms will be recompiled also.
 
+Don't forget to build Air Quality application:
+
+```console
+yarn cordova build
+```
+
 When Air Quality application is compiled, test it on the emulator:
 
 ```console
