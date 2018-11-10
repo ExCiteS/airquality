@@ -6,63 +6,96 @@
 
 Air Quality is a hybrid [Cordova](https://cordova.apache.org) application for collecting measurements that is currently developed by [Mapping for Change](http://mappingforchange.org.uk), and is supporting the [GeoKey platform](http://geokey.org.uk) developed by [Extreme Citizen Science](http://ucl.ac.uk/excites) research group at University College London.
 
-## Requirements
+## Prerequisite
+
+- Homebrew installed
+- Node installed
+- Yarn installed
 
 Air Quality requires the [geokey-airquality](https://github.com/ExCiteS/geokey-airquality) extension to be installed alongside [GeoKey](https://github.com/ExCiteS/geokey).
 
+### Homebrew Installation
+
+Install Homebrew using the official script:
+
+```
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
+
+### Node Installation
+
+You can install Node directly with Homebrew:
+
+```
+brew install node
+```
+
+However, it is recommended to use Node Version Manager to enable easy updating and switching between versions.
+
+There are multiple ways to install Node Version Manager, please follow [official guide](https://github.com/creationix/nvm).
+
+After that, install Node itself:
+
+```
+nvm install node
+```
+
+Or if you wish to use long-term support (LTS) version:
+
+```
+nvm install node --lts
+```
+
+### Yarn Installation
+
+Since you already have Homebrew installed, you might just use it to install Yarn:
+
+```
+brew install yarn --without-node
+```
+
+Flag `--without-node` tells Yarn not to install Node alongside (since you should already have it on a system).
+
 ## Build Application
 
-Follow official documentation to [install Node.js](https://nodejs.org/en/download). You may need to install [Git](http://git-scm.com/downloads) and [Ruby](http://ruby-lang.org/en/installation) too.
-
-Install Bower, Grunt's Command Line Interface and Cordova globally:
+Navigate to project's directory and install required dependencies:
 
 ```console
-sudo npm install -g bower
-sudo npm install -g grunt-cli
-sudo npm install -g cordova
+yarn install
 ```
 
-Navigate to project's directory and install required Bower components and npm modules locally:
+Copy configuration file from the sample:
 
 ```console
-bower install
-npm install
+cp config.sample.js config.js
 ```
 
-Copy configuration file from the sample with `cp config.sample.js config.js`. Edit application's configuration and add the URL of GeoKey platform used (without `/api/`), also client's ID.
+Edit application's configuration - add the URL of GeoKey platform used (without `/api/`), also client ID.
 
 Build Angular application:
 
 ```console
-grunt
+yarn grunt
 ```
 
-Download all the required Cordova plugins:
+Download all the required Cordova platforms (SDK must be installed for Android):
 
 ```console
-cordova plugin add cordova-plugin-dialogs
-cordova plugin add cordova-plugin-network-information
-cordova plugin add cordova-plugin-geolocation
-```
-
-Also, add platforms (SDK must be installed for Android):
-
-```console
-cordova platform add browser
-cordova platform add android
+yarn cordova platform add browser
+yarn cordova platform add android
 ```
 
 Build Air Quality application for all platforms:
 
 ```console
-cordova build --release
+yarn cordova build --release
 ```
 
 Or individual platforms:
 
 ```console
-cordova build --release browser
-cordova build --release android
+yarn cordova build --release browser
+yarn cordova build --release android
 ```
 
 ### Sign Android APK
@@ -81,7 +114,7 @@ Locate the zipalign tool (usually inside `/path/to/Android/sdk/build-tools/<vers
 zipalign -v 4 platforms/android/build/outputs/apk/android-release-unsigned.apk air-quality.apk
 ```
 
-For example, on OS X with Android SDK version 25.0.2, the command should be:
+For example, on macOS with Android SDK version 25.0.2, the command should be:
 
 ```console
 ~/Library/Android/sdk/build-tools/25.0.2/zipalign -v 4 platforms/android/build/outputs/apk/android-release-unsigned.apk air-quality.apk
@@ -89,14 +122,14 @@ For example, on OS X with Android SDK version 25.0.2, the command should be:
 
 The finalised signed app can then be uploaded to [Google Play Store](https://play.google.com/apps/publish/).
 
-Please note, Cordova previously was adding additional "8" at the end of generated Android version code. This has changed in the later updates. Following the default settings, Google Play store will not allow to upload any *new* versions of the app, as they will all be threated as lower versions. A workaround was added, where Android version code *must be* explicitly set in the XML configuration file.
+Please note, Cordova previously was adding additional "8" at the end of generated Android version code. This has changed in the later updates. Following the default settings, Google Play store will not allow to upload any *new* versions of the app, as they will all be treated as lower versions. A workaround was added, where Android version code *must be* explicitly set in the XML configuration file.
 
 ## Develop Application
 
 When building Angular application, use:
 
 ```console
-grunt dev
+yarn grunt dev
 ```
 
 Changes will be watched and applied when saving.
@@ -104,13 +137,13 @@ Changes will be watched and applied when saving.
 When Air Quality application is compiled, test it on the emulator:
 
 ```console
-cordova emulate <platform>
+yarn cordova emulate <platform>
 ```
 
-To test the app on the actual Android device, use:
+To test the app on an actual Android device, use:
 
 ```console
-cordova run android --target=<device>
+yarn cordova run android --target=<device>
 ```
 
 Run `adb devices` to see all available Android devices.
@@ -119,20 +152,12 @@ Run `adb devices` to see all available Android devices.
 
 All tests are written in [Jasmine](https://github.com/pivotal/jasmine).
 
-Install Karma's Command Line Interface globally:
-
-```console
-sudo npm install -g karma-cli
-```
-
-Follow official documentation to [install PhantomJS](http://phantomjs.org/download.html).
-
 Navigate to project's directory, build Angular application, then run:
 
 ```console
-npm test
+yarn test
 ```
 
-You can pass custom arguments by adding `--` between the command and arguments, for example, `npm test -- --no-single-run` will continue running tests after a change is being made to the files (either app or tests).
+You can pass custom arguments too, for example, `yarn test --no-single-run` will continue running tests after a change is being made to the files (either app or tests).
 
 Coverage report is generated inside the `coverage` directory.
