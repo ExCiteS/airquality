@@ -154,6 +154,16 @@ module.exports = function (grunt) {
       }
     },
 
+    exec: {
+      release: {
+        command: 'yarn cordova build --release'
+      },
+
+      dev: {
+        command: 'yarn cordova build'
+      }
+    },
+
     watch: {
       templates: {
         files: ['app/templates/**/*.html'],
@@ -161,7 +171,8 @@ module.exports = function (grunt) {
           'html2js',
           'replace',
           'copy:html',
-          'copy:js'
+          'copy:js',
+          'exec:dev'
         ]
       },
 
@@ -169,7 +180,8 @@ module.exports = function (grunt) {
         files: ['app/stylesheets/{,*/}*.less'],
         tasks: [
           'less',
-          'copy:css'
+          'copy:css',
+          'exec:dev'
         ]
       },
 
@@ -177,7 +189,8 @@ module.exports = function (grunt) {
         files: ['config.js', 'app/scripts/{,*/}*.js'],
         tasks: [
           'concat:app',
-          'copy:js'
+          'copy:js',
+          'exec:dev'
         ]
       },
 
@@ -185,7 +198,8 @@ module.exports = function (grunt) {
         files: ['app/images/{,*/}*.{png,jpg,jpeg,gif}'],
         tasks: [
           'imagemin',
-          'copy:images'
+          'copy:images',
+          'exec:dev'
         ]
       },
 

@@ -37,6 +37,7 @@
     "grunt-contrib-less": "*",
     "grunt-contrib-watch": "*",
     "grunt-coveralls": "*",
+    "grunt-exec": "^3.0.0",
     "grunt-html2js": "*",
     "grunt-replace": "*",
     "jasmine-core": "^3.3.0",

@@ -3117,6 +3117,10 @@ grunt-coveralls@*:
   dependencies:
     coveralls "^3.0.0"
 
+grunt-exec@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/grunt-exec/-/grunt-exec-3.0.0.tgz#881f868d64098788fddaf22fa25d8572a9d64dc7"
+
 grunt-html2js@*:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/grunt-html2js/-/grunt-html2js-0.5.1.tgz#fe257119fd66a4da69398f85d541343321fbf77d"

@@ -134,7 +134,7 @@ When building Angular application, use:
 yarn grunt dev
 ```
 
-Changes will be watched and applied when saving.
+Changes will be watched and applied when saving, all Cordova platforms will be recompiled also.
 
 When Air Quality application is compiled, test it on the emulator:
 
