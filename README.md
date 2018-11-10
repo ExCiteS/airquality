@@ -78,12 +78,14 @@ Build Angular application:
 yarn grunt
 ```
 
-Download all the required Cordova platforms (SDK must be installed for Android):
+Download all the required Cordova platforms:
 
 ```console
 yarn cordova platform add browser
 yarn cordova platform add android
 ```
+
+You will need an SDK installed locally in order to build and sign an Android app. Check the requirements to make sure the system is up and ready by running `yarn cordova requirements android`.
 
 Build Air Quality application for all platforms:
 
