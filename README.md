@@ -45,11 +45,10 @@ cordova plugin add cordova-plugin-network-information
 cordova plugin add cordova-plugin-geolocation
 ```
 
-Also, add platforms (SDK must be installed for each phone platform):
+Also, add platforms (SDK must be installed for Android):
 
 ```console
 cordova platform add browser
-cordova platform add ios
 cordova platform add android
 ```
 
@@ -63,7 +62,6 @@ Or individual platforms:
 
 ```console
 cordova build --release browser
-cordova build --release ios
 cordova build --release android
 ```
 
@@ -107,12 +105,6 @@ When Air Quality application is compiled, test it on the emulator:
 
 ```console
 cordova emulate <platform>
-```
-
-iOS requires ios-sim to be installed globally:
-
-```console
-sudo npm install -g ios-sim
 ```
 
 To test the app on the actual Android device, use:
