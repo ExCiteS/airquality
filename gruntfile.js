@@ -77,8 +77,8 @@ module.exports = function (grunt) {
       vendor: {
         files: {
           'temp/css/vendor.css': [
-            'bower_components/leaflet/dist/leaflet.css',
-            'bower_components/bootstrap/dist/css/bootstrap.css'
+            'node_modules/leaflet/dist/leaflet.css',
+            'node_modules/bootstrap/dist/css/bootstrap.css'
           ]
         }
       }
@@ -99,13 +99,13 @@ module.exports = function (grunt) {
       vendor: {
         src: [
           'bower_components/lodash/lodash.js',
-          'bower_components/leaflet/dist/leaflet.js',
-          'bower_components/moment/moment.js',
-          'bower_components/angular/angular.js',
-          'bower_components/angular-sanitize/angular-sanitize.js',
-          'bower_components/angular-touch/angular-touch.js',
-          'bower_components/angular-moment/angular-moment.js',
-          'bower_components/angular-ui-router/release/angular-ui-router.js'
+          'node_modules/leaflet/dist/leaflet.js',
+          'node_modules/moment/moment.js',
+          'node_modules/angular/angular.js',
+          'node_modules/angular-sanitize/angular-sanitize.js',
+          'node_modules/angular-touch/angular-touch.js',
+          'node_modules/angular-moment/angular-moment.js',
+          'node_modules/@uirouter/angularjs/release/angular-ui-router.js'
         ],
         dest: 'temp/js/vendor.js'
       },
