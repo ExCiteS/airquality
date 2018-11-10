@@ -72,6 +72,13 @@ Install [Android Studio](https://developer.android.com/studio/index.html), then 
 - latest Android SDK Platform-tools
 - latest Android SDK Build-tools
 
+Add the following exports to your `~/.bash_profile` (also reload with `source ~/.bash_profile`).
+
+```
+export ANDROID_SDK=$HOME/Library/Android/sdk
+export PATH=$ANDROID_SDK/emulator:$ANDROID_SDK/tools:$PATH
+```
+
 Check the requirements to make sure the system is up and ready by running `yarn cordova requirements android`.
 
 ## Build Application
@@ -175,8 +182,10 @@ Now you can access Air Quality using the `http://localhost:4060` URL from any br
 To run on an emulator:
 
 ```console
-yarn cordova emulate <platform>
+yarn cordova run --emulator
 ```
+
+Run `emulator -list-avds` to see all emulators you have created locally, `emulator @<emulator>` to run a specific emulator.
 
 To run on an actual Android device, use:
 
