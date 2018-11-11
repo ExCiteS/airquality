@@ -130,22 +130,22 @@ Get the release key from Mapping for Change (including instructions), copy it to
 Sign the app (you will need to enter the build passphrase):
 
 ```console
-jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore airquality-key.keystore platforms/android/build/outputs/apk/android-release-unsigned.apk alias_name
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore airquality-key.keystore platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk alias_name
 ```
 
 Locate the zipalign tool (usually inside `/path/to/Android/sdk/build-tools/<version>/zipalign`) and run the following:
 
 ```console
-zipalign -v 4 platforms/android/build/outputs/apk/android-release-unsigned.apk air-quality.apk
+zipalign -v 4 platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk air-quality.apk
 ```
 
-For example, on macOS with Android SDK version 25.0.2, the command should be:
+For example, on macOS with Android SDK version 28.0.3, the command should be:
 
 ```console
-~/Library/Android/sdk/build-tools/25.0.2/zipalign -v 4 platforms/android/build/outputs/apk/android-release-unsigned.apk air-quality.apk
+~/Library/Android/sdk/build-tools/28.0.3/zipalign -v 4 platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk air-quality.apk
 ```
 
-The finalised signed app can then be uploaded to [Google Play Store](https://play.google.com/apps/publish/).
+The finalised signed app (located at the root of the project) can then be uploaded to [Google Play Store](https://play.google.com/apps/publish/).
 
 Please note, Cordova previously was adding additional "8" at the end of generated Android version code. This has changed in the later updates. Following the default settings, Google Play store will not allow to upload any *new* versions of the app, as they will all be treated as lower versions. A workaround was added, where Android version code *must be* explicitly set in the XML configuration file.
 
