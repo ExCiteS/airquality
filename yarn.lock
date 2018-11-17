@@ -4714,6 +4714,11 @@ negotiator@0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
 
+ng-rollbar@^2.4.0:
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/ng-rollbar/-/ng-rollbar-2.4.2.tgz#c7f30d98ce05e46ad6f7e046acd0685c2bfb7a96"
+  integrity sha512-sGLWZ7usulGK0mSoAWx7me7JJHL5nNQTKfPO5ElVsn+aTAC7n6PjKJxBJVhsu81Z5PQeoS/UFrNVrChdhKyd+Q==
+
 nice-try@^1.0.4:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"

@@ -19,13 +19,14 @@ var AQ = angular.module('AQ', [
   'ngTouch',
   'ui.router',
   'angularMoment',
+  'tandibar/ng-rollbar'
 ]);
 
 /**
  * APP CONFIGURATION
  */
 
-AQ.config(function (config, $qProvider, $httpProvider, $urlRouterProvider, $stateProvider) {
+AQ.config(function (config, $qProvider, $httpProvider, $urlRouterProvider, $stateProvider, RollbarProvider) {
   'use strict';
 
   $qProvider.errorOnUnhandledRejections(false);
@@ -46,6 +47,12 @@ AQ.config(function (config, $qProvider, $httpProvider, $urlRouterProvider, $stat
     }
 
     return false;
+  });
+
+  // Configure and install Rollbar
+  RollbarProvider.init({
+    accessToken: config.rollbarAccessToken,
+    captureUncaught: true
   });
 
   // Configure states
@@ -134,8 +141,12 @@ AQ.config(function (config, $qProvider, $httpProvider, $urlRouterProvider, $stat
  * APP RUNNER
  */
 
-AQ.run(function ($window, $rootScope, config, viewport, data, state, oauth) {
+AQ.run(function ($window, $rootScope, config, viewport, data, state, oauth, Rollbar) {
   'use strict';
+
+  if (!config.rollbarAccessToken && config.rollbarAccessToken.length === 0) {
+    Rollbar.disable();
+  }
 
   oauth.authorize();
 

@@ -105,7 +105,8 @@ module.exports = function (grunt) {
           'node_modules/angular-sanitize/angular-sanitize.js',
           'node_modules/angular-touch/angular-touch.js',
           'node_modules/angular-moment/angular-moment.js',
-          'node_modules/@uirouter/angularjs/release/angular-ui-router.js'
+          'node_modules/@uirouter/angularjs/release/angular-ui-router.js',
+          'node_modules/ng-rollbar/ng-rollbar.js'
         ],
         dest: 'temp/js/vendor.js'
       },

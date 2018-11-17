@@ -1,4 +1,5 @@
 AQ.constant('config', {
   url: '',
-  client: ''
+  client: '',
+  rollbarAccessToken: ''
 });

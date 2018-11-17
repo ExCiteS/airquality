@@ -11,12 +11,23 @@
  * @description
  * Main controller of the app.
  */
-AQ.controller('MainController', function ($window, $scope, data, viewport, state, storage, oauth, api) {
+AQ.controller('MainController', function (Rollbar, $window, $scope, data, viewport, state, storage, oauth, api) {
   'use strict';
 
   $scope.data = data;
   $scope.viewport = viewport;
   $scope.state = state;
+
+  function setRollbarPerson(username, email) {
+    Rollbar.configure({
+      payload: {
+        person: {
+          username: username || null,
+          email: email || null
+        }
+      }
+    });
+  }
 
   /**
    * @ngdoc event
@@ -82,8 +93,12 @@ AQ.controller('MainController', function ($window, $scope, data, viewport, state
             authentication.info = info.data;
             storage.put('AUTHENTICATION', JSON.stringify(authentication));
             data.authentication = authentication;
+
+            setRollbarPerson(authentication.info.display_name, authentication.info.email);
           }
         });
+      } else {
+        setRollbarPerson();
       }
     }, true
   );
