@@ -151,9 +151,9 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
         barcode: $scope.measurement.barcode.toString() // always a string, not a number
       };
 
-      // Make sure barcode always consists of 6 numbers (add leading zeros)
-      if (_.size(data.barcode) < 6) {
-        data.barcode = new Array(6 - _.size(data.barcode) + 1).join('0') + data.barcode;
+      // Make sure barcode always consists of 7 numbers (add leading zeros)
+      if (_.size(data.barcode) < 7) {
+        data.barcode = new Array(7 - _.size(data.barcode) + 1).join('0') + data.barcode;
       }
 
       api.startMeasurement(data).then(
@@ -212,7 +212,7 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
       );
     } else {
       $window.navigator.notification.prompt(
-        'Edit the barcode (6 numbers) of this measurement.',
+        'Edit the barcode (7 numbers) of this measurement.',
         function (results) {
           if (results.buttonIndex === 1) {
             var barcode = parseInt(results.input1);
@@ -229,11 +229,11 @@ AQ.controller('LocationController', function ($window, $timeout, $stateParams, $
             } else {
               barcode = barcode.toString();
 
-              if (_.size(barcode) < 6) {
-                barcode = new Array(6 - _.size(barcode) + 1).join('0') + barcode;
-              } else if (_.size(barcode) > 6) {
+              if (_.size(barcode) < 7) {
+                barcode = new Array(7 - _.size(barcode) + 1).join('0') + barcode;
+              } else if (_.size(barcode) > 7) {
                 $window.navigator.notification.alert(
-                  'Barcode must consist of no more than 6 numbers.',
+                  'Barcode must consist of no more than 7 numbers.',
                   undefined,
                   'Error',
                   'OK'
